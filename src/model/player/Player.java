@@ -10,8 +10,11 @@ public class Player implements Serializable{
     private int punteggio;
     private String nomeGiocatore;
     private ArrayList<Player> listaGiocatori;
-
     private int id;
+
+    public Player() {
+
+    }
 
     public Player(boolean isLeader, boolean isCrashed, String nomeGiocatore, int id) {
         this.isLeader = isLeader;

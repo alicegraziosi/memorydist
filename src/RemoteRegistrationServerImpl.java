@@ -1,5 +1,7 @@
 import model.player.Player;
+import utils.Node;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt {
@@ -17,13 +19,17 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
         start = false;
     }
 
-    public synchronized int registraGiocatore(String nomeGiocatore) {
+    public synchronized int registraGiocatore(String nomeGiocatore, InetAddress hostAddress, int port) {
         if (indexGiocatori < maxNumeroGiocatori){
             if(servizioAperto) {
                 indexGiocatori++;
                 Player player = new Player(false, false, nomeGiocatore, indexGiocatori);
                 players.add(player);
                 System.out.println("Nuovo giocatore: nome: " + nomeGiocatore + ", id: " + Integer.toString(indexGiocatori));
+
+                // todo creare l'anello!!!!
+                Node node = new Node(hostAddress, port);
+
                 return indexGiocatori;
             } else {
                 System.out.println("Tempo scaduto per registrarsi come giocatore.\n");
