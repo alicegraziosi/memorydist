@@ -21,4 +21,4 @@ start server:
 java -classpath C:\Users\alice\IdeaProjects\memory\classes -Djava.rmi.server.codebase=file:C:\Users\alice\IdeaProjects\memory\classes\ RegistrationServiceServer 30 &
 
 start client:
-java -classpath C:\Users\alice\IdeaProjects\memory\classes ClientRegistration
+java -classpath C:\Users\alice\IdeaProjects\memory\classes ClientGiocatore

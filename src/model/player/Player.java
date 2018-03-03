@@ -1,3 +1,5 @@
+package model.player;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -5,6 +7,7 @@ public class Player implements Serializable{
 
     private boolean isLeader;
     private boolean isCrashed;
+    private int punteggio;
     private String nomeGiocatore;
     private ArrayList<Player> listaGiocatori;
 
@@ -16,6 +19,7 @@ public class Player implements Serializable{
         this.nomeGiocatore = nomeGiocatore;
         this.id = id;
         this.listaGiocatori = null;
+        this.punteggio = 0;
     }
 
     public boolean isLeader() {
@@ -57,4 +61,13 @@ public class Player implements Serializable{
     public void setListaGiocatori(ArrayList<Player> listaGiocatori) {
         this.listaGiocatori = listaGiocatori;
     }
+
+    public int getPunteggio() {
+        return punteggio;
+    }
+
+    public void setPunteggio(int punteggio) {
+        this.punteggio = punteggio;
+    }
+
 }

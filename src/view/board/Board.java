@@ -1,2 +1,5 @@
-public class Board {
+package view.board;
+
+public class Board{
+
 }

@@ -1,2 +1,2 @@
-java -classpath C:\Users\alice\IdeaProjects\memory\classes ClientRegistration
+java -classpath C:\Users\alice\IdeaProjects\memory\classes ClientGiocatore
 cmd /k

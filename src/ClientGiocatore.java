@@ -1,25 +1,19 @@
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import model.gameStatus.GameStatus;
+import model.player.Player;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 
-import static java.lang.Integer.compare;
 import static java.lang.Thread.sleep;
 
-public class ClientRegistration {
+public class ClientGiocatore {
 
-    private RegistrationWindow registrationWindow;
-
-    public ClientRegistration(RegistrationWindow registrationWindow) {
-        this.registrationWindow = registrationWindow;
-    }
-
-
+    public static String host;
 
     public static void main(String[] args) {
 
-        String host = (args.length < 1) ? null : args[0];
+        host = (args.length < 1) ? null : args[0];
 
         String nomeGiocatore = "default name";
 
@@ -29,7 +23,7 @@ public class ClientRegistration {
                 try {
                     System.out.println("Richiesta servizio di registrazione...");
                     Registry registry = LocateRegistry.getRegistry(host);
-                    RemoteServerRegistrationInterface stub = (RemoteServerRegistrationInterface) registry.lookup("registrazione");
+                    RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) registry.lookup("registrazione");
 
                     // restituisce l'id del giocatore
                     int idResponse = stub.registraGiocatore(nomeGiocatore);
@@ -42,7 +36,7 @@ public class ClientRegistration {
                         ArrayList<Player> players = stub.getPlayers();
                         System.out.println("Numero giocatori: " + players.size());
 
-                        System.out.println("Tu sei il giocatore: ");
+                        System.out.println("Giocatore:");
                         System.out.println("nome: " + players.get(idResponse-1).getNomeGiocatore() +
                                 ", id: " + players.get(idResponse-1).getId() +
                                 ", leader: " + players.get(idResponse-1).isLeader() + "\n");
@@ -74,9 +68,22 @@ public class ClientRegistration {
                 try {
                     System.out.println("Start playGame");
 
+                    // viene mostrato il tavolo di gioco
+
                     // Se è il suo turno
 
+                    // mossa
+
+                    // messaggio
+                    GameStatus message = new GameStatus();
+                    Registry registry = LocateRegistry.getRegistry(host);
+                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService");
+                    System.out.println("sendMessage");
+                    System.out.println("risposta: " + stub.sendMessage(message));
+
                     // Se non è il suo turno
+
+                    //loop
 
                     sleep(20 * 1000);
                 } catch (Exception e) {

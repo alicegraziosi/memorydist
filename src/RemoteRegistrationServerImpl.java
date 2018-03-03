@@ -1,6 +1,8 @@
+import model.player.Player;
+
 import java.util.ArrayList;
 
-public class RemoteServerRegistrationImpl implements RemoteServerRegistrationInterface {
+public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt {
 
     private int maxNumeroGiocatori;
     private ArrayList<Player> players;
@@ -8,7 +10,7 @@ public class RemoteServerRegistrationImpl implements RemoteServerRegistrationInt
     private boolean servizioAperto;
     private boolean start;
 
-    public RemoteServerRegistrationImpl() {
+    public RemoteRegistrationServerImpl() {
         this.maxNumeroGiocatori = 4;
         this.players = new ArrayList();
         this.servizioAperto = true;
