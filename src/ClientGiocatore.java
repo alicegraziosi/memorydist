@@ -4,8 +4,13 @@ import utils.Node;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.rmi.AccessException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -13,12 +18,17 @@ import static java.lang.Thread.sleep;
 
 public class ClientGiocatore {
 
-    // dove sta rmi registry
+    // dove sta rmi registry di server registrazione
     public static String host;
 
     public static ArrayList<Player> players;
+    public static ArrayList<Node> nodes;
 
     public static int id;
+
+    public static int port;
+
+    public static InetAddress hostAddress;
 
     public static void main(String[] args) {
 
@@ -29,18 +39,14 @@ public class ClientGiocatore {
 
                     host = (args.length < 1) ? null : args[0];
 
-                    InetAddress hostAddress = null;
+                    hostAddress = null;
+
                     try{
                         hostAddress = InetAddress.getLocalHost();
                         System.out.println("My host is: " + hostAddress);
                     } catch (UnknownHostException ex){
                         ex.printStackTrace();
                     }
-
-                    // Viene settata una porta a cui connettersi
-                    Random random = new Random();
-                    int port = random.nextInt(100)+2001;
-                    System.out.println("host: " + hostAddress + ", port: " + port);
 
                     System.out.println("Richiesta servizio di registrazione...");
                     Registry registry = LocateRegistry.getRegistry(host);
@@ -56,6 +62,12 @@ public class ClientGiocatore {
                                 "Giocatore registrato con id " + id);
 
                         players = stub.getPlayers();
+                        nodes = stub.getNodes();
+
+                        port = nodes.get(id-1).getPort();
+
+                        System.out.println("host: " + hostAddress + ", port: " + port);
+
                         System.out.println("Numero giocatori: " + players.size());
 
                         System.out.println("Giocatore:");
@@ -70,13 +82,21 @@ public class ClientGiocatore {
                                     ", id: " + players.get(i).getId() +
                                     ", leader: " + players.get(i).isLeader() + "\n");
                         }
-                        //sleep(20 * 1000);
+
+                        setupRMI();
+
                         playGame();
                     }
 
-                } catch (Exception e) {
-                    System.err.println("Client registrazione exception: " + e.toString());
-                    e.printStackTrace();
+                } catch (AccessException e) {
+                    System.out.println("Tempo scaduto per registrarsi come giocatore.");
+                    //e.printStackTrace();
+                } catch (RemoteException e) {
+                    System.out.println("Tempo scaduto per registrarsi come giocatore.");
+                    //e.printStackTrace();
+                } catch (NotBoundException e) {
+                    System.out.println("Tempo scaduto per registrarsi come giocatore.");
+                    //e.printStackTrace();
                 }
             }
         });
@@ -96,25 +116,64 @@ public class ClientGiocatore {
                     if (players.get(id-1).isLeader()) {
                         // mossa
 
-                        // messaggio
-                        GameStatus message = new GameStatus();
-                        Registry registry = LocateRegistry.getRegistry(host);
-                        RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService");
-                        System.out.println("sendMessage");
-                        System.out.println("risposta: " + stub.sendMessage(message));
+                        sleep(10 * 1000);
+
+                        System.out.println("provo a fare broadcast di un messaggio");
+                        broadcastMessage();
                     } else {
                         // Se non è il suo turno
 
+                        // la board è bloccata
+
                         //loop
+                        sleep(20 * 1000);
                     }
 
-                    sleep(20 * 1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
         t.start();
+    }
+
+    // manda un messggio a tutti gli altri players
+    public static void broadcastMessage() {
+        for (int i = 0; i < nodes.size(); i++) {
+            Registry registry = null;
+            try {
+                registry = LocateRegistry.getRegistry(nodes.get(i).getPort());
+                RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService" + nodes.get(i).getPort());
+                GameStatus message = new GameStatus();
+                System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i+1).toString() + ": " + stub.sendMessage(message));
+            } catch (RemoteException e) {
+                //e.printStackTrace();
+                System.out.println("Il giocatore con id " + Integer.valueOf(i+1).toString() + " non ha ricevuto il messaggio, è in crash.");
+
+                // settarlo in crash
+
+            } catch (NotBoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void setupRMI(){
+        // ogni client ha il suo registro rmi sulla propria porta
+        Registry registry = null;
+        try {
+            registry = LocateRegistry.createRegistry(port);
+
+            // istanza dell'implementazione dell'oggetto remoto
+            RemoteMessageServiceImpl messageService = new RemoteMessageServiceImpl();
+            RemoteMessageServiceInt messageServiceStub = (RemoteMessageServiceInt) UnicastRemoteObject.exportObject(messageService, 0);
+            registry.bind("messageService"+port, messageServiceStub);
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (AlreadyBoundException e) {
+            e.printStackTrace();
+        }
     }
 }
 

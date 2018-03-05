@@ -8,6 +8,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 
     private int maxNumeroGiocatori;
     private ArrayList<Player> players;
+    private ArrayList<Node> nodes;
     private int indexGiocatori;
     private boolean servizioAperto;
     private boolean start;
@@ -15,6 +16,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
     public RemoteRegistrationServerImpl() {
         this.maxNumeroGiocatori = 4;
         this.players = new ArrayList();
+        this.nodes = new ArrayList();
         this.servizioAperto = true;
         start = false;
     }
@@ -22,13 +24,16 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
     public synchronized int registraGiocatore(String nomeGiocatore, InetAddress hostAddress, int port) {
         if (indexGiocatori < maxNumeroGiocatori){
             if(servizioAperto) {
+                // id del giocatore
                 indexGiocatori++;
-                Player player = new Player(false, false, nomeGiocatore, indexGiocatori);
-                players.add(player);
                 System.out.println("Nuovo giocatore: nome: " + nomeGiocatore + ", id: " + Integer.toString(indexGiocatori));
 
-                // todo creare l'anello!!!!
-                Node node = new Node(hostAddress, port);
+                Player player = new Player(false, false, nomeGiocatore, indexGiocatori);
+                players.add(player);
+
+                port = 2000 + indexGiocatori;
+                Node node = new Node(hostAddress, port, indexGiocatori);
+                nodes.add(node);
 
                 return indexGiocatori;
             } else {
@@ -56,6 +61,8 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
                     ", leader: " + players.get(i).isLeader() + "\n");
         }
 
+        // todo creare l'anello!!!!
+
         System.out.println("Inizio del gioco.");
         start = true;
         notifyAll();
@@ -69,5 +76,15 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
                 ie.printStackTrace();
             }
         return players;
+    }
+
+    public synchronized ArrayList<Node> getNodes() {
+        if (!start)
+            try {
+                wait();
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+        return nodes;
     }
 }

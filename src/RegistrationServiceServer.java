@@ -22,20 +22,18 @@ public class RegistrationServiceServer {
 
         // per non dover tutte le volte fare kill del processo rmiregistry
         // https://stackoverflow.com/questions/8386001/how-to-close-rmiregistry-running-on-particular-port
-        Registry registry = null;
-        try {
-            registry = LocateRegistry.createRegistry(1099);
-        } catch (ExportException ex) {
-            try {
-                registry = LocateRegistry.getRegistry(1099);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        } catch (RemoteException ex) {
-            ex.printStackTrace();
-        }
 
         try {
+
+            Registry registry = null;
+            try {
+                registry = LocateRegistry.createRegistry(1099);
+            } catch (ExportException ex) {
+                registry = LocateRegistry.getRegistry(1099);
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
+            }
+
 
             // istanza dell'implementazione dell'oggetto remoto
             RemoteRegistrationServerImpl registrazione = new RemoteRegistrationServerImpl();
@@ -64,16 +62,6 @@ public class RegistrationServiceServer {
                 }
             };
             serverThread.start();
-
-            //Message service
-
-            // istanza dell'implementazione dell'oggetto remoto
-            RemoteMessageServiceImpl messageService = new RemoteMessageServiceImpl();
-
-            RemoteMessageServiceInt messageServiceStub = (RemoteMessageServiceInt) UnicastRemoteObject.exportObject(messageService, 0);
-
-            registry.bind("messageService", messageServiceStub);
-
 
         } catch (Exception e) {
             System.err.println("Servizio di registrazione exception: " + e.toString());
