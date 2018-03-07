@@ -1,3 +1,5 @@
+import model.card.Card;
+import model.gameStatus.GameStatus;
 import model.player.Player;
 import utils.Node;
 
@@ -63,6 +65,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 
         // todo creare l'anello!!!!
 
+
         System.out.println("Inizio del gioco.");
         start = true;
         notifyAll();
@@ -86,5 +89,29 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
                 ie.printStackTrace();
             }
         return nodes;
+    }
+
+    public synchronized GameStatus getGameStatus() {
+        // gamestatus iniziale
+        int numCarte = 20;
+        ArrayList<Card> carteScoperte = new ArrayList<Card>(); // 0
+        ArrayList<Card> carteNonScoperte = new ArrayList<Card>(); // tutte
+        // todo carte
+        for(int i=0; i<20; i++){
+            Card card = new Card(i, i);
+            carteNonScoperte.add(card);
+        }
+        GameStatus gameStatus = new GameStatus(
+                players, null,
+                null, carteScoperte, carteNonScoperte, null
+        );
+
+        if (!start)
+            try {
+                wait();
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+            }
+        return gameStatus;
     }
 }

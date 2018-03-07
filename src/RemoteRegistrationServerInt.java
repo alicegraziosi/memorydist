@@ -1,3 +1,4 @@
+import model.gameStatus.GameStatus;
 import model.player.Player;
 import utils.Node;
 
@@ -11,4 +12,5 @@ public interface RemoteRegistrationServerInt extends Remote {
     void stopServizio() throws RemoteException;
     ArrayList<Player> getPlayers() throws RemoteException;
     ArrayList<Node> getNodes() throws RemoteException;
+    GameStatus getGameStatus() throws RemoteException;
 }

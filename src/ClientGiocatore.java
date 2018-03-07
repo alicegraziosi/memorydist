@@ -12,23 +12,22 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Random;
 
 import static java.lang.Thread.sleep;
 
 public class ClientGiocatore {
 
+    public static int id;
+
     // dove sta rmi registry di server registrazione
     public static String host;
 
-    public static ArrayList<Player> players;
-    public static ArrayList<Node> nodes;
-
-    public static int id;
-
+    public static InetAddress hostAddress;
     public static int port;
 
-    public static InetAddress hostAddress;
+    public static ArrayList<Player> players;
+    public static ArrayList<Node> nodes;
+    public static GameStatus gameStatus;
 
     public static void main(String[] args) {
 
@@ -43,7 +42,6 @@ public class ClientGiocatore {
 
                     try{
                         hostAddress = InetAddress.getLocalHost();
-                        System.out.println("My host is: " + hostAddress);
                     } catch (UnknownHostException ex){
                         ex.printStackTrace();
                     }
@@ -63,10 +61,11 @@ public class ClientGiocatore {
 
                         players = stub.getPlayers();
                         nodes = stub.getNodes();
+                        gameStatus = stub.getGameStatus();
 
                         port = nodes.get(id-1).getPort();
 
-                        System.out.println("host: " + hostAddress + ", port: " + port);
+                        System.out.println("registrationServiceServerHost: " + hostAddress + ", port: " + port);
 
                         System.out.println("Numero giocatori: " + players.size());
 
@@ -83,20 +82,21 @@ public class ClientGiocatore {
                                     ", leader: " + players.get(i).isLeader() + "\n");
                         }
 
-                        setupRMI();
+                        // ogni client ha il suo registro rmi sulla propria porta
+                        setupRMIregisry();
 
                         playGame();
                     }
 
                 } catch (AccessException e) {
                     System.out.println("Tempo scaduto per registrarsi come giocatore.");
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 } catch (RemoteException e) {
                     System.out.println("Tempo scaduto per registrarsi come giocatore.");
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 } catch (NotBoundException e) {
                     System.out.println("Tempo scaduto per registrarsi come giocatore.");
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         });
@@ -112,16 +112,31 @@ public class ClientGiocatore {
 
                     // viene mostrato il tavolo di gioco
 
+                    // se ci sono ancora carte da scoprire e se è rimasto più di un giocatore
+
                     // Se è il suo turno
                     if (players.get(id-1).isLeader()) {
+                        //timeout
+
                         // mossa
+                        // notifica mossa
+                        // aggiorna game status
 
+                        // aggiornamento punteggio
+
+                        // prova per vedere se un altro processo è in crash
                         sleep(10 * 1000);
-
                         System.out.println("provo a fare broadcast di un messaggio");
-                        broadcastMessage();
+                        broadcastMessage(gameStatus);
+
+                        // nel frattempo può andare in crash
+
                     } else {
                         // Se non è il suo turno
+
+                        // nel frattempo può andare in crash
+
+                        // nel frattempo riceve messaggi
 
                         // la board è bloccata
 
@@ -137,20 +152,21 @@ public class ClientGiocatore {
         t.start();
     }
 
-    // manda un messggio a tutti gli altri players
-    public static void broadcastMessage() {
+    // manda un messaggio a tutti gli altri players
+    public static void broadcastMessage(GameStatus message) {
         for (int i = 0; i < nodes.size(); i++) {
             Registry registry = null;
             try {
                 registry = LocateRegistry.getRegistry(nodes.get(i).getPort());
                 RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService" + nodes.get(i).getPort());
-                GameStatus message = new GameStatus();
-                System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i+1).toString() + ": " + stub.sendMessage(message));
+                System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i+1) + ": " + stub.sendMessage(message));
             } catch (RemoteException e) {
                 //e.printStackTrace();
-                System.out.println("Il giocatore con id " + Integer.valueOf(i+1).toString() + " non ha ricevuto il messaggio, è in crash.");
+                System.out.println("Il giocatore con id " + Integer.valueOf(i+1) + " non ha ricevuto il messaggio, è in crash.");
 
                 // settarlo in crash
+                
+                // todo  notificare l' informazione a tutti
 
             } catch (NotBoundException e) {
                 e.printStackTrace();
@@ -158,7 +174,7 @@ public class ClientGiocatore {
         }
     }
 
-    public static void setupRMI(){
+    public static void setupRMIregisry(){
         // ogni client ha il suo registro rmi sulla propria porta
         Registry registry = null;
         try {
