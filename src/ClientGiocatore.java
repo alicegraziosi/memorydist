@@ -65,11 +65,11 @@ public class ClientGiocatore {
 
                         port = nodes.get(id-1).getPort();
 
-                        System.out.println("registrationServiceServerHost: " + hostAddress + ", port: " + port);
+                        System.out.println("Il mio nodo è: host: " + hostAddress + ", port: " + port);
 
                         System.out.println("Numero giocatori: " + players.size());
 
-                        System.out.println("Giocatore:");
+                        System.out.println("Sono il giocatore:");
                         System.out.println("nome: " + players.get(id-1).getNomeGiocatore() +
                                 ", id: " + players.get(id-1).getId() +
                                 ", leader: " + players.get(id-1).isLeader() + "\n");
@@ -79,7 +79,7 @@ public class ClientGiocatore {
                             players.get(i).setListaGiocatori(players);
                             System.out.println("nome: " + players.get(i).getNomeGiocatore() +
                                     ", id: " + players.get(i).getId() +
-                                    ", leader: " + players.get(i).isLeader() + "\n");
+                                    ", leader: " + players.get(i).isLeader());
                         }
 
                         // ogni client ha il suo registro rmi sulla propria porta
@@ -108,7 +108,7 @@ public class ClientGiocatore {
             @Override
             public void run() {
                 try {
-                    System.out.println("Start playGame");
+                    System.out.println("Inizio del gioco.");
 
                     // viene mostrato il tavolo di gioco
 
@@ -116,6 +116,7 @@ public class ClientGiocatore {
 
                     // Se è il suo turno
                     if (players.get(id-1).isLeader()) {
+                        System.out.println("E' il mio turno.");
                         //timeout
 
                         // mossa
@@ -126,17 +127,21 @@ public class ClientGiocatore {
 
                         // prova per vedere se un altro processo è in crash
                         sleep(10 * 1000);
-                        System.out.println("provo a fare broadcast di un messaggio");
+                        System.out.println("Faccio broadcast di un messaggio..");
+                        gameStatus.setIdSender(id);
                         broadcastMessage(gameStatus);
 
                         // nel frattempo può andare in crash
 
                     } else {
+                        System.out.println("E' il turno di un altro giocatore.");
+                        System.out.println("Resto in ascolto di messaggi...");
                         // Se non è il suo turno
 
                         // nel frattempo può andare in crash
 
                         // nel frattempo riceve messaggi
+                        // In remoteMessageServiceImpl
 
                         // la board è bloccata
 
@@ -155,23 +160,46 @@ public class ClientGiocatore {
     // manda un messaggio a tutti gli altri players
     public static void broadcastMessage(GameStatus message) {
         for (int i = 0; i < nodes.size(); i++) {
-            Registry registry = null;
-            try {
-                registry = LocateRegistry.getRegistry(nodes.get(i).getPort());
-                RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService" + nodes.get(i).getPort());
-                System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i+1) + ": " + stub.sendMessage(message));
-            } catch (RemoteException e) {
-                //e.printStackTrace();
-                System.out.println("Il giocatore con id " + Integer.valueOf(i+1) + " non ha ricevuto il messaggio, è in crash.");
+            if(i+1 != id) { // non lo rimanda a se stesso
+                Registry registry = null;
+                try {
+                    registry = LocateRegistry.getRegistry(nodes.get(i).getPort());
+                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService" + nodes.get(i).getPort());
+                    System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i + 1) + ": " + stub.sendMessage(message));
+                } catch (RemoteException e) {
+                    //e.printStackTrace();
+                    System.out.println("Il giocatore con id " + Integer.valueOf(i + 1) + " non ha ricevuto il messaggio, è in crash.");
 
-                // settarlo in crash
-                
-                // todo  notificare l' informazione a tutti
+                    // settarlo in crash
 
-            } catch (NotBoundException e) {
-                e.printStackTrace();
+                    // todo  notificare l' informazione a tutti
+
+                } catch (NotBoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
+    }
+
+    // manda un messaggio a un particolare giocatore per vedere se è attivo
+    public static void sendMessageToHost(GameStatus message, int idGiocatore) {
+        Registry registry = null;
+        try {
+            registry = LocateRegistry.getRegistry(nodes.get(idGiocatore-1).getPort());
+            RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService" + nodes.get(idGiocatore).getPort());
+            System.out.println("Risposta dal giocatore con id " + idGiocatore+ ": " + stub.sendMessage(message));
+        } catch (RemoteException e) {
+            //e.printStackTrace();
+            System.out.println("Il giocatore con id " + idGiocatore + " non ha ricevuto il messaggio, è in crash.");
+
+            // settarlo in crash
+
+            // todo  notificare l' informazione a tutti
+
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static void setupRMIregisry(){

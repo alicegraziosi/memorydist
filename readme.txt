@@ -6,6 +6,8 @@
 
 Su windows:
 
+Opzione 1:
+
 Per compilare e lanciare il registro RMI:
 in \src:
 javac -d C:\Users\alice\IdeaProjects\memory\classes *.java
@@ -13,12 +15,34 @@ cd ..
 rmiregistry &
 
 cambiando terminale:
-se c'è bisogno:
+se c'è bisogno di fare kill del rmi registry sulla porta di default 1009 o su altra porta:
 netstat -ano | findstr 1099
-taskkill /pid /F
+taskkill /pid <numero pid> /F
 
 start server:
 java -classpath C:\Users\alice\IdeaProjects\memory\classes -Djava.rmi.server.codebase=file:C:\Users\alice\IdeaProjects\memory\classes\ RegistrationServiceServer 30 &
 
 start client:
 java -classpath C:\Users\alice\IdeaProjects\memory\classes ClientGiocatore
+
+Tutto questo equivale a:
+compileAndStartServer.bat
+startClient.bat
+
+OPPURE
+
+Opzione 2 
+
+Per compilare:
+Build project su IntelliJ IDEA
+
+start server:
+java -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory -Djava.rmi.server.codebase=file:C:\Users\alice\IdeaProjects\memory\out\production\memory RegistrationServiceServer 10 &
+
+start client:
+java -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory ClientGiocatore
+cmd /k
+
+Tutto questo equivale a:
+startServerBuild.bat
+startClientBuild.bat

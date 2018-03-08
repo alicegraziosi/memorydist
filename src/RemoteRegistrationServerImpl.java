@@ -101,8 +101,9 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
             Card card = new Card(i, i);
             carteNonScoperte.add(card);
         }
+        // idSender -1 significa che il sender è il servizio di registrazione
         GameStatus gameStatus = new GameStatus(
-                players, null,
+                players, -1, null,
                 null, carteScoperte, carteNonScoperte, null
         );
 
