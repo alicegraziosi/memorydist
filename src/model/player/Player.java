@@ -9,7 +9,6 @@ public class Player implements Serializable{
     private boolean isCrashed;
     private int punteggio;
     private String nomeGiocatore;
-    private ArrayList<Player> listaGiocatori;
     private int id;
 
     public Player() {
@@ -21,7 +20,6 @@ public class Player implements Serializable{
         this.isCrashed = isCrashed;
         this.nomeGiocatore = nomeGiocatore;
         this.id = id;
-        this.listaGiocatori = null;
         this.punteggio = 0;
     }
 
@@ -57,14 +55,6 @@ public class Player implements Serializable{
         this.id = id;
     }
 
-    public ArrayList<Player> getListaGiocatori() {
-        return listaGiocatori;
-    }
-
-    public void setListaGiocatori(ArrayList<Player> listaGiocatori) {
-        this.listaGiocatori = listaGiocatori;
-    }
-
     public int getPunteggio() {
         return punteggio;
     }
@@ -73,4 +63,14 @@ public class Player implements Serializable{
         this.punteggio = punteggio;
     }
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                "isLeader=" + isLeader +
+                ", isCrashed=" + isCrashed +
+                ", punteggio=" + punteggio +
+                ", nomeGiocatore='" + nomeGiocatore + '\'' +
+                ", id=" + id +
+                '}';
+    }
 }

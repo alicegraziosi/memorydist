@@ -57,10 +57,9 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 
         System.out.println("Lista dei giocatori:");
         for(int i=0; i<players.size(); i++){
-            players.get(i).setListaGiocatori(players);
             System.out.println("nome: " + players.get(i).getNomeGiocatore() +
                     ", id: " + players.get(i).getId() +
-                    ", leader: " + players.get(i).isLeader() + "\n");
+                    ", leader: " + players.get(i).isLeader());
         }
 
         // todo creare l'anello!!!!
@@ -103,8 +102,8 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
         }
         // idSender -1 significa che il sender è il servizio di registrazione
         GameStatus gameStatus = new GameStatus(
-                players, -1, null,
-                null, carteScoperte, carteNonScoperte, null
+                players, -1, players.get(0),
+                players.get(1), carteScoperte, carteNonScoperte, null
         );
 
         if (!start)

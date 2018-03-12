@@ -7,7 +7,5 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public interface RemoteMessageServiceInt extends Remote {
 
-    BlockingQueue<GameStatus> buffer = new LinkedBlockingQueue<GameStatus>();
-
     int sendMessage(GameStatus message) throws RemoteException;
 }
