@@ -3,7 +3,7 @@ package model.card;
 import java.io.Serializable;
 
 /**
- Class representing the Card object
+ * @desc Class representing the Card object
  */
 public class Card implements Serializable{
 

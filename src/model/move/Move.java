@@ -3,7 +3,7 @@ package model.move;
 import model.card.Card;
 
 /**
-Class representing the game move
+ * @desc Class representing the game move
 */
 public class Move{
 
