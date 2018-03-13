@@ -6,71 +6,86 @@ import utils.Node;
 import java.net.InetAddress;
 import java.util.ArrayList;
 
+/**
+ * @desc implementation class of remote registration server 
+ *
+ */
 public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt {
 
-    private int maxNumeroGiocatori;
-    private ArrayList<Player> players;
-    private ArrayList<Node> nodes;
-    private int indexGiocatori;
-    private boolean servizioAperto;
-    private boolean start;
+    private int maxPlayersNumber; /** max number of players */
+    private ArrayList<Player> players; /** players list */
+    private int playerIndex; /** index of each new player, incrementing each time */
+    private boolean isServiceOpen; /** tells if service is opened */
+    private boolean start; /** tells if service is started */
 
+    /** constructor  */
     public RemoteRegistrationServerImpl() {
-        this.maxNumeroGiocatori = 4;
+        this.maxPlayersNumber = 4;
         this.players = new ArrayList();
-        this.nodes = new ArrayList();
-        this.servizioAperto = true;
+        this.isServiceOpen = true;
         start = false;
     }
+    
+    /**
+     *  @desc player game registration function
+     *  @param String $nickName, InetAddress $hostAddress, int $port
+     *  @return int playerIndex or -1 if time is over or reached max players number
+     */
+    public synchronized int registerPlayer(String nickName, InetAddress hostAddress, int port) {
+        
+    	if (playerIndex < maxPlayersNumber){
+            
+    		if(isServiceOpen) {
+                
+                playerIndex++; // player id
+                System.out.println("Nuovo giocatore: nome: " + nickName + ", id: " + Integer.toString(playerIndex));
 
-    public synchronized int registraGiocatore(String nomeGiocatore, InetAddress hostAddress, int port) {
-        if (indexGiocatori < maxNumeroGiocatori){
-            if(servizioAperto) {
-                // id del giocatore
-                indexGiocatori++;
-                System.out.println("Nuovo giocatore: nome: " + nomeGiocatore + ", id: " + Integer.toString(indexGiocatori));
+                port = 2000 + playerIndex; // setting port of player with index $playerIndex
+                Player player = new Player(playerIndex, nickName, hostAddress, port); // create player
+                players.add(player); // adding player to list of players
 
-                Player player = new Player(false, false, nomeGiocatore, indexGiocatori);
-                players.add(player);
-
-                port = 2000 + indexGiocatori;
-                Node node = new Node(hostAddress, port, indexGiocatori);
-                nodes.add(node);
-
-                return indexGiocatori;
+                return playerIndex;
+                
             } else {
+            	// time out
                 System.out.println("Tempo scaduto per registrarsi come giocatore.\n");
                 return -1;
             }
         } else {
+        	// reached max number of players
             System.out.println("Raggiunto numero massimo di giocatori registrati.\n");
             return -1;
         }
+    	
     }
-
-    public synchronized void stopServizio(){
-        servizioAperto = false;
+    
+    /**
+     *  @desc stop the registration service, setting the game turn
+     *  @return void
+     */
+    public synchronized void stopService(){
+        isServiceOpen = false;
         System.out.println("Tempo scaduto per registrarsi come giocatore.");
 
-        // il leader è il giocatore che si è registrato per primo, che ha id = 1, con indice 0 nell'arraylist
-        players.get(0).setLeader(true);
+        // the turn is assigned to the first registered player, which has id = 1, with index 0 in the arraylist
+        players.get(0).setMyTurn(true);
 
         System.out.println("Lista dei giocatori:");
-        for(int i=0; i<players.size(); i++){
-            players.get(i).setListaGiocatori(players);
-            System.out.println("nome: " + players.get(i).getNomeGiocatore() +
+        for(int i=0; i<players.size(); i++){ // iterate over the players print infos
+            System.out.println("nome: " + players.get(i).getNickName() +
                     ", id: " + players.get(i).getId() +
-                    ", leader: " + players.get(i).isLeader() + "\n");
+                    ", leader: " + players.get(i).isMyTurn());
         }
-
-        // todo creare l'anello!!!!
-
 
         System.out.println("Inizio del gioco.");
         start = true;
         notifyAll();
     }
 
+    /**
+     *  @desc get the arraylist of players
+     *  @return arraylist of players
+     */
     public synchronized ArrayList<Player> getPlayers() {
         if (!start)
             try {
@@ -81,30 +96,35 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
         return players;
     }
 
-    public synchronized ArrayList<Node> getNodes() {
-        if (!start)
-            try {
-                wait();
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            }
-        return nodes;
-    }
-
+    /**
+     *  @desc creating and getting the game status, creating not showing cards
+     *  @return gameStatus object
+     */
     public synchronized GameStatus getGameStatus() {
-        // gamestatus iniziale
-        int numCarte = 20;
-        ArrayList<Card> carteScoperte = new ArrayList<Card>(); // 0
-        ArrayList<Card> carteNonScoperte = new ArrayList<Card>(); // tutte
-        // todo carte
-        for(int i=0; i<20; i++){
-            Card card = new Card(i, i);
-            carteNonScoperte.add(card);
+    	// initial gamestatus setting
+        int cardNumber = 20; 
+        ArrayList<Card> showingCards = new ArrayList<Card>(); // no one
+        ArrayList<Card> notShowingCards = new ArrayList<Card>(); // all 
+        
+        // card generation
+        for(int i=0; i<20; i++){ 
+        	if (i >= 10){ // if true generate cards with same values of previous cards, (10,0), (11,1)
+	            Card card = new Card(i, i - 10);
+	            notShowingCards.add(card);
+        	}
+        	else { // generate cards with this pattern: (0,0), (1,1)
+        		Card card = new Card(i, i);
+	            notShowingCards.add(card);
+        	}
         }
-        // idSender -1 significa che il sender è il servizio di registrazione
+        
+        // creating new gameStatus
         GameStatus gameStatus = new GameStatus(
-                players, -1, null,
-                null, carteScoperte, carteNonScoperte, null
+                players, // list of players
+                -1, // id sender = -1 means that the sender is the registration service
+                showingCards, // list of showing cards
+                notShowingCards, // list of not showing cards
+                null // move is null when it is the first time that the gameStatus is initialized
         );
 
         if (!start)
@@ -113,6 +133,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
+        
         return gameStatus;
     }
 }

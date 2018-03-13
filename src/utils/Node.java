@@ -8,20 +8,18 @@ import java.net.UnknownHostException;
  */
 public class Node{
 
-    private int id; /** the id of the node*/
-    private InetAddress host; /** the host of the node*/
-    private int port; /** the port of the node*/
+    protected InetAddress host; /** the host of the node*/
+    protected int port; /** the port of the node*/
 
     /** NON SONO SICURO DI QUESTO */
     // il nodo successivo in una rete ad anello.
     private Node successivo;
        
     /**
-     * @desc constructor
+     * @desc build object by passing host and port
      * @param InetAddress $host, int $port
    */
 	public Node(InetAddress host, int port) {
-
 		this.host = host;
 		this.port = port;
 	}

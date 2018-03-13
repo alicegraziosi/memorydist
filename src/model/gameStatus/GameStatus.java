@@ -6,86 +6,108 @@ import model.move.Move;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-// stato globale, inviato come messaggio tra i nodi
+/**
+ *  @desc class representing the global state of the game, gameStatus is the msg updated each turn
+ */
 public class GameStatus implements Serializable {
 
-    private ArrayList<Player> listaGiocatori;
+    private ArrayList<Player> playersList;
     private int idSender;
-    private Player giocatoreCorrente;
-    private Player giocatoreSuccessivo;
-    private ArrayList<Card> carteScoperte;
-    private ArrayList<Card> carteNonScoperte;
+    private ArrayList<Card> showingCards;
+ 	private ArrayList<Card> notShowingCards;
     private Move move;
-
-    public GameStatus(ArrayList<Player> listaGiocatori,
+    
+    /** constructor */
+    public GameStatus(ArrayList<Player> playersList,
                       int idSender,
-                      Player giocatoreCorrente,
-                      Player giocatoreSuccessivo,
-                      ArrayList<Card> carteScoperte,
-                      ArrayList<Card> carteNonScoperte,
+                      ArrayList<Card> showingCards,
+                      ArrayList<Card> notShowingCards,
                       Move move) {
-        this.listaGiocatori = listaGiocatori;
+        this.playersList = playersList;
         this.idSender = idSender;
-        this.giocatoreCorrente = giocatoreCorrente;
-        this.giocatoreSuccessivo = giocatoreSuccessivo;
-        this.carteScoperte = carteScoperte;
-        this.carteNonScoperte = carteNonScoperte;
+        this.showingCards = showingCards;
+        this.notShowingCards = notShowingCards;
         this.move = move;
     }
 
-    public ArrayList<Player> getListaGiocatori() {
-        return listaGiocatori;
+    /**
+     *  @desc return the array list of players
+     *  @return array list $playersList
+     */
+    public ArrayList<Player> getPlayersList() {
+        return playersList;
     }
-
-    public void setListaGiocatori(ArrayList<Player> listaGiocatori) {
-        this.listaGiocatori = listaGiocatori;
+    
+    /**
+     *  @desc set the array list of players
+     *  @param array list $playersList
+     */
+    public void setPlayersList(ArrayList<Player> playersList) {
+        this.playersList = playersList;
     }
-
+    
+    /**
+     *  @desc get the id of the gameStatus sender
+     *  @return int $idSender
+     */
     public int getIdSender() {
         return idSender;
     }
-
+    
+    /**
+     *  @desc set the id of the gameStatus sender
+     *  @param int $idSender
+     */
     public void setIdSender(int idSender) {
         this.idSender = idSender;
     }
+    
+    /**
+     *  @desc get the showing cards
+     *  @return array list $showingCards
+     */
+    public ArrayList<Card> getShowingCards() {
+ 		return showingCards;
+ 	}
+    
+    /**
+     *  @desc set the showing cards
+     *  @param array list $showingCards
+     */
+ 	public void setShowingCards(ArrayList<Card> showingCards) {
+ 		this.showingCards = showingCards;
+ 	}
+ 	
+ 	/**
+     *  @desc get the not showing cards
+     *  @return array list $notShowingCards
+     */
+ 	public ArrayList<Card> getNotShowingCards() {
+ 		return notShowingCards;
+ 	}
+ 	
+ 	/**
+     *  @desc set the not showing cards
+     *  @param array list $notShowingCards
+     */
+ 	public void setNotShowingCards(ArrayList<Card> notShowingCards) {
+ 		this.notShowingCards = notShowingCards;
+ 	}
+ 	
+ 	/**
+     *  @desc get move
+     *  @return Move $move
+     */
+ 	public Move getMove() {
+ 		return move;
+ 	}
+ 	
+ 	/**
+     *  @desc set the move
+     *  @param Move $move
+     */
+ 	public void setMove(Move move) {
+ 		this.move = move;
+ 	}
 
-    public Player getGiocatoreCorrente() {
-        return giocatoreCorrente;
-    }
-
-    public void setGiocatoreCorrente(Player giocatoreCorrente) {
-        this.giocatoreCorrente = giocatoreCorrente;
-    }
-
-    public Player getGiocatoreSuccessivo() {
-        return giocatoreSuccessivo;
-    }
-
-    public void setGiocatoreSuccessivo(Player giocatoreSuccessivo) {
-        this.giocatoreSuccessivo = giocatoreSuccessivo;
-    }
-
-    public ArrayList<Card> getCarteScoperte() {
-        return carteScoperte;
-    }
-
-    public void setCarteScoperte(ArrayList<Card> carteScoperte) {
-        this.carteScoperte = carteScoperte;
-    }
-
-    public ArrayList<Card> getCarteNonScoperte() {
-        return carteNonScoperte;
-    }
-
-    public void setCarteNonScoperte(ArrayList<Card> carteNonScoperte) {
-        this.carteNonScoperte = carteNonScoperte;
-    }
-
-    public Move getMove() {
-        return move;
-    }
-
-    public void setMove(Move move) {
-        this.move = move;
-    }
 }

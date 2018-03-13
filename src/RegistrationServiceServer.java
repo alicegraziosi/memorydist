@@ -7,13 +7,17 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 
+/**
+ * @desc class that manage the registration service
+ * */
+
 public class RegistrationServiceServer {
     public static void main(String[] args) {
 
-        // timeout servizio registrazione
-        int timeout;
+        
+        final int timeout; // registration service timeout
         if (args.length == 0) {
-            timeout = 60; // timeout di default in secondi
+            timeout = 60; // default timeout in seconds
         } else {
             timeout = Integer.parseInt(args[0]);
         }
@@ -27,7 +31,7 @@ public class RegistrationServiceServer {
 
             Registry registry = null;
             try {
-                registry = LocateRegistry.createRegistry(1099);
+                registry = LocateRegistry.createRegistry(1099); // creating registry
             } catch (ExportException ex) {
                 registry = LocateRegistry.getRegistry(1099);
             } catch (RemoteException ex) {
@@ -35,10 +39,11 @@ public class RegistrationServiceServer {
             }
 
 
-            // istanza dell'implementazione dell'oggetto remoto
-            RemoteRegistrationServerImpl registrazione = new RemoteRegistrationServerImpl();
+            // instance of remote obj implementation
+            RemoteRegistrationServerImpl registration = new RemoteRegistrationServerImpl();
 
-            RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) UnicastRemoteObject.exportObject(registrazione, 0);
+            final RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) 
+            		UnicastRemoteObject.exportObject(registration, 0);
 
             registry.bind("registrazione", stub);
 
@@ -47,7 +52,7 @@ public class RegistrationServiceServer {
                 try {
                     System.out.println("Servizio di registrazione in attesa di giocatori...");
                     sleep(timeout * 1000);
-                    stub.stopServizio();
+                    stub.stopService();
                     Naming.unbind("registrazione");
                     System.out.println("Servizio di registrazione chiuso.");
                 } catch (InterruptedException e) {

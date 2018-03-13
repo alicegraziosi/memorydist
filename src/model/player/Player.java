@@ -12,22 +12,74 @@ import java.net.InetAddress;
  */
 public class Player extends Node implements Serializable{
 
+	private int id; /** player id*/
 	private String nickName; /** player nickname*/
     private PLAYER_STATE state; /** player state (ACTIVE, WINNER, CRASH)*/
     private int score; /** player score*/
+    private boolean isMyTurn; /** true if is the turn of the player, otherwise false*/
     
-    /** GIANLUCA E' in DUBBIO SU GLI ATTRIBUTI DI QUI SOTTO*/
-    private boolean isLeader; /** true if player is the leader, otherwise false*/
-    private ArrayList<Player> playerList; /** player list in the game*/
 
-    /** constructor to use in case of first initialization of object Player, calls the constructor of the Node class*/
+    
+
+	/** constructor to use in case of first initialization of object Player, calls the constructor of the Node class*/
     public Player(int id, String nickName, InetAddress host, int port) {
        super(host, port);
        this.nickName = nickName;
        this.state = PLAYER_STATE.ACTIVE;
        this.score = 0;
     }
+    
+    /**
+	  * @desc check if player is crashed
+	  * @return bool 
+	*/
+    public Boolean isCrashed() {
+    	if(this.state == PLAYER_STATE.CRASH) {
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
+    }
+    
+    /**
+	  * @desc set the player state as crashed
+	  * @param boolean $crashed
+	*/
+    public void setCrashed(Boolean crashed) {
+    	if (crashed == true)
+    		this.state = PLAYER_STATE.CRASH;
+    }
+    
+    @Override
+    public String toString() {
+        return "Player{" +
+                "isLeader=" + isMyTurn +
+                ", state=" + state +
+                ", score=" + score +
+                ", nickName='" + nickName + '\'' +
+                ", id=" + id +
+                '}';
+    }
 	
+    /**
+	  * @desc get the id of the player
+	  * @return int $id
+	*/
+    public int getId() {
+		return id;
+	}
+    
+    /**
+     * @desc set id of a player
+     * @param int $id
+     * @return void
+   */
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	/**
 	  * @desc get the nickName of the player
 	  * @return String $nickName
@@ -80,22 +132,20 @@ public class Player extends Node implements Serializable{
 	}
 	
 	/**
-	  * @desc get the player list
-	  * @return array list of player $playerList
-	*/
-	public ArrayList<Player> getPlayerList() {
-		return playerList;
+     * @desc get turn of player
+     * @return bool $isMyTurn
+   */
+	public boolean isMyTurn() {
+		return isMyTurn;
 	}
 	
 	/**
-     * @desc set playerlist
-     * @param array list  $playerList
+     * @desc set turnS of a player
+     * @param bool $isMyTurn
      * @return void
    */
-	public void setPlayerList(ArrayList<Player> playerList) {
-		this.playerList = playerList;
+	public void setMyTurn(boolean isMyTurn) {
+		this.isMyTurn = isMyTurn;
 	}
-
-
-
+	
 }
