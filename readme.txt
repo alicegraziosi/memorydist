@@ -7,7 +7,7 @@
 ****************
 Su windows:
 
-Opzione 1:
+Opzione 1 (OLD):
 
 Per compilare e lanciare il registro RMI:
 in \src:
@@ -32,16 +32,16 @@ startClient.bat
 
 OPPURE
 
-Opzione 2 
+Opzione 2 (NEW): 
 
 Per compilare:
 Build project su IntelliJ IDEA
 
 start server:
-java -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory -Djava.rmi.server.codebase=file:C:\Users\alice\IdeaProjects\memory\out\production\memory RegistrationServiceServer 10 &
+java -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory -Djava.rmi.server.codebase=file:C:\Users\alice\IdeaProjects\memory\out\production\memory server.RegistrationServiceServer 10 &
 
 start client:
-java -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory ClientGiocatore
+java -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory server.ClientGiocatore
 cmd /k
 
 Tutto questo equivale a:
@@ -58,10 +58,10 @@ Build project su IntelliJ IDEA
 
 start server:
 fuser -k 1099/tcp
-java -classpath out/production/memory -Djava.rmi.server.codebase=file:out/production/memory RegistrationServiceServer 10 &
+java -classpath out/production/memory -Djava.rmi.server.codebase=file:out/production/memory server.RegistrationServiceServer 10 &
 
 start client:
-java -classpath out/production/memory ClientGiocatore
+java -classpath out/production/memory server.ClientGiocatore
 cmd /k
 
 startServerBuild.sh (./startServerBuild.sh)

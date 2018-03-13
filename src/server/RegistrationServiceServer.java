@@ -1,3 +1,5 @@
+package server;
+
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -6,6 +8,9 @@ import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
+
+import rmi.RemoteRegistrationServerImpl;
+import rmi.RemoteRegistrationServerInt;
 
 /**
  * @desc class that manage the registration service
@@ -16,7 +21,7 @@ public class RegistrationServiceServer {
     public static void main(String[] args) {
         final int timeout; // registration service timeout
         if (args.length == 0) {
-            timeout = 60; // default timeout in seconds
+            timeout = 30; // default timeout in seconds
         } else {
             timeout = Integer.parseInt(args[0]);
         }

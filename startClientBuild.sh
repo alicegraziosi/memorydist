@@ -1,2 +1,2 @@
-java -classpath out/production/memory PlayerClient
+java -classpath out/production/memory client.PlayerClient
 cmd /k

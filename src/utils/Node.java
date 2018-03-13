@@ -7,7 +7,8 @@ import java.net.UnknownHostException;
 /**
  * @desc Class representing the network node
  */
-public class Node implements Serializable {
+
+public class Node implements Serializable{
 
     protected InetAddress host; /** the host of the node*/
     protected int port; /** the port of the node*/
