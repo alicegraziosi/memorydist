@@ -1,6 +1,7 @@
 import model.gameStatus.GameStatus;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -18,6 +19,8 @@ public class RemoteMessageServiceImpl implements RemoteMessageServiceInt{
         // un processo invoca sendMessage su un altro processo
         // il processo su cui è invocato sendMessage riceve il messaggio in questo punto
         inputBuffer.add(message);
+        PlayerClient.setGameStatus(message);
+
         System.out.println("Messaggio ricevuto dal giocatore " + message.getIdSender());
         return 1;
     }

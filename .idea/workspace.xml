@@ -2,12 +2,30 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8b85b1ff-a92d-4b85-aceb-da4beb877268" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/model/card/Card.class" afterPath="$PROJECT_DIR$/out/production/memory/model/card/Card.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/model/move/Move.class" afterPath="$PROJECT_DIR$/out/production/memory/model/move/Move.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/view/board/BoardGUI.class" afterPath="$PROJECT_DIR$/out/production/memory/view/board/BoardGUI.class" />
-      <change beforePath="$PROJECT_DIR$/src/ClientGiocatore.java" afterPath="$PROJECT_DIR$/src/ClientGiocatore.java" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/ClientGiocatore$1.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/ClientGiocatore$2.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/ClientGiocatore.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/RegistrationServiceServer$1.class" afterPath="$PROJECT_DIR$/out/production/memory/RegistrationServiceServer$1.class" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/RegistrationServiceServer.class" afterPath="$PROJECT_DIR$/out/production/memory/RegistrationServiceServer.class" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/RemoteMessageServiceImpl.class" afterPath="$PROJECT_DIR$/out/production/memory/RemoteMessageServiceImpl.class" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/RemoteRegistrationServerImpl.class" afterPath="$PROJECT_DIR$/out/production/memory/RemoteRegistrationServerImpl.class" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/RemoteRegistrationServerInt.class" afterPath="$PROJECT_DIR$/out/production/memory/RemoteRegistrationServerInt.class" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/ServerGiocatore.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/model/gameStatus/GameStatus.class" afterPath="$PROJECT_DIR$/out/production/memory/model/gameStatus/GameStatus.class" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/model/player/Player.class" afterPath="$PROJECT_DIR$/out/production/memory/model/player/Player.class" />
+      <change beforePath="$PROJECT_DIR$/out/production/memory/utils/Node.class" afterPath="$PROJECT_DIR$/out/production/memory/utils/Node.class" />
+      <change beforePath="$PROJECT_DIR$/readme.txt" afterPath="$PROJECT_DIR$/readme.txt" />
+      <change beforePath="$PROJECT_DIR$/src/PlayerClient.java" afterPath="$PROJECT_DIR$/src/PlayerClient.java" />
+      <change beforePath="$PROJECT_DIR$/src/PlayerServer.java" afterPath="$PROJECT_DIR$/src/PlayerServer.java" />
+      <change beforePath="$PROJECT_DIR$/src/RegistrationServiceServer.java" afterPath="$PROJECT_DIR$/src/RegistrationServiceServer.java" />
+      <change beforePath="$PROJECT_DIR$/src/RemoteMessageServiceImpl.java" afterPath="$PROJECT_DIR$/src/RemoteMessageServiceImpl.java" />
+      <change beforePath="$PROJECT_DIR$/src/RemoteRegistrationServerImpl.java" afterPath="$PROJECT_DIR$/src/RemoteRegistrationServerImpl.java" />
+      <change beforePath="$PROJECT_DIR$/src/model/player/Player.java" afterPath="$PROJECT_DIR$/src/model/player/Player.java" />
+      <change beforePath="$PROJECT_DIR$/src/utils/Node.java" afterPath="$PROJECT_DIR$/src/utils/Node.java" />
+      <change beforePath="$PROJECT_DIR$/startClient.bat" afterPath="$PROJECT_DIR$/startClient.bat" />
+      <change beforePath="$PROJECT_DIR$/startClientBuild.bat" afterPath="$PROJECT_DIR$/startClientBuild.bat" />
+      <change beforePath="$PROJECT_DIR$/startClientBuild.sh" afterPath="$PROJECT_DIR$/startClientBuild.sh" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -19,33 +37,114 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
-      <file leaf-file-name="ClientGiocatore.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ClientGiocatore.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="30" column="14" lean-forward="false" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="RemoteRegistrationServerInt.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/RemoteRegistrationServerInt.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="50">
-              <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+            <state relative-caret-position="150">
+              <caret line="13" column="17" lean-forward="false" selection-start-line="13" selection-start-column="17" selection-end-line="13" selection-end-column="17" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RegistrationServiceServer.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="RegistrationServiceServer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/RegistrationServiceServer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="175">
-              <caret line="14" column="31" lean-forward="false" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
+              <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PlayerClient.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/PlayerClient.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="50">
+              <caret line="232" column="8" lean-forward="false" selection-start-line="232" selection-start-column="8" selection-end-line="232" selection-end-column="8" />
+              <folding>
+                <element signature="e#8586#8813#0" expanded="true" />
+                <element signature="e#8942#9111#0" expanded="true" />
+                <element signature="e#9110#9111#0" expanded="true" />
+                <element signature="method#sendMessageToHost#0;class#PlayerClient#0" expanded="false" />
+                <element signature="method#setupRMIregistryAndServer#0;class#PlayerClient#0" expanded="false" />
+                <element signature="e#11778#11779#0" expanded="true" />
+                <element signature="e#11811#11812#0" expanded="true" />
+                <element signature="e#11874#11875#0" expanded="true" />
+                <element signature="e#11926#11927#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Player.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/model/player/Player.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="175">
+              <caret line="12" column="56" lean-forward="false" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="56" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Node.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/utils/Node.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="525">
+              <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PLAYER_STATE.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/model/player/PLAYER_STATE.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="125">
+              <caret line="5" column="12" lean-forward="false" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PlayerServer.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/PlayerServer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="16" column="81" lean-forward="false" selection-start-line="16" selection-start-column="81" selection-end-line="16" selection-end-column="81" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RemoteMessageServiceImpl.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/RemoteMessageServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="350">
+              <caret line="20" column="33" lean-forward="false" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
+              <folding>
+                <element signature="e#414#415#0" expanded="true" />
+                <element signature="e#460#461#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RemoteMessageServiceInt.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/RemoteMessageServiceInt.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="125">
+              <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RemoteRegistrationServerImpl.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/RemoteRegistrationServerImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1275">
+              <caret line="57" column="9" lean-forward="false" selection-start-line="57" selection-start-column="9" selection-end-line="57" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -65,6 +164,9 @@
     <findStrings>
       <find>win</find>
       <find>R</find>
+      <find>startTimeout</find>
+      <find>isMyTurn</find>
+      <find>take</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -93,30 +195,31 @@
         <option value="$PROJECT_DIR$/src/view/board/Board.java" />
         <option value="$PROJECT_DIR$/src/model/move/Move.java" />
         <option value="$PROJECT_DIR$/src/view/board/Info.java" />
-        <option value="$PROJECT_DIR$/src/RegistrationServiceServer.java" />
-        <option value="$PROJECT_DIR$/src/utils/Node.java" />
         <option value="$PROJECT_DIR$/src/RemoteRegistrationServerInt.java" />
         <option value="$PROJECT_DIR$/src/model/card/Card.java" />
         <option value="$PROJECT_DIR$/src/model/gameStatus/GameStatus.java" />
         <option value="$PROJECT_DIR$/src/ServerGiocatore.java" />
         <option value="$PROJECT_DIR$/src/RemoteMessageServiceInt.java" />
-        <option value="$PROJECT_DIR$/src/RemoteMessageServiceImpl.java" />
-        <option value="$PROJECT_DIR$/src/model/player/Player.java" />
-        <option value="$PROJECT_DIR$/src/RemoteRegistrationServerImpl.java" />
         <option value="$PROJECT_DIR$/src/view/card/CardView.java" />
         <option value="$PROJECT_DIR$/src/view/card/CardGUI.form" />
         <option value="$PROJECT_DIR$/src/view/card/CardGUI.java" />
         <option value="$PROJECT_DIR$/src/view/board/BoardGUI.form" />
         <option value="$PROJECT_DIR$/src/view/board/BoardGUI.java" />
         <option value="$PROJECT_DIR$/src/ClientGiocatore.java" />
+        <option value="$PROJECT_DIR$/src/RemoteRegistrationServerImpl.java" />
+        <option value="$PROJECT_DIR$/src/PlayerServer.java" />
+        <option value="$PROJECT_DIR$/src/RegistrationServiceServer.java" />
+        <option value="$PROJECT_DIR$/src/model/player/Player.java" />
+        <option value="$PROJECT_DIR$/src/utils/Node.java" />
+        <option value="$PROJECT_DIR$/src/RemoteMessageServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/PlayerClient.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-11" />
-    <option name="y" value="-11" />
-    <option name="width" value="1942" />
-    <option name="height" value="1056" />
+    <option name="x" value="950" />
+    <option name="width" value="980" />
+    <option name="height" value="1044" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
@@ -136,6 +239,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -146,21 +252,23 @@
             <path>
               <item name="memory" type="b2602c69:ProjectViewProjectNode" />
               <item name="memory" type="462c0819:PsiDirectoryNode" />
+              <item name="images" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="memory" type="b2602c69:ProjectViewProjectNode" />
+              <item name="memory" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="AndroidView" />
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="project.structure.last.edited" value="Project" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="project.propDebugger" />
@@ -350,7 +458,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24432433" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24864864" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -398,21 +506,113 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="9" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/PlayerClient.java</url>
+          <line>282</line>
+          <properties />
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="12" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/ClientGiocatore.java">
+    <entry file="file://$PROJECT_DIR$/src/RemoteRegistrationServerInt.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="750">
-          <caret line="30" column="14" lean-forward="false" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
+        <state relative-caret-position="150">
+          <caret line="13" column="17" lean-forward="false" selection-start-line="13" selection-start-column="17" selection-end-line="13" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/RegistrationServiceServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="350">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/player/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="12" column="56" lean-forward="false" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/player/PLAYER_STATE.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="5" column="12" lean-forward="false" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PlayerServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="16" column="81" lean-forward="false" selection-start-line="16" selection-start-column="81" selection-end-line="16" selection-end-column="81" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/RemoteMessageServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="350">
+          <caret line="20" column="33" lean-forward="false" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#414#415#0" expanded="true" />
+            <element signature="e#460#461#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/RemoteMessageServiceInt.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/RemoteRegistrationServerImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1275">
+          <caret line="57" column="9" lean-forward="false" selection-start-line="57" selection-start-column="9" selection-end-line="57" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PlayerClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3625">
+          <caret line="158" column="0" lean-forward="false" selection-start-line="158" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
+          <folding>
+            <element signature="e#8586#8813#0" expanded="true" />
+            <element signature="e#8942#9111#0" expanded="true" />
+            <element signature="e#9110#9111#0" expanded="true" />
+            <element signature="method#sendMessageToHost#0;class#PlayerClient#0" expanded="false" />
+            <element signature="method#setupRMIregistryAndServer#0;class#PlayerClient#0" expanded="false" />
+            <element signature="e#11778#11779#0" expanded="true" />
+            <element signature="e#11811#11812#0" expanded="true" />
+            <element signature="e#11874#11875#0" expanded="true" />
+            <element signature="e#11926#11927#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ClientGiocatore.java" />
     <entry file="file://$PROJECT_DIR$/src/RemoteRegistrationServerInt.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="50">
@@ -429,20 +629,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ClientGiocatore.java">
+    <entry file="file://$PROJECT_DIR$/src/ClientGiocatore.java" />
+    <entry file="file://$PROJECT_DIR$/src/RemoteRegistrationServerInt.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="30" column="14" lean-forward="false" selection-start-line="30" selection-start-column="14" selection-end-line="30" selection-end-column="14" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="150">
+          <caret line="13" column="17" lean-forward="false" selection-start-line="13" selection-start-column="17" selection-end-line="13" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/RemoteRegistrationServerInt.java">
+    <entry file="file://$PROJECT_DIR$/src/Listenet.java" />
+    <entry file="file://$PROJECT_DIR$/src/RemoteRegistrationServerImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="50">
-          <caret line="9" column="17" lean-forward="false" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
+        <state relative-caret-position="1275">
+          <caret line="57" column="9" lean-forward="false" selection-start-line="57" selection-start-column="9" selection-end-line="57" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/RemoteMessageServiceInt.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PlayerServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="16" column="81" lean-forward="false" selection-start-line="16" selection-start-column="81" selection-end-line="16" selection-end-column="81" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/player/PLAYER_STATE.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="5" column="12" lean-forward="false" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/model/player/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="12" column="56" lean-forward="false" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -450,8 +690,37 @@
     <entry file="file://$PROJECT_DIR$/src/RegistrationServiceServer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="175">
-          <caret line="14" column="31" lean-forward="false" selection-start-line="14" selection-start-column="31" selection-end-line="14" selection-end-column="31" />
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/RemoteMessageServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="350">
+          <caret line="20" column="33" lean-forward="false" selection-start-line="20" selection-start-column="33" selection-end-line="20" selection-end-column="33" />
+          <folding>
+            <element signature="e#414#415#0" expanded="true" />
+            <element signature="e#460#461#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PlayerClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="50">
+          <caret line="232" column="8" lean-forward="false" selection-start-line="232" selection-start-column="8" selection-end-line="232" selection-end-column="8" />
+          <folding>
+            <element signature="e#8586#8813#0" expanded="true" />
+            <element signature="e#8942#9111#0" expanded="true" />
+            <element signature="e#9110#9111#0" expanded="true" />
+            <element signature="method#sendMessageToHost#0;class#PlayerClient#0" expanded="false" />
+            <element signature="method#setupRMIregistryAndServer#0;class#PlayerClient#0" expanded="false" />
+            <element signature="e#11778#11779#0" expanded="true" />
+            <element signature="e#11811#11812#0" expanded="true" />
+            <element signature="e#11874#11875#0" expanded="true" />
+            <element signature="e#11926#11927#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

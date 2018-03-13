@@ -12,9 +12,8 @@ import java.rmi.server.UnicastRemoteObject;
  * */
 
 public class RegistrationServiceServer {
-    public static void main(String[] args) {
 
-        
+    public static void main(String[] args) {
         final int timeout; // registration service timeout
         if (args.length == 0) {
             timeout = 60; // default timeout in seconds

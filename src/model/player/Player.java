@@ -17,9 +17,6 @@ public class Player extends Node implements Serializable{
     private PLAYER_STATE state; /** player state (ACTIVE, WINNER, CRASH)*/
     private int score; /** player score*/
     private boolean isMyTurn; /** true if is the turn of the player, otherwise false*/
-    
-
-    
 
 	/** constructor to use in case of first initialization of object Player, calls the constructor of the Node class*/
     public Player(int id, String nickName, InetAddress host, int port) {

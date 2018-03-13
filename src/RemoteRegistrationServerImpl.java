@@ -56,7 +56,6 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
             System.out.println("Raggiunto numero massimo di giocatori registrati.\n");
             return -1;
         }
-    	
     }
     
     /**

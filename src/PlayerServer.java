@@ -13,7 +13,8 @@ import java.util.concurrent.BlockingQueue;
 public class PlayerServer {
 
 
-    public static void setupRMIregistryAndServer(int port, BlockingQueue<GameStatus> buffer){
+    public static void setupRMIregistryAndServer(int port,
+                                                 BlockingQueue<GameStatus> buffer){
         // each client has its own RMI registry on its own port
         Registry registry = null;
         try {

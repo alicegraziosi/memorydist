@@ -22,11 +22,22 @@ public class PlayerClient {
     public static String regServerHost; // registration server host 
     public static InetAddress host; // player host 
     public static int port; // player port
-    public static ArrayList<Player> players; // array list of players
+    public static ArrayList<Player> players; // array list of player
     public static GameStatus gameStatus; // global status of the game
     public static BlockingQueue<GameStatus> buffer; // ?
+
+    // timer mossa
     private static Timer timer;
     private static TimerTask timerTask;
+
+    // timer ping
+    private static Timer timerPing;
+    private static TimerTask timerTaskPing;
+
+    public PlayerClient() {
+
+    }
+
     public static void main(final String[] args) {
 
         Thread t = new Thread(new Runnable() {
@@ -110,8 +121,6 @@ public class PlayerClient {
             @Override
             public void run() {
             */
-                System.out.println("**** Nuovo turno ****\n\n");
-
                 try {
                     // viene mostrato il tavolo di gioco
 
@@ -126,12 +135,12 @@ public class PlayerClient {
                         // (funziona solo con due giocatori)
                         // todo è un casino con i .sleep.. ho provato con timer
 
-                        /*
+
 
                         // id parte da 1, l'indice da 0
                         for (int i = 0; i < players.size(); i++) {
                             // setto tutti a isLeader false
-                            players.get(0).setLeader(false);
+                            players.get(0).setMyTurn(false);
                         }
 
                         // id prossimo giocatore
@@ -142,16 +151,14 @@ public class PlayerClient {
 
                         // setto il prossimo giocatore a isLeader true
                         if(!players.get(index-1).isCrashed()){
-                            players.get(index-1).setLeader(true);
+                            players.get(index-1).setMyTurn(true);
                             System.out.println("Il prossimo giocatore è : " + Integer.valueOf(index).toString());
                         }
 
                         System.out.println("Faccio broadcast di questa informazione.");
-                        gameStatus.setListaGiocatori(players);
+                        gameStatus.setPlayersList(players);
                         gameStatus.setIdSender(id);
                         broadcastMessage(gameStatus);
-
-                        */
 
 
                         // mossa
@@ -186,20 +193,20 @@ public class PlayerClient {
                         System.out.println("Resto in ascolto di messaggi...");
 
                         // la board è bloccata
-                        //timeout
+
                         //sleep(20 * 1000);
 
                         // nel frattempo può andare in crash
 
                         // nel frattempo riceve messaggi
-                        // todo come funziona questo buffer.poll??
-                        GameStatus receivedMessage = buffer.take();
+                        /*
+                        GameStatus receivedMessage = buffer.poll();
                         if(receivedMessage!=null){
                             System.out.println("Processo il messaggio.");
                             gameStatus = receivedMessage;
                         } else {
                             System.out.println("receivedMessage poll null");
-                        }
+                        }*/
 
                         //playGame();
                     }
@@ -218,21 +225,32 @@ public class PlayerClient {
         timerTask  = new TimerTask() {
             @Override
             public void run() {
+                System.out.println("******** Nuovo turno ********\n\n");
                 playGame();
-                //timerTask.cancel();
-                //timer.cancel();
+
+                //stopTimeout
             }
         };
 
         timer = new Timer(true);
         timer.scheduleAtFixedRate(timerTask, 5 * 1000, 20 * 1000);
+
+
+        timerTaskPing = new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("******** ping timeout ********\n\n");
+            }
+        };
+
+        timerPing = new Timer(true);
+        timerPing.scheduleAtFixedRate(timerTaskPing, 20 * 1000, 5 * 1000);
     }
 
     public static void stopTimeout(){
         timerTask.cancel();
         timer.cancel();
     }
-
 
     // manda un messaggio a tutti gli altri players
     public static void broadcastMessage(GameStatus message) {
@@ -252,8 +270,6 @@ public class PlayerClient {
                     players.get(i).setCrashed(true);
 
                     // todo notificare l' informazione a tutti
-                    gameStatus.setPlayersList(players);
-                    broadcastMessage(gameStatus);
 
                 } catch (NotBoundException e) {
                     e.printStackTrace();
@@ -290,7 +306,14 @@ public class PlayerClient {
 
         buffer = new LinkedBlockingQueue();
         PlayerServer.setupRMIregistryAndServer(port, buffer);
+    }
 
+    public static GameStatus getGameStatus() {
+        return gameStatus;
+    }
+
+    public static void setGameStatus(GameStatus gameStatus) {
+        PlayerClient.gameStatus = gameStatus;
     }
 }
 

@@ -4,6 +4,7 @@
 
 (java  -classpath classDir example.hello.Client)
 
+****************
 Su windows:
 
 Opzione 1:
@@ -44,5 +45,30 @@ java -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory ClientG
 cmd /k
 
 Tutto questo equivale a:
+Su Windows:
 startServerBuild.bat
 startClientBuild.bat
+
+
+****************
+Su Linux (ok per macchine del laboratorio)
+
+Per compilare:
+Build project su IntelliJ IDEA
+
+start server:
+fuser -k 1099/tcp
+java -classpath out/production/memory -Djava.rmi.server.codebase=file:out/production/memory RegistrationServiceServer 10 &
+
+start client:
+java -classpath out/production/memory ClientGiocatore
+cmd /k
+
+startServerBuild.sh (./startServerBuild.sh)
+startServerBuild.sh (./startServerBuild.sh)
+
+
+****************
+Note
+Java version: 9
+SDK: 1.8 (ok per macchine del laboratorio)
