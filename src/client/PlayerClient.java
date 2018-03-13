@@ -1,5 +1,10 @@
+package client;
+
 import model.gameStatus.GameStatus;
 import model.player.Player;
+import rmi.RemoteMessageServiceInt;
+import rmi.RemoteRegistrationServerInt;
+import server.PlayerServer;
 import utils.Node;
 
 import java.net.InetAddress;

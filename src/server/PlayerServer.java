@@ -1,3 +1,4 @@
+package server;
 import model.gameStatus.GameStatus;
 
 import java.rmi.AlreadyBoundException;
@@ -6,6 +7,9 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.BlockingQueue;
+
+import rmi.RemoteMessageServiceImpl;
+import rmi.RemoteMessageServiceInt;
 
 /**
  * the server of the player, responsible of creating RMI registry
