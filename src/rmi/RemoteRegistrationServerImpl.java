@@ -82,8 +82,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 
 		System.out.println("Lista dei giocatori:");
 		for (int i = 0; i < players.size(); i++) { // iterate over the players print infos
-			System.out.println("nome: " + players.get(i).getNickName() + ", id: " + players.get(i).getId()
-					+ ", leader: " + players.get(i).isMyTurn());
+			System.out.println(players.get(i).toString());
 		}
 
 		System.out.println("Inizio del gioco.");

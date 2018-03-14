@@ -24,7 +24,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class PlayerClient {
 
     public static int id;
-    public static String regServerHost; // registration server host 
+    public static String regServerHost; // registration server host (130.136.4.121)
     public static InetAddress host; // player host 
     public static int port; // player port
     public static ArrayList<Player> players; // array list of player
@@ -34,10 +34,6 @@ public class PlayerClient {
     // timer mossa
     private static Timer timer;
     private static TimerTask timerTask;
-
-    // timer ping
-    private static Timer timerPing;
-    private static TimerTask timerTaskPing;
 
     public PlayerClient() {
 
@@ -90,9 +86,7 @@ public class PlayerClient {
 
                         System.out.println("Lista dei giocatori:");
                         for(int i=0; i<players.size(); i++){
-                            System.out.println("nome: " + players.get(i).getNickName() +
-                                    ", id: " + players.get(i).getId() +
-                                    ", leader: " + players.get(i).isMyTurn());
+                            System.out.println(players.get(i).toString());
                         }
 
                         // ogni client ha il suo registro rmi sulla propria porta
@@ -139,7 +133,6 @@ public class PlayerClient {
                         // todo setto il giocatore che ha il prossimo turno (
                         // (funziona solo con due giocatori)
                         // todo è un casino con i .sleep.. ho provato con timer
-
 
 
                         // id parte da 1, l'indice da 0
@@ -239,17 +232,6 @@ public class PlayerClient {
 
         timer = new Timer(true);
         timer.scheduleAtFixedRate(timerTask, 5 * 1000, 20 * 1000);
-
-
-        timerTaskPing = new TimerTask() {
-            @Override
-            public void run() {
-                System.out.println("******** ping timeout ********\n\n");
-            }
-        };
-
-        timerPing = new Timer(true);
-        timerPing.scheduleAtFixedRate(timerTaskPing, 20 * 1000, 5 * 1000);
     }
 
     public static void stopTimeout(){

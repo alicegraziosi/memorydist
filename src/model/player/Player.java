@@ -21,6 +21,7 @@ public class Player extends Node implements Serializable{
 	/** constructor to use in case of first initialization of object Player, calls the constructor of the Node class*/
     public Player(int id, String nickName, InetAddress host, int port) {
        super(host, port);
+       this.id = id;
        this.nickName = nickName;
        this.state = PLAYER_STATE.ACTIVE;
        this.score = 0;
@@ -48,17 +49,7 @@ public class Player extends Node implements Serializable{
     	if (crashed == true)
     		this.state = PLAYER_STATE.CRASH;
     }
-    
-    @Override
-    public String toString() {
-        return "Player{" +
-                "isLeader=" + isMyTurn +
-                ", state=" + state +
-                ", score=" + score +
-                ", nickName='" + nickName + '\'' +
-                ", id=" + id +
-                '}';
-    }
+
 	
     /**
 	  * @desc get the id of the player
@@ -144,5 +135,15 @@ public class Player extends Node implements Serializable{
 	public void setMyTurn(boolean isMyTurn) {
 		this.isMyTurn = isMyTurn;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "Player{" +
+				"id=" + id +
+				", nickName='" + nickName +
+				", state=" + state +
+				", score=" + score +
+				", isMyTurn=" + isMyTurn +
+				'}';
+	}
 }
