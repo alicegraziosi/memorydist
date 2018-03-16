@@ -56,14 +56,14 @@ public class PlayerClient {
                         ex.printStackTrace();
                     }
 
-                    System.out.println("Richiesta servizio di registrazione...");
+                    System.out.println("[Client]: Richiesta servizio di registrazione...");
                     Registry registry = LocateRegistry.getRegistry(regServerHost);
                     RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) 
                     		registry.lookup("registrazione");
 
-                    // restituisce l'id del giocatore
-                    String nomeGiocatore = "default name";
-                    id = stub.registerPlayer(nomeGiocatore, host, port);
+                    
+                    String nomeGiocatore = "default name"; // possiamo prender il  nome da argomento da terminale
+                    id = stub.registerPlayer(nomeGiocatore, host, port); // restituisce l'id del giocatore
                     if(id<0){  // -1
                         System.out.println("Raggiunto numero massimo di giocatori registrati.");
                     } else {
@@ -82,7 +82,7 @@ public class PlayerClient {
                         System.out.println("Sono il giocatore:");
                         System.out.println("nome: " + players.get(id-1).getNickName() +
                                 ", id: " + players.get(id-1).getId() +
-                                ", leader: " + players.get(id-1).isMyTurn() + "\n");
+                                ", isMyTurn: " + players.get(id-1).isMyTurn() + "\n");
 
                         System.out.println("Lista dei giocatori:");
                         for(int i=0; i<players.size(); i++){
