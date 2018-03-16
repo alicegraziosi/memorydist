@@ -2,6 +2,7 @@ package server;
 import controller.GameController;
 import model.gameStatus.GameStatus;
 
+import java.net.InetAddress;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -18,9 +19,12 @@ import rmi.RemoteMessageServiceInt;
 public class PlayerServer {
 
 
-    public static void setupRMIregistryAndServer(int port,
+    public static void setupRMIregistryAndServer(InetAddress host, int port,
                                                  BlockingQueue<GameStatus> buffer,
                                                  GameController gameController){
+
+        //System.setProperty("java.security.policy", "./../../security.policy");
+
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
@@ -37,7 +41,9 @@ public class PlayerServer {
             		UnicastRemoteObject.exportObject(messageService, 0);
 
             //todo mettere url macchina su name (??)
-            registry.bind("messageService", stub); // binding registry with the message service
+            String name = "rmi://" + host + ":" + port + "/messageService";
+            //String name = "messageService";
+            registry.bind(name, stub); // binding registry with the message service
 
 
         } catch (RemoteException e) {

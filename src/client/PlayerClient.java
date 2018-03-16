@@ -44,11 +44,13 @@ public class PlayerClient {
 
     public static void main(final String[] args) {
 
+        //System.setProperty("java.security.policy", "./../../security.policy");
+
         Thread t = new Thread(new Runnable() {
             //@Override
             public void run() {
                 try {
-
+                    // bisogna passare l ip del server di registrazione come argomento
                     regServerHost = (args.length < 1) ? "localhost" : args[0];
                     regServerPort = 1099;
 
@@ -66,8 +68,9 @@ public class PlayerClient {
                     //RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) registry.lookup("registrazione");
 
                     //new
+                    String name = "rmi://" + regServerHost + ":" + regServerPort + "/registrazione";
                     RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt)
-                            registry.lookup("rmi://" + regServerHost+ ":" + regServerPort+ "/registrazione");
+                            registry.lookup(name);
 
                     // restituisce l'id del giocatore
                     String nomeGiocatore = "default name";
@@ -244,7 +247,7 @@ public class PlayerClient {
 
     public static void setupRMIregistryAndServer(GameController gameController){
         buffer = new LinkedBlockingQueue();
-        PlayerServer.setupRMIregistryAndServer(port, buffer, gameController);
+        PlayerServer.setupRMIregistryAndServer(host, port, buffer, gameController);
     }
 
     // spostato in controller
@@ -276,7 +279,14 @@ public class PlayerClient {
                 Registry registry = null;
                 try {
                     registry = LocateRegistry.getRegistry(players.get(i).getPort());
-                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService");
+
+                    InetAddress host = players.get(i).getHost();
+                    int port = players.get(i).getPort();
+
+                    String name = "rmi://" + host + ":" + port + "/messageService";
+                    //String name = "messageService";
+
+                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(name);
                     System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i + 1) + ": " + stub.sendMessage(message));
                 } catch (RemoteException e) {
                     //e.printStackTrace();
@@ -300,7 +310,12 @@ public class PlayerClient {
         Registry registry = null;
         try {
             registry = LocateRegistry.getRegistry(players.get(idGiocatore-1).getPort());
-            RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService");
+
+            String name = "rmi://" + host + ":" + port + "/messageService";
+            //String name = "messageService";
+
+            RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(name);
+
             System.out.println("Risposta dal giocatore con id " + idGiocatore+ ": " + stub.sendMessage(message));
         } catch (RemoteException e) {
             //e.printStackTrace();

@@ -3,6 +3,8 @@ package controller;
 import model.gameStatus.GameStatus;
 import model.player.Player;
 import rmi.RemoteMessageServiceInt;
+
+import java.net.InetAddress;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -176,7 +178,14 @@ public class GameController{
                 Registry registry = null;
                 try {
                     registry = LocateRegistry.getRegistry(players.get(i).getPort());
-                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService");
+
+                    InetAddress host = players.get(i).getHost();
+                    int port = players.get(i).getPort();
+
+                    String name = "rmi://" + host + ":" + port + "/messageService";
+                    //String name = "messageService";
+
+                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(name);
                     System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i + 1) + ": " + stub.sendMessage(message));
                 } catch (RemoteException e) {
                     //e.printStackTrace();
@@ -200,7 +209,15 @@ public class GameController{
         Registry registry = null;
         try {
             registry = LocateRegistry.getRegistry(players.get(idGiocatore-1).getPort());
-            RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup("messageService");
+            registry = LocateRegistry.getRegistry(players.get(idGiocatore-1).getPort());
+
+            InetAddress host = players.get(idGiocatore-1).getHost();
+            int port = players.get(idGiocatore-1).getPort();
+
+            String name = "rmi://" + host + ":" + port + "/messageService";
+            //String name = "messageService";
+
+            RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(name);
             System.out.println("Risposta dal giocatore con id " + idGiocatore+ ": " + stub.sendMessage(message));
         } catch (RemoteException e) {
             //e.printStackTrace();
