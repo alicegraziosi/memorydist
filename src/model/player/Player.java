@@ -128,7 +128,7 @@ public class Player extends Node implements Serializable{
 	}
 	
 	/**
-     * @desc set turnS of a player
+     * @desc set turn of a player
      * @param bool $isMyTurn
      * @return void
    */

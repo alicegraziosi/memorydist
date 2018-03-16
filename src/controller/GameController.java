@@ -3,6 +3,8 @@ package controller;
 import model.gameStatus.GameStatus;
 import model.player.Player;
 import rmi.RemoteMessageServiceInt;
+import server.PlayerServer;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -12,13 +14,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 
+import client.PlayerClient;
+
 public class GameController{
 
 
-    public int id;
+    public int id; // current player id
     public ArrayList<Player> players; // array list of player
-    public GameStatus gameStatus; // global status of the game
+    public GameStatus gameStatus; // global status of the game, with info of current player
     public BlockingQueue<GameStatus> buffer; // ?
+    
+    private PlayerClient playerClient; 
+    private PlayerServer playerServer;
 
     // timer mossa
     private Timer timer;

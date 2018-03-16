@@ -51,7 +51,8 @@ public class PlayerClient {
 
                     regServerHost = (args.length < 1) ? "localhost" : args[0];
                     regServerPort = 1099;
-
+                    
+                    System.out.println("regServerHost: " + regServerHost);
                     host = null;
 
                     try{
@@ -73,9 +74,9 @@ public class PlayerClient {
                     String nomeGiocatore = "default name"; // possiamo prender il  nome da argomento da terminale
                     id = stub.registerPlayer(nomeGiocatore, host, port); // restituisce l'id del giocatore
                     if(id<0){  // -1
-                        System.out.println("Raggiunto numero massimo di giocatori registrati.");
+                        System.out.println("[Client]: Raggiunto numero massimo di giocatori registrati.");
                     } else {
-                        System.out.println("Risposta dal server di registrazione: " +
+                        System.out.println("[Client]: Risposta dal server di registrazione: " +
                                 "Giocatore registrato con id " + id);
 
                         players = stub.getPlayers();
@@ -83,21 +84,21 @@ public class PlayerClient {
 
                         port = players.get(id-1).getPort();
 
-                        System.out.println("Il mio nodo è: host: " + host + ", port: " + port);
+                        System.out.println("[Client]: Il mio nodo è: host: " + host + ", port: " + port);
 
-                        System.out.println("Numero giocatori: " + players.size());
+                        System.out.println("[Client]: Numero giocatori: " + players.size());
 
-                        System.out.println("Sono il giocatore:");
+                        System.out.println("[Client]: Sono il giocatore:");
                         System.out.println("nome: " + players.get(id-1).getNickName() +
                                 ", id: " + players.get(id-1).getId() +
                                 ", isMyTurn: " + players.get(id-1).isMyTurn() + "\n");
 
-                        System.out.println("Lista dei giocatori:");
+                        System.out.println("[Client]: Lista dei giocatori:");
                         for(int i=0; i<players.size(); i++){
                             System.out.println(players.get(i).toString());
                         }
 
-                        System.out.println("Inizio del gioco.");
+                        System.out.println("[Client]: Inizio del gioco.");
 
                         GameController gameController = new GameController(id, players, gameStatus, buffer);
 
@@ -118,13 +119,13 @@ public class PlayerClient {
                     }
 
                 } catch (AccessException e) {
-                    System.out.println("Tempo scaduto per registrarsi come giocatore.");
+                    System.out.println("[Client]: Tempo scaduto per registrarsi come giocatore.");
                     e.printStackTrace();
                 } catch (RemoteException e) {
-                    System.out.println("Tempo scaduto per registrarsi come giocatore.");
+                    System.out.println("[Client]: Tempo scaduto per registrarsi come giocatore.");
                     e.printStackTrace();
                 } catch (NotBoundException e) {
-                    System.out.println("Tempo scaduto per registrarsi come giocatore.");
+                    System.out.println("[Client]: Tempo scaduto per registrarsi come giocatore.");
                     e.printStackTrace();
                 }
             }
