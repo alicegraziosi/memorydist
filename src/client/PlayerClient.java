@@ -1,11 +1,13 @@
 package client;
 
+import controller.GameController;
 import model.gameStatus.GameStatus;
 import model.player.Player;
 import rmi.RemoteMessageServiceInt;
 import rmi.RemoteRegistrationServerInt;
 import server.PlayerServer;
 import utils.Node;
+import view.board.Board;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -24,8 +26,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class PlayerClient {
 
     public static int id;
-    public static String regServerHost; // registration server host (130.136.4.121)
-    public static InetAddress host; // player host 
+    public static String regServerHost; // registration server host (localhost o per esempio Gisella: 130.136.4.121)
+    public static int regServerPort; // 1099
+    public static InetAddress host; // player host
     public static int port; // player port
     public static ArrayList<Player> players; // array list of player
     public static GameStatus gameStatus; // global status of the game
@@ -46,7 +49,8 @@ public class PlayerClient {
             public void run() {
                 try {
 
-                    regServerHost = (args.length < 1) ? null : args[0];
+                    regServerHost = (args.length < 1) ? "localhost" : args[0];
+                    regServerPort = 1099;
 
                     host = null;
 
@@ -58,8 +62,12 @@ public class PlayerClient {
 
                     System.out.println("Richiesta servizio di registrazione...");
                     Registry registry = LocateRegistry.getRegistry(regServerHost);
-                    RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) 
-                    		registry.lookup("registrazione");
+                    //old
+                    //RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) registry.lookup("registrazione");
+
+                    //new
+                    RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt)
+                            registry.lookup("rmi://" + regServerHost+ ":" + regServerPort+ "/registrazione");
 
                     // restituisce l'id del giocatore
                     String nomeGiocatore = "default name";
@@ -89,12 +97,22 @@ public class PlayerClient {
                             System.out.println(players.get(i).toString());
                         }
 
-                        // ogni client ha il suo registro rmi sulla propria porta
-                        setupRMIregistryAndServer();
-
                         System.out.println("Inizio del gioco.");
 
-                        startTimeout();
+                        GameController gameController = new GameController(id, players, gameStatus, buffer);
+
+                        // ogni client ha il suo registro rmi sulla propria porta
+                        setupRMIregistryAndServer(gameController);
+
+                        // viene mostrato il tavolo di gioco
+                        // funziona! ma è commentato per comodità, per ora
+                        Board board = new Board(gameStatus);
+                        //board .init();
+
+                        // params: int delay, int period
+                        int delay = 5;
+                        int period = 15;
+                        gameController.startTimeout(delay, period);
 
                         //playGame();
                     }
@@ -114,6 +132,7 @@ public class PlayerClient {
         t.start();
     }
 
+    // spostato in controller
     public static void playGame(){
         /*
         Thread t = new Thread(new Runnable() {
@@ -143,14 +162,18 @@ public class PlayerClient {
 
                         // id prossimo giocatore
                         int index = id+1;
+                        // se il giocatore corrente è l'ultimo, il prossimo è il primo
                         if(index>players.size()){
                             index = 1;
                         }
 
-                        // setto il prossimo giocatore a isLeader true
-                        if(!players.get(index-1).isCrashed()){
-                            players.get(index-1).setMyTurn(true);
-                            System.out.println("Il prossimo giocatore è : " + Integer.valueOf(index).toString());
+                        // setto il turno al prossimo giocatore non in crash
+                        for (int i = index; i<players.size(); i++){
+                            if(!players.get(i-1).isCrashed()) {
+                                players.get(i - 1).setMyTurn(true);
+                                System.out.println("Il prossimo giocatore è : " + Integer.valueOf(index).toString());
+                                break;
+                            }
                         }
 
                         System.out.println("Faccio broadcast di questa informazione.");
@@ -219,19 +242,24 @@ public class PlayerClient {
         */
     }
 
-    public static void startTimeout(){
+    public static void setupRMIregistryAndServer(GameController gameController){
+        buffer = new LinkedBlockingQueue();
+        PlayerServer.setupRMIregistryAndServer(port, buffer, gameController);
+    }
+
+    // spostato in controller
+    public static void startTimeout(int delay, int period){
         timerTask  = new TimerTask() {
             @Override
             public void run() {
                 System.out.println("******** Nuovo turno ********\n\n");
                 playGame();
-
                 //stopTimeout
             }
         };
 
         timer = new Timer(true);
-        timer.scheduleAtFixedRate(timerTask, 5 * 1000, 20 * 1000);
+        timer.scheduleAtFixedRate(timerTask, delay * 1000, period * 1000);
     }
 
     public static void stopTimeout(){
@@ -239,6 +267,7 @@ public class PlayerClient {
         timer.cancel();
     }
 
+    // spostato in controller
     // manda un messaggio a tutti gli altri players
     public static void broadcastMessage(GameStatus message) {
         for (int i = 0; i < players.size(); i++) {
@@ -265,6 +294,7 @@ public class PlayerClient {
         }
     }
 
+    // spostato in controller
     // manda un messaggio a un particolare giocatore per vedere se è attivo
     public static void sendMessageToHost(GameStatus message, int idGiocatore) {
         Registry registry = null;
@@ -287,20 +317,6 @@ public class PlayerClient {
             e.printStackTrace();
         }
 
-    }
-
-    public static void setupRMIregistryAndServer(){
-
-        buffer = new LinkedBlockingQueue();
-        PlayerServer.setupRMIregistryAndServer(port, buffer);
-    }
-
-    public static GameStatus getGameStatus() {
-        return gameStatus;
-    }
-
-    public static void setGameStatus(GameStatus gameStatus) {
-        PlayerClient.gameStatus = gameStatus;
     }
 }
 

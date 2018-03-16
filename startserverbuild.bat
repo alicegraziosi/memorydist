@@ -1,2 +1,2 @@
-java -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory -Djava.rmi.server.codebase=file:C:\Users\alice\IdeaProjects\memory\out\production\memory server.RegistrationServiceServer 10 &
+java -Djava.rmi.server.hostname=localhost -Djava.security.policy=file:.\security.policy -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory -Djava.rmi.server.codebase=file:C:\Users\alice\IdeaProjects\memory\out\production\memory server.RegistrationServiceServer 5 &
 cmd /k

@@ -7,6 +7,7 @@ import utils.Node;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @desc implementation class of remote registration server
@@ -78,16 +79,18 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 
 		// the turn is assigned to the first registered player, which has id = 1, with
 		// index 0 in the arraylist
-		players.get(0).setMyTurn(true);
+		if(players.size()>0){
+			players.get(0).setMyTurn(true);
 
-		System.out.println("Lista dei giocatori:");
-		for (int i = 0; i < players.size(); i++) { // iterate over the players print infos
-			System.out.println(players.get(i).toString());
+			System.out.println("Lista dei giocatori:");
+			for (int i = 0; i < players.size(); i++) { // iterate over the players print infos
+				System.out.println(players.get(i).toString());
+			}
+
+			System.out.println("Inizio del gioco.");
+			start = true;
+			notifyAll();
 		}
-
-		System.out.println("Inizio del gioco.");
-		start = true;
-		notifyAll();
 	}
 
 	/**
@@ -124,6 +127,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 				notShowingCards.add(card);
 			}
 		}
+		Collections.shuffle(notShowingCards);
 
 		// creating new gameStatus
 		GameStatus gameStatus = new GameStatus(players, // list of players
