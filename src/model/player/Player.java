@@ -128,7 +128,7 @@ public class Player extends Node implements Serializable{
 	}
 	
 	/**
-     * @desc set turnS of a player
+     * @desc set turn of a player
      * @param bool $isMyTurn
      * @return void
    */
@@ -138,12 +138,12 @@ public class Player extends Node implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Player{" +
+		return "Player " + id + " { " +
 				"id=" + id +
 				", nickName='" + nickName +
-				", state=" + state +
+				"', state=" + state +
 				", score=" + score +
 				", isMyTurn=" + isMyTurn +
-				'}';
+				" }";
 	}
 }

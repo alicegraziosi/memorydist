@@ -29,6 +29,14 @@ public class GameStatus implements Serializable {
         this.notShowingCards = notShowingCards;
         this.move = move;
     }
+    
+    /**
+     * @desc return the current player
+     * @return Player $current
+     * */
+//    public Player getCurrentPlayer() {
+//    	
+//    }
 
     /**
      *  @desc return the array list of players
