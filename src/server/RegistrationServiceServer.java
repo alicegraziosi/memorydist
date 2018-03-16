@@ -1,5 +1,7 @@
 package server;
 
+import java.io.File;
+import java.io.FileReader;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -19,6 +21,7 @@ import rmi.RemoteRegistrationServerInt;
 public class RegistrationServiceServer {
 
     public static void main(String[] args) {
+
         String host = "localhost";
         int port = 1099;
 
