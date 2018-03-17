@@ -16,18 +16,23 @@ public class CardView extends JButton {
     private Card card;
 
     public CardView(Card card) {
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // If Nimbus is not available, you can set the GUI to another look and feel.
+        }
+
         this.card = card;
         this.setPreferredSize(new Dimension(120, 140));
         this.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.WHITE, 2),
                 BorderFactory.createEmptyBorder(3, 3, 5, 5)));
         this.setLogo();
-        this.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setImage();
-            }
-        });
     }
 
     // value is 1, 2, 3, ...
@@ -51,5 +56,13 @@ public class CardView extends JButton {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Card getCard() {
+        return card;
+    }
+
+    public void setCard(Card card) {
+        this.card = card;
     }
 }

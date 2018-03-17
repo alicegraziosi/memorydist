@@ -38,10 +38,10 @@ Per compilare:
 Build project su IntelliJ IDEA
 
 start server:
-java -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory -Djava.rmi.server.codebase=file:C:\Users\alice\IdeaProjects\memory\out\production\memory server.RegistrationServiceServer 10 &
+java -classpath out\production\memory -Djava.rmi.server.codebase=file:out\production\memory server.RegistrationServiceServer 10 &
 
 start client:
-java -classpath C:\Users\alice\IdeaProjects\memory\out\production\memory server.ClientGiocatore
+java -classpath out\production\memory server.ClientGiocatore
 cmd /k
 
 Tutto questo equivale a:

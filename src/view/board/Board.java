@@ -2,6 +2,7 @@ package view.board;
 
 import model.card.Card;
 import model.gameStatus.GameStatus;
+import model.move.Move;
 import view.card.CardView;
 
 import javax.imageio.ImageIO;
@@ -24,15 +25,31 @@ public class Board extends Container{
 
     private GameStatus gameStatus;
     private ArrayList<CardView> cardViews;
-    private CardView selectedCard;
+    private CardView selectedCard1;
+    private CardView selectedCard2;
+    private Move move;
 
     public Board(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
         this.cardViews = new ArrayList<>();
+        this.selectedCard1 = null;
+        this.selectedCard2 = null;
+        this.move = new Move();
     }
 
     //public static void main(String[] args) {
     public void init(){
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // If Nimbus is not available, you can set the GUI to another look and feel.
+        }
+
         BufferedImage img = null;
         try {
             img = ImageIO.read(new File("./images/board.jpg"));
@@ -42,7 +59,7 @@ public class Board extends Container{
         // background image
         JLabel label1 = new JLabel(new ImageIcon(img));
 
-        JFrame frame = new JFrame("Memory");
+        JFrame frame = new JFrame("Memory Game");
 
         JPanel borderPanelBoard = new JPanel();
         borderPanelBoard.setLayout(new BorderLayout());
@@ -50,7 +67,7 @@ public class Board extends Container{
         JPanel panel1 = new JPanel();
         panel1.setLayout(new BorderLayout());
         panel1.setSize(200, 500);
-        Info info = new Info();
+        Info info = new Info(gameStatus);
         panel1.add(info, BorderLayout.NORTH);
 
         JPanel panel2 = new JPanel();
@@ -72,6 +89,29 @@ public class Board extends Container{
         gridPanelCards.setLayout(new GridLayout(4, 5));
         for (CardView cardView: cardViews) {
             gridPanelCards.add(cardView);
+            cardView.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(selectedCard1==null){
+                        cardView.removeActionListener(this);
+                        selectedCard1 = cardView;
+                        cardView.setImage();
+                        move = new Move(selectedCard1.getCard());
+                        System.out.println("First selected card: " + move.getCard1().getValue());
+                        gameStatus.setMove(move);
+                    } else if (selectedCard2==null) {
+                        cardView.removeActionListener(this);
+                        selectedCard2 = cardView;
+                        cardView.setImage();
+                        move = new Move(selectedCard1.getCard(), selectedCard2.getCard());
+                        System.out.println("Second selected card: " + move.getCard2().getValue());
+                        System.out.printf("Match: " + move.isMatch());
+                        gameStatus.setMove(move);
+                    } else {
+
+                    }
+                }
+            });
         }
         borderPanelBoard.add(gridPanelCards,BorderLayout.EAST);
 
@@ -97,5 +137,16 @@ public class Board extends Container{
                 }
             }
         });
+    }
+
+    private void clearSelectedCards(){
+        selectedCard1 = null;
+        selectedCard2 = null;
+    }
+
+    private void blockCardViews(){
+        for (CardView cardView: cardViews) {
+            cardView.setEnabled(false);
+        }
     }
 }
