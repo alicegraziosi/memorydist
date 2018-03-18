@@ -9,6 +9,9 @@ import server.PlayerServer;
 import utils.Node;
 import view.board.Board;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.*;
@@ -53,8 +56,28 @@ public class PlayerClient {
                     // bisogna passare l ip del server di registrazione come argomento
                     regServerHost = (args.length < 1) ? "localhost" : args[0];
                     regServerPort = 1099;
-                    
-                    System.out.println("regServerHost: " + regServerHost);
+
+                    BufferedReader br = null;
+                    FileReader fr = null;
+                    try {
+                        fr = new FileReader("util.txt");
+                        br = new BufferedReader(fr);
+
+                        String sCurrentLine;
+
+                        while ((sCurrentLine = br.readLine()) != null) {
+                            regServerHost = sCurrentLine;
+                        }
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    System.setProperty("java.rmi.server.hostname", regServerHost);
+
+                    System.setProperty("java.security.policy", "file:./security.policy");
+
                     host = null;
 
                     try{
@@ -63,7 +86,7 @@ public class PlayerClient {
                         ex.printStackTrace();
                     }
 
-                    System.out.println("[Client]: Richiesta servizio di registrazione...");
+                    System.out.println("[Client]: Richiesta registrazione a server " + regServerHost);
                     Registry registry = LocateRegistry.getRegistry(regServerHost);
                     //old
                     //RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) registry.lookup("registrazione");

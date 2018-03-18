@@ -1,7 +1,7 @@
 package server;
 
-import java.io.File;
-import java.io.FileReader;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -14,15 +14,38 @@ import java.rmi.server.UnicastRemoteObject;
 import rmi.RemoteRegistrationServerImpl;
 import rmi.RemoteRegistrationServerInt;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
 /**
  * @desc class that manage the registration service
  * */
 
 public class RegistrationServiceServer {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
 
         String host = "localhost";
+
+        BufferedReader br = null;
+        FileReader fr = null;
+        try {
+            fr = new FileReader("util.txt");
+            br = new BufferedReader(fr);
+
+            String sCurrentLine;
+
+            while ((sCurrentLine = br.readLine()) != null) {
+                host = sCurrentLine;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.setProperty("java.rmi.server.hostname", host);
+
+        System.setProperty("java.security.policy", "file:./security.policy");
+
         int port = 1099;
 
         final int timeout; // registration service timeout

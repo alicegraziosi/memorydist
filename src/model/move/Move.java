@@ -8,8 +8,16 @@ import model.card.Card;
 public class Move{
 
 	private Card card1; /** first card of the move */
-	private Card card2;  /** second card of the move */
+	private Card card2;
+
+	/** second card of the move */
 	private boolean match = false; /** match between the previous two cards */
+
+
+	public Move() {
+		this.card1 = null;
+		this.card2 = null;
+	}
 
 	/**
      * @desc move constructor, when the player moves the first card
@@ -79,5 +87,9 @@ public class Move{
    */
 	public void setCard2(Card card2) {
 		this.card2 = card2;
+	}
+
+	public boolean isMatch() {
+		return match;
 	}
 }
