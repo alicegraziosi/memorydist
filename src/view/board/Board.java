@@ -87,7 +87,7 @@ public class Board extends Container{
         // display cards
         JPanel gridPanelCards = new JPanel();
         gridPanelCards.setLayout(new GridLayout(4, 5));
-        for (CardView cardView: cardViews) {
+        for (final CardView cardView: cardViews) {
             gridPanelCards.add(cardView);
             cardView.addActionListener(new ActionListener() {
                 @Override

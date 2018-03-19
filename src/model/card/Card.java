@@ -21,6 +21,18 @@ public class Card implements Serializable{
 	}
 	
 	/**
+	 * @desc set to string card
+	 */
+	@Override
+	public String toString() {
+		String newLine = System.getProperty("line.separator");
+		return "Card " +" { " +
+				"index=" + index +	
+				", value='" + value + 
+				" }" + newLine;
+	}
+	
+	/**
 	  * @desc get the index of a card
 	  * @return int $index
 	*/

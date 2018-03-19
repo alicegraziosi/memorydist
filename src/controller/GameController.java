@@ -16,6 +16,17 @@ import java.util.concurrent.BlockingQueue;
 
 import client.PlayerClient;
 
+/**
+ * Controller of the game, contains the following attributes
+ * 1) current player id
+ * 2) players list
+ * 3) game status (global)
+ * 4) player Client
+ * 5) player Server
+ * 6) timer
+ * 7) timer task
+ * */
+
 public class GameController{
 
 
@@ -23,14 +34,15 @@ public class GameController{
     public ArrayList<Player> players; // array list of player
     public GameStatus gameStatus; // global status of the game, with info of current player
     public BlockingQueue<GameStatus> buffer; // ?
-    
     private PlayerClient playerClient; 
     private PlayerServer playerServer;
-
-    // timer mossa
-    private Timer timer;
+    private Timer timer;     // timer mossa
     private TimerTask timerTask;
 
+    
+    /**
+     * GameController constructor
+     * */
     public GameController(int id,
                           ArrayList<Player> players,
                           GameStatus gameStatus,
@@ -41,7 +53,10 @@ public class GameController{
         this.buffer = buffer;
     }
 
-
+    
+    /**
+     * function which manages the single round of the game
+     * */
     public void playGame(){
         /*
         Thread t = new Thread(new Runnable() {
@@ -49,44 +64,48 @@ public class GameController{
             public void run() {
             */
         try {
+        	
+            // 0) se ci sono ancora carte da scoprire e se è rimasto più di un giocatore, altrimenti si lascia giocare l'ultimo giocatore
 
-            // se ci sono ancora carte da scoprire e se è rimasto più di un giocatore
-
-            // altrimenti si lascia giocare l'ultimo giocatore
-
-            // Se è il suo turno
-            // id parte da 1, l'indice da 0
-            if (gameStatus.getPlayersList().get(id-1).isMyTurn()) {
-                System.out.println("E' il mio turno (Giocatore " + id + ").");
-
+            // Se è il suo turno, id parte da 1, l'indice da 0
+            if (gameStatus.getPlayersList().get(id).isMyTurn()) {
+                System.out.println("[GameController]: E' il mio turno (Giocatore " + id + ").");
+                //System.out.println("[GameController[: gameStatus corrente: " + gameStatus.toString());
+                
+                /** E' il turno del giocatore, cose da fare:
+            	1) accertarsi che il giocatore corrente abbia un $gameStatus aggiornato
+             	2) giocatore gioca la prima carta
+         			a) gioca la carta
+            		b) aggiorna $gameStatus facendo BROADCAST
+                3) giocatore gioca la seconda carta
+            		a) gioca la carta con controllo matching e tutto il resto
+            		b) aggiorna $gameStatus facendo BROADCAST
+                4) gestire il "passaggio" del turno 
+                */
+                
+                
                 // todo setto il giocatore che ha il prossimo turno (
                 // (funziona solo con due giocatori)
                 // todo è un casino con i .sleep.. ho provato con timer
+                
+                // controllo variabile setMyTurn di tutti i giocatori
+//                for (int i = 0; i < players.size(); i++) {
+//                	System.out.println("[GameController: checking the players turns...");
+//                	System.out.println("[GameController]: player " + players.get(i).getId() + " turn :" + Boolean.toString(players.get(i).getMyTurn()) );
+//                    
+//                }
 
-
+                // PER IL MOMENTO COMMENTATO CODICE PER SETTARE A FALSE IL TURNO DI TUTTI GLI ALTRI
                 // id parte da 1, l'indice da 0
-                for (int i = 0; i < players.size(); i++) {
-                    // setto tutti a isLeader false
-                    players.get(i).setMyTurn(false);
-                }
+//                for (int i = 0; i < players.size(); i++) {
+//                    // setto tutti a myTurn false
+//                    players.get(i).setMyTurn(false);
+//                }
 
-                // id prossimo giocatore
-                int index = id+1;
-                // se il giocatore corrente è l'ultimo, il prossimo è il primo
-                if(index>players.size()){
-                    index = 1;
-                }
-
-                // setto il turno al prossimo giocatore non in crash
-                for (int i = index; i<=players.size(); i++){
-                    if(!players.get(i-1).isCrashed()) {
-                        players.get(i-1).setMyTurn(true);
-                        System.out.println("Il prossimo giocatore è : " + Integer.valueOf(i).toString());
-                        break;
-                    } else {
-                        System.out.println(players.get(i-1).toString());
-                    }
-                }
+                /**
+                 * 4) gestione passaggio del turno
+                 * */
+               //gameStatus.setNextTurn(id) da impl
 
                 System.out.println("Faccio broadcast di questa informazione.");
                 gameStatus.setPlayersList(players);
@@ -154,7 +173,11 @@ public class GameController{
         t.start();
         */
     }
-
+    
+    /**
+     * function which manages the timers of the round
+     * @param int $delay, int $period
+     * */
     public void startTimeout(int delay, int period){
         timerTask  = new TimerTask() {
             @Override
@@ -170,12 +193,18 @@ public class GameController{
         timer.scheduleAtFixedRate(timerTask, delay * 1000, period * 1000);
     }
 
+    /**
+     * function which stops time
+     * */
     public void stopTimeout(){
         timerTask.cancel();
         timer.cancel();
     }
 
-    // manda un messaggio a tutti gli altri players
+    /**
+     * function which broadcast the global game status to the other players
+     * @param GameStatus $message
+     * */
     public void broadcastMessage(GameStatus message) {
         for (int i = 0; i < players.size(); i++) {
             // non lo rimanda a se stesso e ai nodi in crash
@@ -208,28 +237,31 @@ public class GameController{
             }
         }
     }
-
-    // manda un messaggio a un particolare giocatore per vedere se è attivo
-    public void sendMessageToHost(GameStatus message, int idGiocatore) {
+    
+    /**
+     * function which checks if a det player is active sending to him a message
+     * @param GameStatus $message ?, int $playerId
+     * */
+    public void sendMessageToHost(GameStatus message, int playerId) {
         Registry registry = null;
         try {
-            registry = LocateRegistry.getRegistry(players.get(idGiocatore-1).getPort());
-            registry = LocateRegistry.getRegistry(players.get(idGiocatore-1).getPort());
+            registry = LocateRegistry.getRegistry(players.get(playerId).getPort());
+            registry = LocateRegistry.getRegistry(players.get(playerId).getPort());
 
-            InetAddress host = players.get(idGiocatore-1).getHost();
-            int port = players.get(idGiocatore-1).getPort();
+            InetAddress host = players.get(playerId).getHost();
+            int port = players.get(playerId).getPort();
 
             String name = "rmi://" + host + ":" + port + "/messageService";
             //String name = "messageService";
 
             RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(name);
-            System.out.println("Risposta dal giocatore con id " + idGiocatore+ ": " + stub.sendMessage(message));
+            System.out.println("Risposta dal giocatore con id " + playerId+ ": " + stub.sendMessage(message));
         } catch (RemoteException e) {
             //e.printStackTrace();
-            System.out.println("Il giocatore con id " + idGiocatore + " non ha ricevuto il messaggio, è in crash.");
+            System.out.println("Il giocatore con id " + playerId + " non ha ricevuto il messaggio, è in crash.");
 
             // settarlo in crash
-            players.get(idGiocatore).setCrashed(true);
+            players.get(playerId).setCrashed(true);
 
             // todo  notificare l' informazione a tutti
             gameStatus.setPlayersList(players);
@@ -240,11 +272,20 @@ public class GameController{
         }
 
     }
-
+    
+    
+    /**
+     * getting the game status
+     * @return GameStatus $gameStatus
+     * */
     public GameStatus getGameStatus() {
         return gameStatus;
     }
 
+    /**
+     * setting the game status
+     * @param GameStatus $gameStatus
+     * */
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
     }

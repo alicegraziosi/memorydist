@@ -19,7 +19,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 	/** max number of players */
 	private ArrayList<Player> players;
 	/** players list */
-	private int playerIndex;
+	private int playerIndex = -1;
 	/** index of each new player, incrementing each time */
 	private boolean isServiceOpen;
 	/** tells if service is opened */
@@ -47,8 +47,8 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 
 			if (isServiceOpen) {
 
-				playerIndex++; // player id
-				System.out.println("Nuovo giocatore: nome: " + nickName + ", id: " + Integer.toString(playerIndex));
+				playerIndex++; // player id				
+				System.out.println("[RMIRegServ]: Nuovo giocatore: nome: " + nickName + ", id: " + Integer.toString(playerIndex));
 
 				port = 2000 + playerIndex; // setting port of player with index $playerIndex
 				Player player = new Player(playerIndex, nickName, hostAddress, port); // create player
@@ -58,12 +58,12 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 
 			} else {
 				// time out
-				System.out.println("Tempo scaduto per registrarsi come giocatore.\n");
+				System.out.println("[RMIRegServ]: Tempo scaduto per registrarsi come giocatore.\n");
 				return -1;
 			}
 		} else {
 			// reached max number of players
-			System.out.println("Raggiunto numero massimo di giocatori registrati.\n");
+			System.out.println("[RMIRegServ]: Raggiunto numero massimo di giocatori registrati.\n");
 			return -1;
 		}
 
@@ -75,19 +75,19 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 	 */
 	public synchronized void stopService() {
 		isServiceOpen = false;
-		System.out.println("Tempo scaduto per registrarsi come giocatore.");
+		System.out.println("[RMIRegServ]: Tempo scaduto per registrarsi come giocatore.");
 
 		// the turn is assigned to the first registered player, which has id = 1, with
 		// index 0 in the arraylist
 		if(players.size()>0){
-			players.get(0).setMyTurn(true);
+			players.get(0).setMyTurn(true);  // setting the turn to the 1st registered player
 
-			System.out.println("Lista dei giocatori:");
+			System.out.println("[RMIRegServ]: Lista dei giocatori:");
 			for (int i = 0; i < players.size(); i++) { // iterate over the players print infos
-				System.out.println(players.get(i).toString());
+				System.out.println("[RMIRegServ]: " + players.get(i).toString()); // players infos
 			}
 
-			System.out.println("Inizio del gioco.");
+			System.out.println("[RMIRegServ]: Inizio del gioco.");
 			start = true;
 			notifyAll();
 		}

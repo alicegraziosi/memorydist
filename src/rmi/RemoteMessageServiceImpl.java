@@ -24,8 +24,9 @@ public class RemoteMessageServiceImpl implements RemoteMessageServiceInt {
 		// il processo su cui è invocato sendMessage riceve il messaggio in questo punto
 		inputBuffer.add(message);
 		gameController.setGameStatus(message);
-		System.out.println("Messaggio ricevuto dal giocatore " + message.getIdSender());
-        for(int i=0; i<gameController.getGameStatus().getPlayersList().size(); i++){
+		System.out.println("[RMISImpl]: Messaggio ricevuto dal giocatore " + message.getIdSender());
+		System.out.println("[RMISImpl]: gameStatus " + message.toString());
+		for(int i=0; i<gameController.getGameStatus().getPlayersList().size(); i++){
             System.out.println(gameController.getGameStatus().getPlayersList().get(i).toString());
         }
 		return 1;

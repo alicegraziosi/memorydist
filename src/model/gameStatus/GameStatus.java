@@ -31,12 +31,51 @@ public class GameStatus implements Serializable {
     }
     
     /**
+     * setting the next turn managing players array list in gameStatus
+     * @param GameStatus $gameStatus
+     * */
+    public void setNextTurn(int idCurrentPlayer){
+    
+    	// compute id next player
+        int indexNextPlayer = idCurrentPlayer+1;
+        // se il giocatore corrente è l'ultimo, il prossimo è il primo
+        if(indexNextPlayer>playersList.size()){
+            indexNextPlayer = 1;
+        }
+
+        // setto il turno al prossimo giocatore non in crash
+        for (int i = indexNextPlayer; i<=playersList.size(); i++){
+            if(!playersList.get(i-1).isCrashed()) {
+                playersList.get(i-1).setMyTurn(true);
+                System.out.println("Il prossimo giocatore è : " + Integer.valueOf(i).toString());
+                break;
+            } else {
+                System.out.println(playersList.get(i-1).toString());
+            }
+        }
+    }
+    
+    /**
      * @desc return the current player
      * @return Player $current
      * */
 //    public Player getCurrentPlayer() {
 //    	
 //    }
+    
+    /**
+	 * @desc set to string game status
+	 */
+	@Override
+	public String toString() {
+		String newLine = System.getProperty("line.separator");
+		return "GameStatus " +" { " + newLine +	
+				"playerList=" + playersList + newLine +	
+				", showingCards='" + showingCards + newLine +	
+				"', notShowingCards=" + notShowingCards + newLine +	
+				", move=" + move + newLine +	
+				" }";
+	}
 
     /**
      *  @desc return the array list of players
