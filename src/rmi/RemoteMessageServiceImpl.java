@@ -38,17 +38,13 @@ public class RemoteMessageServiceImpl implements RemoteMessageServiceInt {
 	public int sendMessage(GameStatus gameStatus) throws RemoteException {
 		// un processo invoca sendMessage su un altro processo
 		// il processo su cui è invocato sendMessage riceve il messaggio in questo punto
+
 		inputBuffer.add(gameStatus);
 		// todo non fare questo quando l id del msg è minore dell id corrente
 		gameController.setGameStatus(gameStatus);
 		//board.update(gameStatus);
-		System.out.println("Message" + gameStatus.getId() + "received from " + gameStatus.getIdSender());
-
-		for(int i=0; i<gameController.getGameStatus().getPlayersList().size(); i++){
-            System.out.println("id: " + gameController.getGameStatus().getPlayersList().get(i).getId() +
-					", turno: " + gameController.getGameStatus().getPlayersList().get(i).isMyTurn());
-        }
-
+        System.out.println("[RMISImpl]: Messaggio ricevuto dal giocatore " + gameStatus.getIdSender());
+        //System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());
 		return 1;
 	}
 

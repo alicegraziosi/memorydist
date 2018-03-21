@@ -33,6 +33,12 @@ public class CardView extends JButton {
                 BorderFactory.createLineBorder(Color.WHITE, 2),
                 BorderFactory.createEmptyBorder(3, 3, 5, 5)));
         this.setLogo();
+//        this.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                setImage();
+//            }
+//        });
     }
 
     // value is 1, 2, 3, ...

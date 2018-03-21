@@ -195,8 +195,8 @@ public class Board extends Container{
                         System.out.println("Match: " + move.isMatch());
 
                         if(move.isMatch()){
-                            int score = gameStatus.getPlayersList().get(id-1).getScore() + 1;
-                            gameStatus.getPlayersList().get(id-1).setScore(score);
+                            int score = gameStatus.getPlayersList().get(id).getScore() + 1;
+                            gameStatus.getPlayersList().get(id).setScore(score);
                             info.updateScore(gameStatus);
                             gameStatus.getShowingCards().add(move.getCard1());
                             gameStatus.getShowingCards().add(move.getCard2());
@@ -207,8 +207,8 @@ public class Board extends Container{
 
                         gameStatus.setMove(move);
 
-
                     } else {
+
                     }
                 }
             });
@@ -217,7 +217,7 @@ public class Board extends Container{
     }
 
     // ask before exit the application on close
-    private void setCloseOperation() {
+    private void setCloseOperation(){
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -235,7 +235,7 @@ public class Board extends Container{
         });
     }
 
-    public void setGameWinner() {
+    public void setGameWinner(){
         int input = JOptionPane.showConfirmDialog(null,
                 "You are the winner!\n\nDo you want to exit the game?",
                 "You are the winner!",

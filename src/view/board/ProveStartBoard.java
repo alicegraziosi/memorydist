@@ -13,13 +13,13 @@ import java.util.TimerTask;
 public class ProveStartBoard {
     public static void main(String[] args) {
         ArrayList<Player> players = new ArrayList<>();
-        Player player1 = new Player(1, "Nick", null, 0);
+        Player player1 = new Player(0, "Nick", null, 0);
         player1.setMyTurn(true);
         players.add(player1);
-        Player player2 = new Player(2, "Tom", null, 0);
+        Player player2 = new Player(1, "Tom", null, 0);
         player2.setMyTurn(false);
         players.add(player2);
-        Player player3 = new Player(3, "Sam", null, 0);
+        Player player3 = new Player(2, "Sam", null, 0);
         player3.setMyTurn(false);
         players.add(player3);
 
@@ -39,7 +39,7 @@ public class ProveStartBoard {
         Collections.shuffle(notShowingCards);
 
         GameStatus gameStatus = new GameStatus(0, players, -1, showingCards, notShowingCards, null);
-        Board board = new Board(gameStatus, 1);
+        Board board = new Board(gameStatus, 0);
         board.init();
 
         TimerTask timerTask  = new TimerTask() {

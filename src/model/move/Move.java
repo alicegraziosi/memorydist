@@ -8,12 +8,13 @@ import model.card.Card;
 public class Move{
 
 	private Card card1; /** first card of the move */
-	private Card card2;
-
-	/** second card of the move */
+	private Card card2; /** second card of the move */
 	private boolean match = false; /** match between the previous two cards */
 
-
+	
+	/**
+     * @desc move constructor, move null
+   */
 	public Move() {
 		this.card1 = null;
 		this.card2 = null;

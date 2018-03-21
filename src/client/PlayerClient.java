@@ -108,17 +108,19 @@ public class PlayerClient {
 
                         players = stub.getPlayers();
                         gameStatus = stub.getGameStatus();
-
-                        port = players.get(id-1).getPort();
+                        
+                        System.out.println("[Client]: GameStatus: " + gameStatus.toString());
+                        
+                        port = players.get(id).getPort();
 
                         System.out.println("[Client]: Il mio nodo è: host: " + host + ", port: " + port);
 
                         System.out.println("[Client]: Numero giocatori: " + players.size());
 
                         System.out.println("[Client]: Sono il giocatore:");
-                        System.out.println("nome: " + players.get(id-1).getNickName() +
-                                ", id: " + players.get(id-1).getId() +
-                                ", isMyTurn: " + players.get(id-1).isMyTurn() + "\n");
+                        System.out.println("nome: " + players.get(id).getNickName() +
+                                ", id: " + players.get(id).getId() +
+                                ", isMyTurn: " + players.get(id).isMyTurn() + "\n");
 
                         System.out.println("[Client]: Lista dei giocatori:");
                         for(int i=0; i<players.size(); i++){
@@ -135,6 +137,11 @@ public class PlayerClient {
 
                         // ogni client ha il suo registro rmi sulla propria porta
                         setupRMIregistryAndServer(gameController);
+
+                        // viene mostrato il tavolo di gioco
+                        // funziona! ma è commentato per comodità, per ora
+                        //Board board = new Board(gameStatus, id);
+                        //board.init();
 
                         // params: int delay, int period
                         int delay = 5;
@@ -164,11 +171,10 @@ public class PlayerClient {
         PlayerServer.setupRMIregistryAndServer(host, port, buffer, gameController);
     }
 
-    /*
-    public static void setupBoard(){
-        PlayerServer.setupBoard();
+    public static void stopTimeout(){
+        timerTask.cancel();
+        timer.cancel();
     }
-    */
 }
 
 

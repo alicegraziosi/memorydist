@@ -135,7 +135,18 @@ public class Player extends Node implements Serializable{
 	public void setMyTurn(boolean isMyTurn) {
 		this.isMyTurn = isMyTurn;
 	}
+	
+	/**
+     * @desc get turn of a player
+     * @return boolean $isMyTurn
+   */
+	public boolean getMyTurn() {
+		return this.isMyTurn;
+	}
 
+	/**
+	 * @desc set to string player info
+	 */
 	@Override
 	public String toString() {
 		return "Player " + id + " { " +
