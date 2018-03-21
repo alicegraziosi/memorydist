@@ -12,6 +12,7 @@ import java.util.concurrent.BlockingQueue;
 
 import rmi.RemoteMessageServiceImpl;
 import rmi.RemoteMessageServiceInt;
+import view.board.Board;
 
 /**
  * the server of the player, responsible of creating RMI registry
@@ -51,6 +52,10 @@ public class PlayerServer {
         } catch (AlreadyBoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void setupBoard(){
+
     }
 
 }

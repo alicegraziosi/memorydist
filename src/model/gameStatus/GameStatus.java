@@ -11,18 +11,29 @@ import java.util.ArrayList;
  */
 public class GameStatus implements Serializable {
 
+    private int id;
     private ArrayList<Player> playersList;
     private int idSender;
     private ArrayList<Card> showingCards;
  	private ArrayList<Card> notShowingCards;
     private Move move;
-    
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     /** constructor */
-    public GameStatus(ArrayList<Player> playersList,
+    public GameStatus(int id,
+                      ArrayList<Player> playersList,
                       int idSender,
                       ArrayList<Card> showingCards,
                       ArrayList<Card> notShowingCards,
                       Move move) {
+        this.id = id;
         this.playersList = playersList;
         this.idSender = idSender;
         this.showingCards = showingCards;

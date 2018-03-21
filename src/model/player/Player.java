@@ -144,6 +144,8 @@ public class Player extends Node implements Serializable{
 				"', state=" + state +
 				", score=" + score +
 				", isMyTurn=" + isMyTurn +
+				", host =" + host +
+				", port =" + port +
 				" }";
 	}
 }

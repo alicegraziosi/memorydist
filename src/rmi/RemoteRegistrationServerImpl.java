@@ -37,8 +37,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 
 	/**
 	 * @desc player game registration function
-	 * @param String
-	 *            $nickName, InetAddress $hostAddress, int $port
+	 * @param String $nickName, InetAddress $hostAddress, int $port
 	 * @return int playerIndex or -1 if time is over or reached max players number
 	 */
 	public synchronized int registerPlayer(String nickName, InetAddress hostAddress, int port) {
@@ -130,7 +129,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 		Collections.shuffle(notShowingCards);
 
 		// creating new gameStatus
-		GameStatus gameStatus = new GameStatus(players, // list of players
+		GameStatus gameStatus = new GameStatus(0, players, // list of players
 				-1, // id sender = -1 means that the sender is the registration service
 				showingCards, // list of showing cards
 				notShowingCards, // list of not showing cards
