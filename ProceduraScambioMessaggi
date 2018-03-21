@@ -1,0 +1,25 @@
+ref. UNO (Christian Ascone)
+
+GESTIONE SCAMBIO MESSAGGI DI AGGIORNAMENTO OGGETTO GAME(da noi GAMESTATUS)
+
+Inizio:
+  1) GameManager chiama PlayMyTurn()
+  2) PlayMyTurn() chiama remoteClient.broadcastUpdatedGame(game)
+    - dove remoteClient è istanza della classe remoteClient
+  3) broadcastUpdatedGame() "cicla" gli host remoti (per noi nodi) e fa remote.getServer.sendGame(game)
+    - dove remote.getServer() restituisce una UnoRemoteGameInterface (attributo della classe host/node)
+  4) sendGame(game) è implementata dalla classe remoteServer(che implementa UnoRemoteGameInterface) 
+  che fa mListener.setGame(game) (IN QUESTO PUNTO IL SERVER RICEVE IL MESSAGGIO CONTENENTE IL GAME AGGIORNATO)
+    - dove mListener è istanza dell'interfaccia DataReceiverListener
+    - la funzione setGame(game) è implementata dalla classe GameManager che infine aggiorna la GUI
+    
+Classi coinvolte:
+
+1) GameManagere(da noi GameController)
+    - "GameManager implements DataReceiverListener, TimerCallback"
+2) RemoteClient(da noi PlayerClient)
+3) Host(da noi Node), aggiungere l'attributo server di tipo "UnoRemoteGameInterface"
+4) UnoRemoteGameInterface (MANCANTE)
+5) RemoteServer(da noi PlayerServer)
+    - "UnoRemoteServer implements UnoRemoteGameInterface" 
+6) DataReceiverListener (MANCANTE)    
