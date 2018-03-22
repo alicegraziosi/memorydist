@@ -4,6 +4,8 @@ import model.gameStatus.GameStatus;
 import model.player.Player;
 import rmi.RemoteMessageServiceInt;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -126,7 +128,7 @@ public class GameController{
 
                                 int index = id + 1;
                                 // se il giocatore corrente è l'ultimo, il prossimo è il primo
-                                if (index > players.size()) {
+                                if (index == players.size()) {
                                     index = 0;
                                 }
 
@@ -262,23 +264,32 @@ public class GameController{
      * @param GameStatus $message
      * */
     public void broadcastMessage(GameStatus gamestatus) {
+
+        // mi sa che nel client non serve
+        //System.setProperty("java.rmi.server.hostname", host);
+
+        System.setProperty("java.security.policy", "file:./security.policy");
+
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new SecurityManager());
+        }
+
         for (int i = 0; i < players.size(); i++) {
             // non lo rimanda a se stesso e ai nodi in crash
             if(i != id && !players.get(i).isCrashed()) {
-                Registry registry = null;
                 try {
-                    registry = LocateRegistry.getRegistry(players.get(i).getPort());
+                    String remoteHost = players.get(i).getHost().toString();
+                    int remotePort = players.get(i).getPort();
 
-                    InetAddress host = players.get(i).getHost();
-                    int port = players.get(i).getPort();
+                    String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
 
-                    String name = "rmi://" + host + ":" + port + "/messageService";
-                    //String name = "messageService";
+                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) Naming.lookup(location);
 
-                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(name);
-                    System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i) + ": " + stub.sendMessage(gamestatus));
+                    int response = stub.sendMessage(gamestatus);
+                    System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i) + ": " + response);
+
                 } catch (RemoteException e) {
-                    //e.printStackTrace();
+                    e.printStackTrace();
                     System.out.println("Il giocatore con id " + Integer.valueOf(i) + " non ha ricevuto il messaggio, è in crash.");
 
                     // todo settarlo in crash
@@ -289,6 +300,8 @@ public class GameController{
 
                 } catch (NotBoundException e) {
                     e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -298,26 +311,18 @@ public class GameController{
      * function which checks if a det player is active sending to him a message
      * @param GameStatus $message ?, int $playerId
      * */
-    public void sendMessageToHost(GameStatus message, int playerId) {
-        Registry registry = null;
+    public void sendMessageToHost(GameStatus gamestatus, int playerId) {
         try {
 
-            //registry = LocateRegistry.getRegistry(players.get(idGiocatore-1).getPort());
+            String remoteHost = players.get(playerId).getHost().toString();
+            int remotePort = players.get(playerId).getPort();
 
-            registry = LocateRegistry.getRegistry(players.get(playerId).getPort());
+            String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
 
-            InetAddress host = players.get(playerId).getHost();
-            int port = players.get(playerId).getPort();
+            RemoteMessageServiceInt stub = (RemoteMessageServiceInt) Naming.lookup(location);
 
-            String name = "rmi://" + host + ":" + port + "/messageService";
-            //String name = "messageService";
-
-            RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(name);
-
-            System.out.println("Incremento id msg: " + stub);
-
-            //System.out.println("Risposta dal giocatore con id " + idGiocatore+ ": " + stub.sendMessage(message));
-            System.out.println("Risposta dal giocatore con id " + playerId+ ": " + stub.sendMessage(message));
+            int response = stub.sendMessage(gamestatus);
+            System.out.println("Risposta dal giocatore con id " + Integer.valueOf(playerId) + ": " + response);
 
         } catch (RemoteException e) {
             //e.printStackTrace();
@@ -331,6 +336,8 @@ public class GameController{
             //broadcastMessage(gameStatus);
 
         } catch (NotBoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 

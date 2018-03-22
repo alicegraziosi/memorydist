@@ -1,8 +1,11 @@
 package view.board;
 
+import client.PlayerClient;
+import controller.GameController;
 import model.card.Card;
 import model.gameStatus.GameStatus;
 import model.move.Move;
+import model.player.PLAYER_STATE;
 import model.player.Player;
 import view.card.CardView;
 
@@ -27,6 +30,7 @@ public class Board extends Container{
     private JPanel panel2;
 
     private GameStatus gameStatus;
+    private GameController gameController;
     private ArrayList<CardView> cardViews;
     private ArrayList<CardView> cardViewsMatch;
     private CardView selectedCard1;
@@ -37,7 +41,7 @@ public class Board extends Container{
     private JFrame frame;
     private JPanel gridPanelCards;
 
-    public Board(GameStatus gameStatus, int id) {
+    public Board(GameStatus gameStatus, int id, GameController gameController) {
         this.gameStatus = gameStatus;
         this.cardViews = new ArrayList<>();
         this.cardViewsMatch = new ArrayList<>();
@@ -49,6 +53,7 @@ public class Board extends Container{
         this.frame = new JFrame("Memory Game");
         this.gridPanelCards = new JPanel();
         this.gridPanelCards.setLayout(new GridLayout(4, 5));
+        this.gameController = gameController;
     }
 
     //public static void main(String[] args) {
@@ -101,8 +106,8 @@ public class Board extends Container{
             gridPanelCards.add(cardView);
         }
 
-        // display cards
-        displayCards();
+        // when click a card
+        setCardClickActionListener();
 
         borderPanelBoard.add(gridPanelCards,BorderLayout.EAST);
 
@@ -168,7 +173,7 @@ public class Board extends Container{
         }
     }
 
-    public void displayCards(){
+    public void setCardClickActionListener(){
 
         for (CardView cardView: cardViews) {
             cardView.addActionListener(new ActionListener() {
@@ -180,17 +185,22 @@ public class Board extends Container{
                         selectedCard1 = cardView;
                         cardView.setImage();
                         move = new Move(selectedCard1.getCard());
-                        System.out.println("First selected card: " + move.getCard1().getValue());
                         gameStatus.setMove(move);
 
                         // todo mandare msg
-                        // sendMove();
+                        broadcastMessageMove(gameStatus);
 
+                        System.out.println("First selected card: " + move.getCard1().getValue());
                     } else if (selectedCard2==null) {
                         //cardView.removeActionListener(this);
                         selectedCard2 = cardView;
                         cardView.setImage();
                         move = new Move(selectedCard1.getCard(), selectedCard2.getCard());
+                        gameStatus.setMove(move);
+
+                        // todo mandare msg
+                        broadcastMessageMove(gameStatus);
+
                         System.out.println("Second selected card: " + move.getCard2().getValue());
                         System.out.println("Match: " + move.isMatch());
 
@@ -202,13 +212,16 @@ public class Board extends Container{
                             gameStatus.getShowingCards().add(move.getCard2());
                             cardViewsMatch.add(selectedCard1);
                             cardViewsMatch.add(selectedCard2);
+
                             showMatchedCards();
+
+                            if(gameStatus.getShowingCards().size()==20){
+                                gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
+                                showGameWinnerMessage();
+                            }
                         }
-
-                        gameStatus.setMove(move);
-
                     } else {
-
+                        System.out.println("Two card in this turn have been already selected.");
                     }
                 }
             });
@@ -235,7 +248,7 @@ public class Board extends Container{
         });
     }
 
-    public void setGameWinner(){
+    public void showGameWinnerMessage(){
         int input = JOptionPane.showConfirmDialog(null,
                 "You are the winner!\n\nDo you want to exit the game?",
                 "You are the winner!",
@@ -244,5 +257,11 @@ public class Board extends Container{
         if (input == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
+    }
+
+    public void broadcastMessageMove(GameStatus gameStatus){
+        // todo manda messagio che contiene la mossa appena fatta
+        System.out.println("Send move to other players");
+        gameController.broadcastMessage(gameStatus);
     }
 }
