@@ -16,8 +16,7 @@ public class Player extends Node implements Serializable{
 	private String nickName; /** player nickname*/
     private PLAYER_STATE state; /** player state (ACTIVE, WINNER, CRASH)*/
     private int score; /** player score*/
-    private boolean isMyTurn; /** true if is the turn of the player, otherwise false*/
-
+    
 	/** constructor to use in case of first initialization of object Player, calls the constructor of the Node class*/
     public Player(int id, String nickName, InetAddress host, int port) {
        super(host, port);
@@ -120,31 +119,6 @@ public class Player extends Node implements Serializable{
 	}
 	
 	/**
-     * @desc get turn of player
-     * @return bool $isMyTurn
-   */
-	public boolean isMyTurn() {
-		return isMyTurn;
-	}
-	
-	/**
-     * @desc set turn of a player
-     * @param bool $isMyTurn
-     * @return void
-   */
-	public void setMyTurn(boolean isMyTurn) {
-		this.isMyTurn = isMyTurn;
-	}
-	
-	/**
-     * @desc get turn of a player
-     * @return boolean $isMyTurn
-   */
-	public boolean getMyTurn() {
-		return this.isMyTurn;
-	}
-
-	/**
 	 * @desc set to string player info
 	 */
 	@Override
@@ -154,7 +128,6 @@ public class Player extends Node implements Serializable{
 				", nickName='" + nickName +
 				"', state=" + state +
 				", score=" + score +
-				", isMyTurn=" + isMyTurn +
 				" }";
 	}
 }
