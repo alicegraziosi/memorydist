@@ -80,7 +80,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 		// the turn is assigned to the first registered player, which has id = 1, with
 		// index 0 in the arraylist
 		if(players.size()>0){
-			players.get(0).setMyTurn(true);  // setting the turn to the 1st registered player
+//			players.get(0).setMyTurn(true);  // setting the turn to the 1st registered player
 
 			System.out.println("[RMIRegServ]: Lista dei giocatori:");
 			for (int i = 0; i < players.size(); i++) { // iterate over the players print infos
@@ -134,7 +134,8 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 				-1, // id sender = -1 means that the sender is the registration service
 				showingCards, // list of showing cards
 				notShowingCards, // list of not showing cards
-				null // move is null when it is the first time that the gameStatus is initialized
+				null, // move is null when it is the first time that the gameStatus is initialized
+				players.get(0)
 		);
 
 		if (!start)
