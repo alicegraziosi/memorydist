@@ -20,7 +20,7 @@ public class GameStatus implements Serializable {
     private ArrayList<Card> showingCards;
  	private ArrayList<Card> notShowingCards;
     private Move move;
-    private Player currentPlayer;
+    Player currentPlayer;
     private HashMap<Integer,PLAYER_STATE> playersAvailability = new HashMap<Integer,PLAYER_STATE>();
     
     /**
@@ -46,14 +46,24 @@ public class GameStatus implements Serializable {
                       ArrayList<Card> showingCards,
                       ArrayList<Card> notShowingCards,
                       Move move,
-                      Player currentPlayer) {
-        this.playersList = playersList;
-        this.idSender = idSender;
-        this.showingCards = showingCards;
-        this.notShowingCards = notShowingCards;
-        this.move = move;
-        this.currentPlayer = currentPlayer;
-    }
+                      Player currentPlayer) {}
+
+
+    /** constructor */
+//    public GameStatus(int id,
+//                      ArrayList<Player> playersList,
+//                      int idSender,
+//                      ArrayList<Card> showingCards,
+//                      ArrayList<Card> notShowingCards,
+//                      Move move) {
+//        this.id = id;
+//        this.playersList = playersList;
+//        this.idSender = idSender;
+//        this.showingCards = showingCards;
+//        this.notShowingCards = notShowingCards;
+//        this.move = move;
+//        this.currentPlayer = currentPlayer;
+//    }
     
     
     

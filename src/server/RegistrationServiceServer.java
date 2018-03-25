@@ -46,6 +46,10 @@ public class RegistrationServiceServer {
 
         System.setProperty("java.security.policy", "file:./security.policy");
 
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new SecurityManager());
+        }
+
         int port = 1099;
 
         final int timeout; // registration service timeout
@@ -53,10 +57,6 @@ public class RegistrationServiceServer {
             timeout = 30; // default timeout in seconds
         } else {
             timeout = Integer.parseInt(args[0]);
-        }
-
-        if (System.getSecurityManager() == null) {
-            System.setSecurityManager(new SecurityManager());
         }
 
         try {
@@ -74,21 +74,14 @@ public class RegistrationServiceServer {
                 ex.printStackTrace();
             }
 
-
             // instance of remote obj implementation
             RemoteRegistrationServerImpl registration = new RemoteRegistrationServerImpl();
 
             final RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) 
             		UnicastRemoteObject.exportObject(registration, 0);
 
-            //old
-            //String name = "registrazione";
-            //registry.bind(name, stub);
-
-            //new
-            String name = "rmi://" + host + ":" + port + "/registrazione";
-            //String name = "rmi://localhost:1099/registrazione";
-            registry.rebind(name, stub);
+            String location = "rmi://" + host + ":" + port + "/registrazione";
+            registry.rebind(location, stub);
 
             Thread serverThread = new Thread() {
                 public void run() {
@@ -96,7 +89,6 @@ public class RegistrationServiceServer {
                     System.out.println("Servizio di registrazione in attesa di giocatori...");
                     sleep(timeout * 1000);
                     stub.stopService();
-                    //Naming.unbind(name);
                     System.out.println("Servizio di registrazione chiuso.");
                 } catch (InterruptedException e) {
                     e.printStackTrace();

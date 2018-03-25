@@ -128,6 +128,8 @@ public class Player extends Node implements Serializable{
 				", nickName='" + nickName +
 				"', state=" + state +
 				", score=" + score +
+				", host =" + host +
+				", port =" + port +
 				" }";
 	}
 }

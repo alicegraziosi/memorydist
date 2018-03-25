@@ -37,6 +37,7 @@ public class PlayerClient {
     public static ArrayList<Player> players; // array list of player
     public static GameStatus gameStatus; // global status of the game
     public static BlockingQueue<GameStatus> buffer; // ?
+    public static Board board;
 
     // timer mossa
     private static Timer timer;
@@ -47,8 +48,6 @@ public class PlayerClient {
     }
 
     public static void main(final String[] args) {
-
-        //System.setProperty("java.security.policy", "./../../security.policy");
 
         Thread t = new Thread(new Runnable() {
             //@Override
@@ -89,10 +88,7 @@ public class PlayerClient {
 
                     System.out.println("[Client]: Richiesta registrazione a server " + regServerHost);
                     Registry registry = LocateRegistry.getRegistry(regServerHost);
-                    //old
-                    //RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) registry.lookup("registrazione");
 
-                    //new
                     String name = "rmi://" + regServerHost + ":" + regServerPort + "/registrazione";
                     RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt)
                             registry.lookup(name);
@@ -129,19 +125,20 @@ public class PlayerClient {
 
                         System.out.println("[Client]: Inizio del gioco.");
 
+
                         GameController gameController = new GameController(id, players, gameStatus, buffer);
 
                         // ogni client ha il suo registro rmi sulla propria porta
                         setupRMIregistryAndServer(gameController);
 
                         // viene mostrato il tavolo di gioco
-                        // funziona! ma è commentato per comodità, per ora
-                        Board board = new Board(gameStatus);
+                        // NON FUNZIONA è commentato per comodità, per ora
+                        board = new Board(gameStatus, id, gameController);
                         //board.init();
 
                         // params: int delay, int period
                         int delay = 5;
-                        int period = 15;
+                        int period = 25;
                         gameController.startTimeout(delay, period);
 
                         //playGame();
@@ -206,8 +203,7 @@ public void broadcastUpdatedGame(GameStatus gameStatus) throws RemoteException, 
         timerTask.cancel();
         timer.cancel();
     }
-
-    }
+}
 
 
 
