@@ -4,7 +4,7 @@ import model.gameStatus.GameStatus;
 import model.move.Move;
 import model.player.Player;
 import rmi.RemoteMessageServiceInt;
-import java.net.InetAddress;
+import server.PlayerServer;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -16,6 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import client.PlayerClient;
+import listener.DataReceiverListener;
 import server.PlayerServer;
 import view.board.Board;
 import view.board.Info;
@@ -31,11 +32,10 @@ import view.board.Info;
  * 7) timer task
  * */
 
-public class GameController{
+public class GameController implements DataReceiverListener {
 
-
-    public int id; // current player id
-    public ArrayList<Player> players; // array list of player
+    public int currentId; // current player id
+ 	public ArrayList<Player> players; // array list of player
     public GameStatus gameStatus; // global status of the game, with info of current player
     public BlockingQueue<GameStatus> buffer; // ?
     private PlayerClient playerClient; 
@@ -49,6 +49,8 @@ public class GameController{
     private int turnNumber;
 
     private Board board;
+    private int id;
+
     /**
      * GameController constructor
      * */
@@ -57,7 +59,7 @@ public class GameController{
                           GameStatus gameStatus,
                           BlockingQueue<GameStatus> buffer,
                           Board board) {
-        this.id = id;
+        this.currentId = id;
         this.gameStatus = gameStatus;
         this.players = players;
         this.buffer = buffer;
@@ -70,7 +72,7 @@ public class GameController{
     /**
      * function which manages the single round of the game
      * */
-    public void playGame(){
+    public void playGame() {
 
         // todo con i thread o senza!? non lo so...
         Thread t = new Thread(new Runnable() {
@@ -88,90 +90,90 @@ public class GameController{
                     if (gameStatus.getShowingCards().size() < 20) {
                         // altrimenti si lascia giocare l'ultimo giocatore
 
-                            // 0) se ci sono ancora carte da scoprire e se è rimasto più di un giocatore, altrimenti si lascia giocare l'ultimo giocatore
+                        // 0) se ci sono ancora carte da scoprire e se è rimasto più di un giocatore, altrimenti si lascia giocare l'ultimo giocatore
 
-                            if (gameStatus.getPlayersList().get(id).isMyTurn()) {
-                                System.out.println("[GameController]: E' il mio turno (Giocatore " + id + ").");
-                                //System.out.println("[GameController[: gameStatus corrente: " + gameStatus.toString());
+                        if (gameStatus.getPlayersList().get(id).isMyTurn()) {
+                            System.out.println("[GameController]: E' il mio turno (Giocatore " + id + ").");
+                            //System.out.println("[GameController[: gameStatus corrente: " + gameStatus.toString());
 
-                                board.unblockCards();
-                                board.getInfo().update(gameStatus, id);
+                            board.unblockCards();
+                            board.getInfo().update(gameStatus, id);
 
-                                /** E' il turno del giocatore, cose da fare:
-                                 1) accertarsi che il giocatore corrente abbia un $gameStatus aggiornato
-                                 2) giocatore gioca la prima carta
-                                 a) gioca la carta
-                                 b) aggiorna $gameStatus facendo BROADCAST
-                                 3) giocatore gioca la seconda carta
-                                 a) gioca la carta con controllo matching e tutto il resto
-                                 b) aggiorna $gameStatus facendo BROADCAST
-                                 4) gestire il "passaggio" del turno
-                                 */
+                            /** E' il turno del giocatore, cose da fare:
+                             1) accertarsi che il giocatore corrente abbia un $gameStatus aggiornato
+                             2) giocatore gioca la prima carta
+                             a) gioca la carta
+                             b) aggiorna $gameStatus facendo BROADCAST
+                             3) giocatore gioca la seconda carta
+                             a) gioca la carta con controllo matching e tutto il resto
+                             b) aggiorna $gameStatus facendo BROADCAST
+                             4) gestire il "passaggio" del turno
+                             */
 
 
-                                // todo setto il giocatore che ha il prossimo turno (
-                                // (funziona solo con due giocatori)
-                                // todo è un casino con i .sleep.. ho provato con timer
+                            // todo setto il giocatore che ha il prossimo turno (
+                            // (funziona solo con due giocatori)
+                            // todo è un casino con i .sleep.. ho provato con timer
 
-                                // controllo variabile setMyTurn di tutti i giocatori
-                                //                for (int i = 0; i < players.size(); i++) {
-                                //                	System.out.println("[GameController: checking the players turns...");
-                                //                	System.out.println("[GameController]: player " + players.get(i).getId() + " turn :" + Boolean.toString(players.get(i).getMyTurn()) );
-                                //
-                                //                }
+                            // controllo variabile setMyTurn di tutti i giocatori
+                            //                for (int i = 0; i < players.size(); i++) {
+                            //                	System.out.println("[GameController: checking the players turns...");
+                            //                	System.out.println("[GameController]: player " + players.get(i).getId() + " turn :" + Boolean.toString(players.get(i).getMyTurn()) );
+                            //
+                            //                }
 
-                                // PER IL MOMENTO COMMENTATO CODICE PER SETTARE A FALSE IL TURNO DI TUTTI GLI ALTRI
-                                // id parte da 1, l'indice da 0
-                                //                for (int i = 0; i < players.size(); i++) {
-                                //                    // setto tutti a myTurn false
-                                //                    players.get(i).setMyTurn(false);
-                                //                }
+                            // PER IL MOMENTO COMMENTATO CODICE PER SETTARE A FALSE IL TURNO DI TUTTI GLI ALTRI
+                            // id parte da 1, l'indice da 0
+                            //                for (int i = 0; i < players.size(); i++) {
+                            //                    // setto tutti a myTurn false
+                            //                    players.get(i).setMyTurn(false);
+                            //                }
 
-                                /**
-                                 * 4) gestione passaggio del turno
-                                 * */
-                                //gameStatus.setNextTurn(id) da impl
+                            /**
+                             * 4) gestione passaggio del turno
+                             * */
+                            //gameStatus.setNextTurn(id) da impl
 
-                                //
-                                for (int i = 0; i < players.size(); i++) {
-                                    // setto tutti a myTurn false
-                                    players.get(i).setMyTurn(false);
+                            //
+                            for (int i = 0; i < players.size(); i++) {
+                                // setto tutti a myTurn false
+                                players.get(i).setMyTurn(false);
+                            }
+
+                            int index = id + 1;
+                            // se il giocatore corrente è l'ultimo, il prossimo è il primo
+                            if (index == players.size()) {
+                                index = 0;
+                            }
+
+                            // setto il turnNumber al prossimo giocatore non in crash
+                            for (int i = index; i < players.size(); i++) {
+                                if (!players.get(i).isCrashed()) {
+                                    players.get(i).setMyTurn(true);
+                                    System.out.println("Il prossimo giocatore è : " + Integer.valueOf(i).toString());
+                                    break;
+                                } else {
+                                    System.out.println("sarebbe stato il turnNumber di " + players.get(i).getId() + " ma è crashed");
                                 }
+                            }
 
-                                int index = id + 1;
-                                // se il giocatore corrente è l'ultimo, il prossimo è il primo
-                                if (index == players.size()) {
-                                    index = 0;
-                                }
-
-                                // setto il turnNumber al prossimo giocatore non in crash
-                                for (int i = index; i<players.size(); i++) {
-                                    if (!players.get(i).isCrashed()) {
-                                        players.get(i).setMyTurn(true);
-                                        System.out.println("Il prossimo giocatore è : " + Integer.valueOf(i).toString());
-                                        break;
-                                    } else {
-                                        System.out.println("sarebbe stato il turnNumber di " + players.get(i).getId() + " ma è crashed");
-                                    }
-                                }
-
-                                System.out.println("Faccio broadcast di questa informazione.");
-                                gameStatus.setPlayersList(players);
-                                gameStatus.setIdSender(id);
-                                gameStatus.setId(gameStatus.getId() + 1);
-                                broadcastMessage(gameStatus);
+                            System.out.println("Faccio broadcast di questa informazione.");
+                            gameStatus.setPlayersList(players);
+                            gameStatus.setIdSender(id);
+                            gameStatus.setId(gameStatus.getId() + 1);
+                            broadcastMessage(gameStatus);
 
 
-                                // mossa
-                                // notifica mossa
-                                // aggiorna game status
-                                // aggiorna board
-                                // board.update(gameStatus);
+                            // mossa
+                            // notifica mossa
+                            // aggiorna game status
+                            // aggiorna board
+                            // board.update(gameStatus);
 
-                                // aggiornamento punteggio
+                            // aggiornamento punteggio
 
-                                // prova per vedere se un altro processo è in crash
-                                // todo da togliere, è solo una prova
+                            // prova per vedere se un altro processo è in crash
+                            // todo da togliere, è solo una prova
                                 /*
                                 System.out.println("Faccio broadcast di un messaggio..");
                                 gameStatus.setIdSender(id);
@@ -184,35 +186,34 @@ public class GameController{
                                 broadcastMessage(gameStatus);
                                 */
 
-                                // nel frattempo può andare in crash
+                            // nel frattempo può andare in crash
 
-                                //sleep(10 * 1000);
-                                //playGame();
+                            //sleep(10 * 1000);
 
-                            } else {
-                                // Se non è il suo turnNumber
+                        } else {
+                            // Se non è il suo turnNumber
 
-                                for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
-                                    if (gameStatus.getPlayersList().get(i).isMyTurn()) {
-                                        System.out.println("NON è il mio turno, è il turno del giocatore " + Integer.valueOf(i).toString());
-                                        // la board è bloccata
-                                        board.blockCards();
-                                        board.getInfo().update(gameStatus, i);
-                                        break;
-                                    }
+                            for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
+                                if (gameStatus.getPlayersList().get(i).isMyTurn()) {
+                                    System.out.println("NON è il mio turno, è il turno del giocatore " + Integer.valueOf(i).toString());
+                                    // la board è bloccata
+                                    board.blockCards();
+                                    board.getInfo().update(gameStatus, i);
+                                    break;
                                 }
-                                System.out.println("(Io sono il giocatore " + id + ").");
-                                System.out.println("Resto in ascolto di messaggi...");
+                            }
+                            System.out.println("(Io sono il giocatore " + id + ").");
+                            System.out.println("Resto in ascolto di messaggi...");
 
-                                // se non arrivano mess
-                                // un giocatore è in crash oppure non ha fatto mosse
+                            // se non arrivano mess
+                            // un giocatore è in crash oppure non ha fatto mosse
 
 
-                                //sleep(20 * 1000);
+                            //sleep(20 * 1000);
 
-                                // nel frattempo può andare in crash
+                            // nel frattempo può andare in crash
 
-                                // nel frattempo riceve messaggi
+                            // nel frattempo riceve messaggi
                                 /*
                                 GameStatus receivedMessage = buffer.poll();
                                 if(receivedMessage!=null){
@@ -222,30 +223,29 @@ public class GameController{
                                     System.out.println("receivedMessage poll null");
                                 }*/
 
-                                //playGame();
-                            }
-                        } else {
-                            // all cards are matched
-                            // current player is the winner
-                            // id parte da 1, l'indice da 0
-                            if (gameStatus.getPlayersList().get(id).isMyTurn()) {
-                                // todo this is the winner
-                                System.out.println("You are the winner!");
-                                // broadcast(gamestatus)
-                            } else {
-                                // todo all other playes need to know that the game ended
-                                System.out.println("Another player won the game.");
-                            }
                         }
-                } catch(Exception e){
+                    } else {
+                        // all cards are matched
+                        // current player is the winner
+                        // id parte da 1, l'indice da 0
+                        if (gameStatus.getPlayersList().get(id).isMyTurn()) {
+                            // todo this is the winner
+                            System.out.println("You are the winner!");
+                            // broadcast(gamestatus)
+                        } else {
+                            // todo all other playes need to know that the game ended
+                            System.out.println("Another player won the game.");
+                        }
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
         t.start();
-
     }
+
     
     /**
      * function which manages the timers of the round
@@ -278,15 +278,18 @@ public class GameController{
 
         for (int i = 0; i < players.size(); i++) {
             // non lo rimanda a se stesso e ai nodi in crash
-            if(i != id && !players.get(i).isCrashed()) {
-                try {
+            if(i+1 != currentId && !players.get(i).isCrashed()) {
+                Registry registry = null;
+            if(i != currentId && !players.get(i).isCrashed()) {
+
+            	try {
                     String remoteHost = players.get(i).getHost().toString();
                     int remotePort = players.get(i).getPort();
 
                     // mi sa che nel client non serve
                     System.setProperty("java.rmi.server.hostname", remoteHost);
 
-                    Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
+                    registry = LocateRegistry.getRegistry(remoteHost, remotePort);
 
                     String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
 
@@ -311,7 +314,7 @@ public class GameController{
             }
         }
     }
-    
+    }
     /**
      * function which checks if a det player is active sending to him a message
      * @param GameStatus $message ?, int $playerId
@@ -348,7 +351,28 @@ public class GameController{
 
     }
     
+	private boolean isMyTurn(GameStatus gameStatus) {
+		return gameStatus.getCurrentPlayer().getId() == this.currentId;
+	}
     
+	
+	/**
+	 * @desc getting id of current player
+	 * @return int $currentId 
+	 * */
+	public int getCurrentId() {
+		return currentId;
+	}
+
+	/**
+	 * @desc setting id of current player
+	 * @param int $currentId
+	 * */
+	public void setCurrentId(int currentId) {
+		this.currentId = currentId;
+	}
+	
+	
     /**
      * getting the game status
      * @return GameStatus $gameStatus
@@ -365,7 +389,23 @@ public class GameController{
         this.gameStatus = gameStatus;
     }
 
+
     public void updateBoardAfterMove(Move move){
         board.updateBoardAfterMove(move);
     }
+
+    //?
+    @Override
+	public void setupRemoteClient(GameStatus gameStatus) throws RemoteException, NotBoundException {
+		//this.playerClient = new PlayerClient(game, id);
+		//setGame(game);
+	}
+
+    //?
+	@Override
+	public void setGame(GameStatus gameStatus) throws RemoteException, NotBoundException {
+		// TODO Auto-generated method stub
+		
+	}
 }
+

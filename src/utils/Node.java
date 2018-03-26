@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import rmi.RemoteGameInterface;
+
 /**
  * @desc Class representing the network node
  */
@@ -16,8 +18,10 @@ public class Node implements Serializable{
     /** NON SONO SICURO DI QUESTO */
     // il nodo successivo in una rete ad anello.
     private Node successivo;
+	private	RemoteGameInterface server; 
        
-    /**
+
+	/**
      * @desc build object by passing host and port
      * @param String $host, int $port
    */
@@ -69,11 +73,21 @@ public class Node implements Serializable{
         this.port = port;
     }
     
-    public Node getSuccessivo() {
-        return successivo;
-    }
-
-    public void setSuccessivo(Node successivo) {
-        this.successivo = successivo;
-    }
+    /**
+     * @desc get server of the node
+     * @param 
+     * @return RemoteGameInterface $server
+   */
+    public RemoteGameInterface getServer() {
+		return server;
+	}
+    
+    /**
+     * @desc set server of the node
+     * @param RemoteGameInterface $server
+     * @return void
+   */
+	public void setServer(RemoteGameInterface server) {
+		this.server = server;
+	}
 }

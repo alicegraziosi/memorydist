@@ -1,78 +1,146 @@
 package model.gameStatus;
 
 import model.card.Card;
-import model.player.Player;
+import model.player.*;
+import exception.NextPlayerNotFoundException;
 import model.move.Move;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 /**
  *  @desc class representing the global state of the game, gameStatus is the msg updated each turn
  */
 public class GameStatus implements Serializable {
 
-    private int id;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	private int id;
     private ArrayList<Player> playersList;
-    private int idSender;
+    private int idSender; // ?
     private ArrayList<Card> showingCards;
  	private ArrayList<Card> notShowingCards;
     private Move move;
+    Player currentPlayer;
+    private HashMap<Integer,PLAYER_STATE> playersAvailability = new HashMap<Integer,PLAYER_STATE>();
+    
+    /**
+     * Starting game constructor
+     * */
+    public GameStatus(ArrayList<Player> playersList,
+					  ArrayList<Card> showingCards,
+					  ArrayList<Card> notShowingCards,
+					  Move move) {
 
-    public int getId() {
-        return id;
-    }
+		this.playersList = playersList;
+		this.showingCards = showingCards;
+		this.notShowingCards = notShowingCards;
+		
+		// Draw the starting player
+		this.currentPlayer = playersList.get(0);
 
-    public void setId(int id) {
-        this.id = id;
-    }
+		// Setting each player active
+		for (Player p : playersList){
+			this.playersAvailability.put(p.getId(), PLAYER_STATE.ACTIVE);
+		}
+
+		this.move = move;
+	}
+    
+	/** constructor */
+    public GameStatus(ArrayList<Player> playersList,
+                      int idSender,
+                      ArrayList<Card> showingCards,
+                      ArrayList<Card> notShowingCards,
+                      Move move,
+                      Player currentPlayer) {}
+
 
     /** constructor */
-    public GameStatus(int id,
-                      ArrayList<Player> playersList,
+    public GameStatus(ArrayList<Player> playersList,
                       int idSender,
                       ArrayList<Card> showingCards,
                       ArrayList<Card> notShowingCards,
                       Move move) {
-        this.id = id;
         this.playersList = playersList;
         this.idSender = idSender;
         this.showingCards = showingCards;
         this.notShowingCards = notShowingCards;
         this.move = move;
+        this.currentPlayer = currentPlayer;
     }
+    
+    
     
     /**
      * setting the next turn managing players array list in gameStatus
      * @param GameStatus $gameStatus
      * */
-    public void setNextTurn(int idCurrentPlayer){
-    
+    public Player getNextPlayer() throws NextPlayerNotFoundException{
+    	
+    	System.out.println("[GameStatus.setNextTurn]: idCurrentPlayer " + this.currentPlayer.getId());
     	// compute id next player
-        int indexNextPlayer = idCurrentPlayer+1;
+        int indexNextPlayer = this.currentPlayer.getId() + 1;
+        
         // se il giocatore corrente è l'ultimo, il prossimo è il primo
-        if(indexNextPlayer>playersList.size()){
-            indexNextPlayer = 1;
+        if(indexNextPlayer > playersList.size()){
+            indexNextPlayer = 0;
         }
 
         // setto il turno al prossimo giocatore non in crash
-        for (int i = indexNextPlayer; i<=playersList.size(); i++){
-            if(!playersList.get(i-1).isCrashed()) {
-                playersList.get(i-1).setMyTurn(true);
-                System.out.println("Il prossimo giocatore è : " + Integer.valueOf(i).toString());
-                break;
+        for (int i = indexNextPlayer; i < playersList.size(); i++){
+        	Player iteratePlayer = playersList.get(i);
+        	
+            if(!playersList.get(i).isCrashed()) {
+                Player newCurrentPlayer = iteratePlayer;
+            	System.out.println("[GameStatus]: Il prossimo giocatore (settato) è : " + Integer.valueOf(i).toString());
+                return newCurrentPlayer;
             } else {
-                System.out.println(playersList.get(i-1).toString());
+                System.out.println(playersList.get(i).toString());
             }
         }
+        
+        throw new NextPlayerNotFoundException();
     }
     
     /**
-     * @desc return the current player
-     * @return Player $current
+     * @desc checking if some player has won
+     * @return boolean, true if one player has won, otherwise false
      * */
-//    public Player getCurrentPlayer() {
-//    	
-//    }
+    public boolean playerWon() {
+		for (Player player : playersList) {
+			if (player.getState() == PLAYER_STATE.WINNER) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+    
+    /**
+     * @desc setting the state of det player
+     * @param int $id of the player, PLAYER_STATE $state of the player
+     * */
+    public void setPlayerState(int id, PLAYER_STATE state){
+		playersAvailability.put(id, state);
+	}
+	
+    /**
+     * @desc getting the state of det player
+     * @param int $id of the player
+     * @return PLAYER_STATE $state
+     * */
+	public PLAYER_STATE getPlayerState(int id){
+		return playersAvailability.get(id);
+	}
     
     /**
 	 * @desc set to string game status
@@ -167,5 +235,22 @@ public class GameStatus implements Serializable {
  	public void setMove(Move move) {
  		this.move = move;
  	}
+ 	
+	/**
+     *  @desc get currentPlayer
+     *  @return Player $currentPlayer
+     */
+    public Player getCurrentPlayer() {
+		return currentPlayer;
+	}
+    
+	/**
+     *  @desc set current player
+     *  @param Player $currentPlayer
+     *  @return void
+     */
+	public void setCurrentPlayer(Player currentPlayer) {
+		this.currentPlayer = currentPlayer;
+	}
 
 }

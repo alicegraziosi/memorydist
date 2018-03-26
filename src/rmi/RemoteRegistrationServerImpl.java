@@ -133,9 +133,8 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 	 */
 
 	public synchronized GameStatus getGameStatus() {
-
-		// creating new gameStatus
-		GameStatus gameStatus = new GameStatus(0, players, // list of players
+		
+		GameStatus gameStatus = new GameStatus(players, // list of players
 				-1, // id sender = -1 means that the sender is the registration service
 				showingCards, // list of showing cards
 				notShowingCards, // list of not showing cards

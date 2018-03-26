@@ -6,6 +6,7 @@ import model.player.Player;
 import rmi.RemoteMessageServiceInt;
 import rmi.RemoteRegistrationServerInt;
 import server.PlayerServer;
+import model.player.*;
 import utils.Node;
 import view.board.Board;
 
@@ -120,9 +121,9 @@ public class PlayerClient {
                         System.out.println("[Client]: Numero giocatori: " + players.size());
 
                         System.out.println("[Client]: Sono il giocatore:");
-                        System.out.println("nome: " + players.get(id).getNickName() +
-                                ", id: " + players.get(id).getId() +
-                                ", isMyTurn: " + players.get(id).isMyTurn() + "\n");
+//                        System.out.println("nome: " + players.get(id).getNickName() +
+//                                ", id: " + players.get(id).getId() +
+//                                ", isMyTurn: " + players.get(id).isMyTurn() + "\n");
 
                         System.out.println("[Client]: Lista dei giocatori:");
                         for(int i=0; i<players.size(); i++){
@@ -168,6 +169,41 @@ public class PlayerClient {
         t.start();
     }
 
+public void broadcastUpdatedGame(GameStatus gameStatus) throws RemoteException, NotBoundException{
+		
+		Boolean booError = false;
+		for(Player remote: players){
+			try{
+//				System.out.println("[PlayerClient.broadcastUpdatedGame]: " + gameStatus.getPlayersList().get(0).getMyTurn());
+//				System.out.println("[PlayerClient.broadcastUpdatedGame]: " + gameStatus.getPlayersList().get(1).getMyTurn());
+				remote.getServer().sendGame(gameStatus);				
+			}
+			catch(Exception e){				
+				// gestione nuovo giocatore in caso di crash da implementare
+				for(Player player : gameStatus.getPlayersList()){
+					if (player.getId() == remote.getId()){
+						gameStatus.getPlayersList().remove(player);
+						//gameStatus.setPlayerState(player.getId(), PLAYER_STATE.CRASH);
+						break;
+					}
+				}
+				players.remove(remote);
+
+				// gestione nuovo giocatore in caso di crash
+//				Player newCurrent = gameStatus.getNextPlayer(CurrentNode.getInstance().getId());
+//				gameStatus.setCurrent(newCurrent);
+//				
+//				booError = true;
+				break;
+				
+			}
+		}
+		
+		if (booError) {		
+			broadcastUpdatedGame(gameStatus);
+		}
+	}
+    
     public static void setupRMIregistryAndServer(GameController gameController){
         buffer = new LinkedBlockingQueue();
         PlayerServer.setupRMIregistryAndServer(host, port, buffer, gameController);
