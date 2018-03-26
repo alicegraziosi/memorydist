@@ -5,13 +5,14 @@ import model.gameStatus.GameStatus;
 import view.board.Board;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @desc implementation of remote message service interface
  */
-public class RemoteMessageServiceImpl implements RemoteMessageServiceInt {
+public class RemoteMessageServiceImpl extends UnicastRemoteObject implements RemoteMessageServiceInt {
 
 	private BlockingQueue<GameStatus> inputBuffer;
 	private GameController gameController;
@@ -28,7 +29,7 @@ public class RemoteMessageServiceImpl implements RemoteMessageServiceInt {
 	private ReentrantLock msgCounterLock;
 
 	public RemoteMessageServiceImpl(BlockingQueue<GameStatus> inputBuffer,
-									GameController gameController) {
+									GameController gameController) throws RemoteException {
 		this.inputBuffer = inputBuffer;
 		this.gameController = gameController;
 		msgCounterLock = new ReentrantLock();
@@ -40,11 +41,25 @@ public class RemoteMessageServiceImpl implements RemoteMessageServiceInt {
 		// il processo su cui è invocato sendMessage riceve il messaggio in questo punto
 
 		inputBuffer.add(gameStatus);
-		// todo non fare questo quando l id del msg è minore dell id corrente
+
+		// todo processare messaggio quando l id del msg è minore dell id corrente
+
+		System.out.println("[RMISImpl]: Messaggio ricevuto dal giocatore " + gameStatus.getIdSender());
+		//System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());
+
+		for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
+			if (gameStatus.getPlayersList().get(i).isMyTurn()) {
+				System.out.println("Next is: " + Integer.valueOf(i).toString());
+				break;
+			}
+		}
 		gameController.setGameStatus(gameStatus);
-		//board.update(gameStatus);
-        System.out.println("[RMISImpl]: Messaggio ricevuto dal giocatore " + gameStatus.getIdSender());
-        //System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());
+
+		if(gameStatus.getMove() != null){
+			System.out.println("[RMISImpl]: ricevuta mossa");
+			gameController.updateBoardAfterMove(gameStatus.getMove());
+		}
+
 		return 1;
 	}
 

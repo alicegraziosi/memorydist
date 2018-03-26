@@ -1,6 +1,7 @@
 package controller;
 
 import model.gameStatus.GameStatus;
+import model.move.Move;
 import model.player.Player;
 import rmi.RemoteMessageServiceInt;
 import java.net.InetAddress;
@@ -16,6 +17,8 @@ import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import client.PlayerClient;
 import server.PlayerServer;
+import view.board.Board;
+import view.board.Info;
 
 /**
  * Controller of the game, contains the following attributes
@@ -44,20 +47,24 @@ public class GameController{
     private TimerTask timerTask;
 
     private int turnNumber;
-    
+
+    private Board board;
     /**
      * GameController constructor
      * */
     public GameController(int id,
                           ArrayList<Player> players,
                           GameStatus gameStatus,
-                          BlockingQueue<GameStatus> buffer) {
+                          BlockingQueue<GameStatus> buffer,
+                          Board board) {
         this.id = id;
         this.gameStatus = gameStatus;
         this.players = players;
         this.buffer = buffer;
         this.turnNumber = 0;
         this.msgId = 0;
+        this.board = board;
+        board.init();
     }
 
     /**
@@ -70,13 +77,15 @@ public class GameController{
             @Override
             public void run() {
 
+                gameStatus.setMove(null);
+                board.reset(gameStatus);
+
                 try {
                     turnNumber++;
                     System.out.println("\n\n******** Turn number " + turnNumber + " ********");
 
                     //se ci sono ancora carte da scoprire e se è rimasto più di un giocatore
                     if (gameStatus.getShowingCards().size() < 20) {
-
                         // altrimenti si lascia giocare l'ultimo giocatore
 
                             // 0) se ci sono ancora carte da scoprire e se è rimasto più di un giocatore, altrimenti si lascia giocare l'ultimo giocatore
@@ -84,6 +93,9 @@ public class GameController{
                             if (gameStatus.getPlayersList().get(id).isMyTurn()) {
                                 System.out.println("[GameController]: E' il mio turno (Giocatore " + id + ").");
                                 //System.out.println("[GameController[: gameStatus corrente: " + gameStatus.toString());
+
+                                board.unblockCards();
+                                board.getInfo().update(gameStatus, id);
 
                                 /** E' il turno del giocatore, cose da fare:
                                  1) accertarsi che il giocatore corrente abbia un $gameStatus aggiornato
@@ -180,12 +192,13 @@ public class GameController{
                             } else {
                                 // Se non è il suo turnNumber
 
-                                // la board è bloccata
-                                //board.block();
-
                                 for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
                                     if (gameStatus.getPlayersList().get(i).isMyTurn()) {
                                         System.out.println("NON è il mio turno, è il turno del giocatore " + Integer.valueOf(i).toString());
+                                        // la board è bloccata
+                                        board.blockCards();
+                                        board.getInfo().update(gameStatus, i);
+                                        break;
                                     }
                                 }
                                 System.out.println("(Io sono il giocatore " + id + ").");
@@ -242,7 +255,6 @@ public class GameController{
         timerTask  = new TimerTask() {
             @Override
             public void run() {
-
                 playGame();
             }
         };
@@ -252,24 +264,14 @@ public class GameController{
     }
 
     /**
-     * function which stops time
-     * */
-    public void stopTimeout(){
-        timerTask.cancel();
-        timer.cancel();
-    }
-
-    /**
      * function which broadcast the global game status to the other players
      * @param GameStatus $message
      * */
     public void broadcastMessage(GameStatus gamestatus) {
 
-        // mi sa che nel client non serve
-        //System.setProperty("java.rmi.server.hostname", host);
-
         System.setProperty("java.security.policy", "file:./security.policy");
 
+        // I download server's stubs ==> must set a SecurityManager
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
@@ -281,9 +283,14 @@ public class GameController{
                     String remoteHost = players.get(i).getHost().toString();
                     int remotePort = players.get(i).getPort();
 
+                    // mi sa che nel client non serve
+                    System.setProperty("java.rmi.server.hostname", remoteHost);
+
+                    Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
+
                     String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
 
-                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) Naming.lookup(location);
+                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
 
                     int response = stub.sendMessage(gamestatus);
                     System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i) + ": " + response);
@@ -299,8 +306,6 @@ public class GameController{
                     gameStatus.setPlayersList(players);
 
                 } catch (NotBoundException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
             }
@@ -358,5 +363,9 @@ public class GameController{
      * */
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
+    }
+
+    public void updateBoardAfterMove(Move move){
+        board.updateBoardAfterMove(move);
     }
 }

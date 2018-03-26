@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 
 public class Node implements Serializable{
 
-    protected InetAddress host; /** the host of the node*/
+    protected String host; /** the host of the node*/
     protected int port; /** the port of the node*/
 
     /** NON SONO SICURO DI QUESTO */
@@ -19,9 +19,9 @@ public class Node implements Serializable{
        
     /**
      * @desc build object by passing host and port
-     * @param InetAddress $host, int $port
+     * @param String $host, int $port
    */
-	public Node(InetAddress host, int port) {
+	public Node(String host, int port) {
 		this.host = host;
 		this.port = port;
 	}
@@ -31,7 +31,7 @@ public class Node implements Serializable{
      * @param string $host, int $port
    */
     public void buildNodeByString(String host, int port) throws UnknownHostException {
-		this.host = InetAddress.getByName(host);
+		this.host = host;
     	this.port = port;
 	}
     
@@ -39,7 +39,7 @@ public class Node implements Serializable{
      * @desc get the host
      * @return InetAddress $host
    */
-    public InetAddress getHost() {
+    public String getHost() {
         return host;
     }
     
@@ -48,7 +48,7 @@ public class Node implements Serializable{
      * @param InetAddress $host
      * @return void
    */
-    public void setHost(InetAddress host) {
+    public void setHost(String host) {
         this.host = host;
     }
     

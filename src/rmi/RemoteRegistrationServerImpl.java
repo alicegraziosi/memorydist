@@ -6,6 +6,8 @@ import model.player.Player;
 import utils.Node;
 
 import java.net.InetAddress;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -13,7 +15,7 @@ import java.util.Collections;
  * @desc implementation class of remote registration server
  *
  */
-public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt {
+public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements RemoteRegistrationServerInt {
 
 	private int maxPlayersNumber;
 	/** max number of players */
@@ -25,14 +27,33 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 	/** tells if service is opened */
 	private boolean start;
 
+	ArrayList<Card> showingCards;
+	ArrayList<Card> notShowingCards;
+
 	/** tells if service is started */
 
 	/** constructor */
-	public RemoteRegistrationServerImpl() {
+	public RemoteRegistrationServerImpl() throws RemoteException {
 		this.maxPlayersNumber = 4;
 		this.players = new ArrayList();
 		this.isServiceOpen = true;
 		start = false;
+
+		// card generation
+		int cardNumber = 20;
+		showingCards = new ArrayList<Card>(); // no one
+		notShowingCards = new ArrayList<Card>(); // all
+
+		for (int i = 0; i < 20; i++) {
+			if (i >= 10) { // if true generate cards with same values of previous cards, (10,0), (11,1)
+				Card card = new Card(i, i - 10);
+				notShowingCards.add(card);
+			} else { // generate cards with this pattern: (0,0), (1,1)
+				Card card = new Card(i, i);
+				notShowingCards.add(card);
+			}
+		}
+		Collections.shuffle(notShowingCards);
 	}
 
 	/**
@@ -40,7 +61,7 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 	 * @param String $nickName, InetAddress $hostAddress, int $port
 	 * @return int playerIndex or -1 if time is over or reached max players number
 	 */
-	public synchronized int registerPlayer(String nickName, InetAddress hostAddress, int port) {
+	public synchronized int registerPlayer(String nickName, String hostAddress, int port) {
 
 		if (playerIndex < maxPlayersNumber) {
 
@@ -110,23 +131,8 @@ public class RemoteRegistrationServerImpl implements RemoteRegistrationServerInt
 	 * @desc creating and getting the game status, creating not showing cards
 	 * @return gameStatus object
 	 */
-	public synchronized GameStatus getGameStatus() {
-		// initial gamestatus setting
-		int cardNumber = 20;
-		ArrayList<Card> showingCards = new ArrayList<Card>(); // no one
-		ArrayList<Card> notShowingCards = new ArrayList<Card>(); // all
 
-		// card generation
-		for (int i = 0; i < 20; i++) {
-			if (i >= 10) { // if true generate cards with same values of previous cards, (10,0), (11,1)
-				Card card = new Card(i, i - 10);
-				notShowingCards.add(card);
-			} else { // generate cards with this pattern: (0,0), (1,1)
-				Card card = new Card(i, i);
-				notShowingCards.add(card);
-			}
-		}
-		Collections.shuffle(notShowingCards);
+	public synchronized GameStatus getGameStatus() {
 
 		// creating new gameStatus
 		GameStatus gameStatus = new GameStatus(0, players, // list of players

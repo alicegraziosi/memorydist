@@ -8,6 +8,7 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.ExportException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.BlockingQueue;
 
@@ -21,7 +22,7 @@ import view.board.Board;
 public class PlayerServer {
 
 
-    public static void setupRMIregistryAndServer(InetAddress host, int port,
+    public static void setupRMIregistryAndServer(String host, int port,
                                                  BlockingQueue<GameStatus> buffer,
                                                  GameController gameController){
 
@@ -36,14 +37,22 @@ public class PlayerServer {
 
         try {
 
+            Registry registry = null;
+            try {
+                registry = LocateRegistry.createRegistry(port);
+                System.out.println("Registry created on port " + port);
+            } catch (ExportException ex) {
+                registry = LocateRegistry.getRegistry(port);
+                System.out.println("Registry found on port " + port);
+            } catch (RemoteException ex) {
+                System.out.println("Error creating registry on port " + port);
+                ex.printStackTrace();
+            }
+
             // instance of the remote obj implementation
             RemoteMessageServiceInt messageService = new RemoteMessageServiceImpl(buffer, gameController);
-            RemoteMessageServiceInt stub = (RemoteMessageServiceInt)
-            		UnicastRemoteObject.exportObject(messageService, 0);
-
             String location = "rmi://" + host + ":" + port + "/messageService";
-            Naming.rebind(location, stub);
-
+            registry.rebind(location, messageService);
 
         } catch (RemoteException e) {
             e.printStackTrace();

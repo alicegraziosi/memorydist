@@ -31,7 +31,7 @@ public class PlayerClient {
     public static int id;
     public static String regServerHost; // registration server host (localhost o per esempio Gisella: 130.136.4.121)
     public static int regServerPort; // 1099
-    public static InetAddress host; // player host
+    public static String host; // player host
     public static int port; // player port
     public static ArrayList<Player> players; // array list of player
     public static GameStatus gameStatus; // global status of the game
@@ -41,6 +41,8 @@ public class PlayerClient {
     // timer mossa
     private static Timer timer;
     private static TimerTask timerTask;
+
+    public static GameController gameController;
 
     public PlayerClient() {
 
@@ -77,21 +79,26 @@ public class PlayerClient {
 
                     System.setProperty("java.security.policy", "file:./security.policy");
 
+                    // I download server's stubs ==> must set a SecurityManager
+                    if (System.getSecurityManager() == null) {
+                        System.setSecurityManager(new SecurityManager());
+                    }
+
                     host = null;
 
                     try{
-                        host = InetAddress.getLocalHost();
+                        host = InetAddress.getLocalHost().getHostAddress();
                     } catch (UnknownHostException ex){
                         ex.printStackTrace();
                     }
 
                     System.out.println("[Client]: Richiesta registrazione a server " + regServerHost);
+
                     Registry registry = LocateRegistry.getRegistry(regServerHost);
 
                     String name = "rmi://" + regServerHost + ":" + regServerPort + "/registrazione";
                     RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt)
                             registry.lookup(name);
-
                     
                     String nomeGiocatore = "default name"; // possiamo prender il  nome da argomento da terminale
                     id = stub.registerPlayer(nomeGiocatore, host, port); // restituisce l'id del giocatore
@@ -125,15 +132,18 @@ public class PlayerClient {
                         System.out.println("[Client]: Inizio del gioco.");
 
 
-                        GameController gameController = new GameController(id, players, gameStatus, buffer);
+
+
+
+                        // viene mostrato il tavolo di gioco
+                        // NON FUNZIONA è commentato per comodità, per ora
+                        PlayerClient playerClient = new PlayerClient();
+                        board = new Board(gameStatus, id, playerClient);
+                        gameController = new GameController(id, players, gameStatus, buffer, board);
 
                         // ogni client ha il suo registro rmi sulla propria porta
                         setupRMIregistryAndServer(gameController);
 
-                        // viene mostrato il tavolo di gioco
-                        // NON FUNZIONA è commentato per comodità, per ora
-                        board = new Board(gameStatus, id, gameController);
-                        //board.init();
 
                         // params: int delay, int period
                         int delay = 5;
@@ -166,6 +176,11 @@ public class PlayerClient {
     public static void stopTimeout(){
         timerTask.cancel();
         timer.cancel();
+    }
+
+    public void sendMoveToController(GameStatus gameStatus){
+        System.out.println("sendMoveToController");
+        gameController.broadcastMessage(gameStatus);
     }
 }
 

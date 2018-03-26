@@ -18,7 +18,7 @@ public interface RemoteRegistrationServerInt extends Remote {
 	/**
 	 * @desc registration player service
 	 */
-	int registerPlayer(String player, InetAddress hostAddress, int port) throws RemoteException;
+	int registerPlayer(String player, String hostAddress, int port) throws RemoteException;
 
 	/**
 	 * @desc stop service

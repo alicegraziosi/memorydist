@@ -2,10 +2,12 @@ package model.move;
 
 import model.card.Card;
 
+import java.io.Serializable;
+
 /**
  * @desc Class representing the game move
 */
-public class Move{
+public class Move implements Serializable{
 
 	private Card card1; /** first card of the move */
 	private Card card2; /** second card of the move */
@@ -92,5 +94,22 @@ public class Move{
 
 	public boolean isMatch() {
 		return match;
+	}
+
+	@Override
+	public String toString() {
+		if(card2 == null){
+			return "Move{" +
+					"card1=" + card1.toString() +
+					", card2=null" +
+					", match=" + match +
+					'}';
+		} else {
+			return "Move{" +
+					"card1=" + card1.toString() +
+					", card2=" + card2.toString() +
+					", match=" + match +
+					'}';
+		}
 	}
 }

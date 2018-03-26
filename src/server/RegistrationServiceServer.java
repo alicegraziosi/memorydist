@@ -60,47 +60,42 @@ public class RegistrationServiceServer {
         }
 
         try {
-            //Registry registry = LocateRegistry.getRegistry();
-
-            // per non dover tutte le volte fare kill del processo rmiregistry
-            // https://stackoverflow.com/questions/8386001/how-to-close-rmiregistry-running-on-particular-port
-
             Registry registry = null;
             try {
-                registry = LocateRegistry.createRegistry(port); // creating registry
+                registry = LocateRegistry.createRegistry(port);
+                System.out.println("Registry created on port " + port);
             } catch (ExportException ex) {
                 registry = LocateRegistry.getRegistry(port);
+                System.out.println("Registry found on port " + port);
             } catch (RemoteException ex) {
+                System.out.println("Error creating registry on port " + port);
                 ex.printStackTrace();
             }
 
-            // instance of remote obj implementation
             RemoteRegistrationServerImpl registration = new RemoteRegistrationServerImpl();
 
-            final RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) 
-            		UnicastRemoteObject.exportObject(registration, 0);
+            //final RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt)
+            //		UnicastRemoteObject.exportObject(registration, 0);
 
             String location = "rmi://" + host + ":" + port + "/registrazione";
-            registry.rebind(location, stub);
+            registry.rebind(location, registration);
 
             Thread serverThread = new Thread() {
                 public void run() {
-                try {
-                    System.out.println("Servizio di registrazione in attesa di giocatori...");
-                    sleep(timeout * 1000);
-                    stub.stopService();
-                    System.out.println("Servizio di registrazione chiuso.");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                    try {
+                        System.out.println("Servizio di registrazione in attesa di giocatori...");
+                        sleep(timeout * 1000);
+                        registration.stopService();
+                        System.out.println("Servizio di registrazione chiuso.");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             };
             serverThread.start();
 
         } catch (Exception e) {
-            System.err.println("Servizio di registrazione exception: " + e.toString());
+            System.err.println("Errore servizio di registrazione");
             e.printStackTrace();
         }
     }

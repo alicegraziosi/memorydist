@@ -30,7 +30,6 @@ public class Board extends Container{
     private JPanel panel2;
 
     private GameStatus gameStatus;
-    private GameController gameController;
     private ArrayList<CardView> cardViews;
     private ArrayList<CardView> cardViewsMatch;
     private CardView selectedCard1;
@@ -41,7 +40,9 @@ public class Board extends Container{
     private JFrame frame;
     private JPanel gridPanelCards;
 
-    public Board(GameStatus gameStatus, int id, GameController gameController) {
+    private PlayerClient playerClient;
+
+    public Board(GameStatus gameStatus, int id, PlayerClient playerClient) {
         this.gameStatus = gameStatus;
         this.cardViews = new ArrayList<>();
         this.cardViewsMatch = new ArrayList<>();
@@ -50,10 +51,11 @@ public class Board extends Container{
         this.move = new Move();
         this.id = id;
         this.info = new Info(gameStatus, id);
-        this.frame = new JFrame("Memory Game");
+        this.frame = new JFrame("Memory Game - Player " + id);
         this.gridPanelCards = new JPanel();
         this.gridPanelCards.setLayout(new GridLayout(4, 5));
-        this.gameController = gameController;
+
+        this.playerClient = playerClient;
     }
 
     //public static void main(String[] args) {
@@ -128,7 +130,7 @@ public class Board extends Container{
     }
 
     // make carks unclickable
-    public void block(){
+    public void blockCards(){
         for (CardView cardView: cardViews) {
             cardView.setLogo();
             cardView.setEnabled(false);
@@ -156,20 +158,29 @@ public class Board extends Container{
         }
     }
 
-    public void update(GameStatus gameStatus) {
+    public void reset(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
         selectedCard1 = null;
         selectedCard2 = null;
-
-        info.setGameStatus(gameStatus);
     }
 
-    // called by not current players
-    public void updateInterfaceAfterMove(Move move) {
-
-        cardViews.get(move.getCard1().getIndex()).setImage();
+    // called by not current players in gamecontroller
+    public void updateBoardAfterMove(Move move) {
+        for (CardView cardView: cardViews) {
+            if(cardView.getCard().getIndex() == move.getCard1().getIndex() &&
+                    cardView.getCard().getValue() == move.getCard1().getValue()){
+                cardView.setImage();
+                break;
+            }
+        }
         if(move.getCard2() != null){
-            cardViews.get(move.getCard2().getIndex()).setImage();
+            for (CardView cardView: cardViews) {
+                if(cardView.getCard().getIndex() == move.getCard2().getIndex() &&
+                        cardView.getCard().getValue() == move.getCard2().getValue()){
+                    cardView.setImage();
+                    break;
+                }
+            }
         }
     }
 
@@ -229,6 +240,15 @@ public class Board extends Container{
 
     }
 
+    public void broadcastMessageMove(GameStatus gameStatus){
+        playerClient.sendMoveToController(gameStatus);
+        System.out.println("mando mossa");
+    }
+
+    public Info getInfo() {
+        return info;
+    }
+
     // ask before exit the application on close
     private void setCloseOperation(){
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -258,10 +278,5 @@ public class Board extends Container{
             System.exit(0);
         }
     }
-
-    public void broadcastMessageMove(GameStatus gameStatus){
-        // todo manda messagio che contiene la mossa appena fatta
-        System.out.println("Send move to other players");
-        gameController.broadcastMessage(gameStatus);
-    }
 }
+

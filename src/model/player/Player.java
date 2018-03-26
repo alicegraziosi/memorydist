@@ -19,7 +19,7 @@ public class Player extends Node implements Serializable{
     private boolean isMyTurn; /** true if is the turn of the player, otherwise false*/
 
 	/** constructor to use in case of first initialization of object Player, calls the constructor of the Node class*/
-    public Player(int id, String nickName, InetAddress host, int port) {
+    public Player(int id, String nickName, String host, int port) {
        super(host, port);
        this.id = id;
        this.nickName = nickName;
