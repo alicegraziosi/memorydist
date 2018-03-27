@@ -2,7 +2,6 @@ package rmi;
 
 import controller.GameController;
 import model.gameStatus.GameStatus;
-import view.board.Board;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -16,15 +15,6 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 
 	private BlockingQueue<GameStatus> inputBuffer;
 	private GameController gameController;
-
-	public int getMessageCounter() {
-		return messageCounter;
-	}
-
-	public void setMessageCounter(int messageCounter) {
-		this.messageCounter = messageCounter;
-	}
-
 	private int messageCounter;
 	private ReentrantLock msgCounterLock;
 
@@ -44,23 +34,32 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 
 		// todo processare messaggio quando l id del msg è minore dell id corrente
 
-		System.out.println("[RMISImpl]: Messaggio ricevuto dal giocatore " + gameStatus.getIdSender());
+		System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " received from player " + gameStatus.getIdSender());
 		//System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());
 
 		for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
 			if (gameStatus.getPlayersList().get(i).isMyTurn()) {
-				System.out.println("Next is: " + Integer.valueOf(i).toString());
+				System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " said that next player is: " + Integer.valueOf(i).toString());
 				break;
 			}
 		}
 		gameController.setGameStatus(gameStatus);
 
 		if(gameStatus.getMove() != null){
-			System.out.println("[RMISImpl]: ricevuta mossa");
+			System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " contains a move");
 			gameController.updateBoardAfterMove(gameStatus.getMove());
 		}
 
 		return 1;
+	}
+
+	public void incMessageCounter() throws RemoteException{
+		msgCounterLock.lock();
+		try {
+			messageCounter++;
+		} finally {
+			msgCounterLock.unlock();
+		}
 	}
 
 	public BlockingQueue<GameStatus> getInputBuffer() {
@@ -71,12 +70,11 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		this.inputBuffer = inputBuffer;
 	}
 
-	public void incMessageCounter() throws RemoteException{
-		msgCounterLock.lock();
-		try {
-			messageCounter++;
-		} finally {
-			msgCounterLock.unlock();
-		}
+	public int getMessageCounter() {
+		return messageCounter;
+	}
+
+	public void setMessageCounter(int messageCounter) {
+		this.messageCounter = messageCounter;
 	}
 }

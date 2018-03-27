@@ -5,7 +5,7 @@ import model.gameStatus.GameStatus;
 import javax.swing.*;
 import java.awt.*;
 
-public class Info extends JPanel {
+public class InfoView extends JPanel {
 
     private GameStatus gameStatus;
     private int id;
@@ -13,7 +13,7 @@ public class Info extends JPanel {
     private JLabel labelTime;
     private JLabel labelScore;
 
-    public Info(GameStatus gameStatus, int id) {
+    public InfoView(GameStatus gameStatus, int id) {
         this.gameStatus = gameStatus;
         this.id = id;
 
@@ -75,29 +75,20 @@ public class Info extends JPanel {
         this.gameStatus = gameStatus;
     }
 
-    public void updateScore(GameStatus gameStatus){
-        for(int i=0; i<gameStatus.getPlayersList().size(); i++) {
-            if(!gameStatus.getPlayersList().get(i).isCrashed()
-                    && gameStatus.getPlayersList().get(i).isMyTurn()
-                    && gameStatus.getPlayersList().get(i).getId() == id){
-
-                labelScore.setText("Score: " + gameStatus.getPlayersList().get(id).getScore());
-            }
-        }
+    public void updateScores(GameStatus gameStatus){
+        labelScore.setText("Score: " + gameStatus.getPlayersList().get(id).getScore());
     }
 
-    public void update(GameStatus gameStatus, int idcorrente){
+    public void update(GameStatus gameStatus, int currentId){
 
         this.gameStatus = gameStatus;
 
-        System.out.println("upd info " +  id + " " + gameStatus.getPlayersList().get(id).isMyTurn());
-
-        if(idcorrente == id) {
+        if(currentId == id) {
             labelTurnOf.setText("It's your turn!");
             labelTime.setText("Time:");
             labelScore.setText("Score: " + gameStatus.getPlayersList().get(id).getScore());
         } else {
-            labelTurnOf.setText("It's turn of: " + idcorrente + " " + gameStatus.getPlayersList().get(idcorrente).getNickName());
+            labelTurnOf.setText("It's turn of: " + currentId + " " + gameStatus.getPlayersList().get(currentId).getNickName());
             labelTime.setText("");
             labelScore.setText("");
         }

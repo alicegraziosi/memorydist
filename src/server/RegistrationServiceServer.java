@@ -3,6 +3,7 @@ package server;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.rmi.AccessException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -18,12 +19,12 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 /**
- * @desc class that manage the registration service
+ * @desc class that manages the registration service
  * */
 
 public class RegistrationServiceServer {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
 
         String host = "localhost";
 
@@ -32,15 +33,16 @@ public class RegistrationServiceServer {
         try {
             fr = new FileReader("util.txt");
             br = new BufferedReader(fr);
-
             String sCurrentLine;
-
             while ((sCurrentLine = br.readLine()) != null) {
                 host = sCurrentLine;
             }
         } catch (IOException e) {
             e.printStackTrace();
+            host = "localhost";
         }
+
+        int port = 1099;
 
         System.setProperty("java.rmi.server.hostname", host);
 
@@ -50,52 +52,53 @@ public class RegistrationServiceServer {
             System.setSecurityManager(new SecurityManager());
         }
 
-        int port = 1099;
-
         final int timeout; // registration service timeout
         if (args.length == 0) {
-            timeout = 30; // default timeout in seconds
+            timeout = 15; // default timeout in seconds
         } else {
-            timeout = Integer.parseInt(args[0]);
+            timeout = Integer.parseInt(args[0]); // passed as an argument
         }
 
         try {
             Registry registry = null;
             try {
                 registry = LocateRegistry.createRegistry(port);
-                System.out.println("Registry created on port " + port);
+                System.out.println("Registry created on " + host + ":" + port);
             } catch (ExportException ex) {
                 registry = LocateRegistry.getRegistry(port);
-                System.out.println("Registry found on port " + port);
+                System.out.println("Registry found on " + host + ":" + port);
             } catch (RemoteException ex) {
-                System.out.println("Error creating registry on port " + port);
+                System.out.println("Error creating registry on " + host + ":" + port);
                 ex.printStackTrace();
             }
 
             RemoteRegistrationServerImpl registration = new RemoteRegistrationServerImpl();
-
-            //final RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt)
-            //		UnicastRemoteObject.exportObject(registration, 0);
-
             String location = "rmi://" + host + ":" + port + "/registrazione";
             registry.rebind(location, registration);
 
-            Thread serverThread = new Thread() {
+            Thread thread = new Thread() {
                 public void run() {
-                    try {
-                        System.out.println("Servizio di registrazione in attesa di giocatori...");
-                        sleep(timeout * 1000);
-                        registration.stopService();
-                        System.out.println("Servizio di registrazione chiuso.");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    System.out.println("Registration service listening for players...");
+                    sleep(timeout * 1000);
+                    registration.stopService();
+                    System.out.println("Registration service closed.");
+
+                    // terminate execution after a while
+                    sleep(5 * 1000);
+                    System.exit(0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 }
             };
-            serverThread.start();
+            thread.start();
 
-        } catch (Exception e) {
-            System.err.println("Errore servizio di registrazione");
+        } catch (AccessException e) {
+            System.err.println("Registration service error.");
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            System.err.println("Registration service error.");
             e.printStackTrace();
         }
     }

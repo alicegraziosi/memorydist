@@ -2,23 +2,20 @@ package rmi;
 
 import model.gameStatus.GameStatus;
 import model.player.Player;
-import utils.Node;
 
-import java.net.InetAddress;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 /**
  * @desc interface used for registration step
- *
  */
 public interface RemoteRegistrationServerInt extends Remote {
 
 	/**
 	 * @desc registration player service
 	 */
-	int registerPlayer(String player, String hostAddress, int port) throws RemoteException;
+	int registerPlayer(String player, String hostAddress) throws RemoteException;
 
 	/**
 	 * @desc stop service
@@ -36,5 +33,4 @@ public interface RemoteRegistrationServerInt extends Remote {
 	 * @return gameStatus object
 	 */
 	GameStatus getGameStatus() throws RemoteException;
-
 }

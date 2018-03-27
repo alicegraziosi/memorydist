@@ -1,29 +1,22 @@
 package view.board;
 
 import client.PlayerClient;
-import controller.GameController;
-import model.card.Card;
 import model.gameStatus.GameStatus;
 import model.move.Move;
 import model.player.PLAYER_STATE;
-import model.player.Player;
 import view.card.CardView;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
-public class Board extends Container{
+public class BoardView extends Container{
 
     private JPanel panel1;
     private JLabel label1;
@@ -35,14 +28,14 @@ public class Board extends Container{
     private CardView selectedCard1;
     private CardView selectedCard2;
     private Move move;
-    private Info info;
+    private InfoView infoView;
     private int id; // id player
     private JFrame frame;
     private JPanel gridPanelCards;
 
     private PlayerClient playerClient;
 
-    public Board(GameStatus gameStatus, int id, PlayerClient playerClient) {
+    public BoardView(GameStatus gameStatus, int id, PlayerClient playerClient) {
         this.gameStatus = gameStatus;
         this.cardViews = new ArrayList<>();
         this.cardViewsMatch = new ArrayList<>();
@@ -50,7 +43,7 @@ public class Board extends Container{
         this.selectedCard2 = null;
         this.move = new Move();
         this.id = id;
-        this.info = new Info(gameStatus, id);
+        this.infoView = new InfoView(gameStatus, id);
         this.frame = new JFrame("Memory Game - Player " + id);
         this.gridPanelCards = new JPanel();
         this.gridPanelCards.setLayout(new GridLayout(4, 5));
@@ -64,9 +57,9 @@ public class Board extends Container{
         // look and feel (superfluo e quindi commentato)
         /*
         try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
+            for (UIManager.LookAndFeelInfo infoView : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(infoView.getName())) {
+                    UIManager.setLookAndFeel(infoView.getClassName());
                     break;
                 }
             }
@@ -94,11 +87,11 @@ public class Board extends Container{
         //panel2.add(label1);
         //borderPanelBoard.add(panel2, BorderLayout.EAST);
 
-        // pannello laterale con info di gioco
+        // pannello laterale con infoView di gioco
         JPanel panel1 = new JPanel();
         panel1.setLayout(new BorderLayout());
         panel1.setSize(200, 500);
-        panel1.add(info, BorderLayout.NORTH);
+        panel1.add(infoView, BorderLayout.NORTH);
         borderPanelBoard.add(panel1, BorderLayout.WEST);
 
         // cards
@@ -117,6 +110,10 @@ public class Board extends Container{
 
         frame.setSize(800, 650);
         //frame.pack(); // o setSize o pack
+
+        ImageIcon img = new ImageIcon("./images/frameIcon.jpg");
+        frame.setIconImage(img.getImage());
+
         frame.setVisible(true);
 
         // ask before exit
@@ -184,41 +181,45 @@ public class Board extends Container{
         }
     }
 
+    /**
+     * When a card is selected.
+     * When it is the first card selected
+     *
+     * When it is the second card selected
+     * */
     public void setCardClickActionListener(){
-
         for (CardView cardView: cardViews) {
             cardView.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
 
-                    if(selectedCard1==null && selectedCard2==null){
-                        //cardView.removeActionListener(this);
+                    if(selectedCard1 == null && selectedCard2 == null){
+
                         selectedCard1 = cardView;
                         cardView.setImage();
                         move = new Move(selectedCard1.getCard());
                         gameStatus.setMove(move);
 
-                        // todo mandare msg
                         broadcastMessageMove(gameStatus);
 
-                        System.out.println("First selected card: " + move.getCard1().getValue());
+                        System.out.println("[BoardView]: First selected card: " + move.getCard1().getValue());
                     } else if (selectedCard2==null) {
-                        //cardView.removeActionListener(this);
+
                         selectedCard2 = cardView;
                         cardView.setImage();
                         move = new Move(selectedCard1.getCard(), selectedCard2.getCard());
                         gameStatus.setMove(move);
 
-                        // todo mandare msg
-                        broadcastMessageMove(gameStatus);
-
-                        System.out.println("Second selected card: " + move.getCard2().getValue());
-                        System.out.println("Match: " + move.isMatch());
+                        System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
+                        System.out.println("[BoardView]: Match: " + move.isMatch());
 
                         if(move.isMatch()){
+                            //update score of current player
                             int score = gameStatus.getPlayersList().get(id).getScore() + 1;
                             gameStatus.getPlayersList().get(id).setScore(score);
-                            info.updateScore(gameStatus);
+                            infoView.updateScores(gameStatus);
+
+                            // add matched card to showingCard array
                             gameStatus.getShowingCards().add(move.getCard1());
                             gameStatus.getShowingCards().add(move.getCard2());
                             cardViewsMatch.add(selectedCard1);
@@ -231,25 +232,26 @@ public class Board extends Container{
                                 showGameWinnerMessage();
                             }
                         }
+
+                        broadcastMessageMove(gameStatus);
                     } else {
-                        System.out.println("Two card in this turn have been already selected.");
+                        System.out.println("[BoardView]: Two card in this turn have been already selected.");
                     }
                 }
             });
         }
-
     }
 
+    /**
+     * Called when a move is performed
+     * */
     public void broadcastMessageMove(GameStatus gameStatus){
-        playerClient.sendMoveToController(gameStatus);
-        System.out.println("mando mossa");
+        playerClient.broadcastMessageMove(gameStatus);
     }
 
-    public Info getInfo() {
-        return info;
-    }
-
-    // ask before exit the application on close
+    /**
+     * Show dialog box to ask before exit the application on close
+     * */
     private void setCloseOperation(){
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
@@ -268,6 +270,9 @@ public class Board extends Container{
         });
     }
 
+    /**
+     * Show dialog box to notify the winner
+     * */
     public void showGameWinnerMessage(){
         int input = JOptionPane.showConfirmDialog(null,
                 "You are the winner!\n\nDo you want to exit the game?",
@@ -277,6 +282,10 @@ public class Board extends Container{
         if (input == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
+    }
+
+    public InfoView getInfoView() {
+        return infoView;
     }
 }
 

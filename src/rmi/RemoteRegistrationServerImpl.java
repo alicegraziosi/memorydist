@@ -3,9 +3,7 @@ package rmi;
 import model.card.Card;
 import model.gameStatus.GameStatus;
 import model.player.Player;
-import utils.Node;
 
-import java.net.InetAddress;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -17,27 +15,21 @@ import java.util.Collections;
  */
 public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements RemoteRegistrationServerInt {
 
-	private int maxPlayersNumber;
-	/** max number of players */
-	private ArrayList<Player> players;
-	/** players list */
-	private int playerIndex = -1;
-	/** index of each new player, incrementing each time */
-	private boolean isServiceOpen;
-	/** tells if service is opened */
-	private boolean start;
+	private int maxPlayersNumber; // max number of players
+	private ArrayList<Player> players; //players list
+	private int playerIndex = -1; // index of each new player, incrementing each time
+	private boolean isServiceOpen;  // tells if service is opened
+	private boolean startGame; // tells if game can starts
 
-	ArrayList<Card> showingCards;
-	ArrayList<Card> notShowingCards;
-
-	/** tells if service is started */
+	private ArrayList<Card> showingCards; // list of matched cards
+	private ArrayList<Card> notShowingCards; // initial set of cards, all hidde
 
 	/** constructor */
 	public RemoteRegistrationServerImpl() throws RemoteException {
 		this.maxPlayersNumber = 4;
 		this.players = new ArrayList();
 		this.isServiceOpen = true;
-		start = false;
+		this.startGame = false;
 
 		// card generation
 		int cardNumber = 20;
@@ -61,32 +53,27 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 	 * @param String $nickName, InetAddress $hostAddress, int $port
 	 * @return int playerIndex or -1 if time is over or reached max players number
 	 */
-	public synchronized int registerPlayer(String nickName, String hostAddress, int port) {
+	public synchronized int registerPlayer(String nickName, String hostAddress) {
 
 		if (playerIndex < maxPlayersNumber) {
 
 			if (isServiceOpen) {
 
-				playerIndex++; // player id				
-				System.out.println("[RMIRegServ]: Nuovo giocatore: nome: " + nickName + ", id: " + Integer.toString(playerIndex));
-
-				port = 2000 + playerIndex; // setting port of player with index $playerIndex
+				playerIndex++; // player id
+				int port = 2000 + playerIndex; // player port, each player has a different port
 				Player player = new Player(playerIndex, nickName, hostAddress, port); // create player
+				System.out.println("[RMIRegServ]: New player: " + player.toString());
 				players.add(player); // adding player to list of players
-
 				return playerIndex;
 
 			} else {
-				// time out
-				System.out.println("[RMIRegServ]: Tempo scaduto per registrarsi come giocatore.\n");
+				// service is closed due to timeout
 				return -1;
 			}
 		} else {
 			// reached max number of players
-			System.out.println("[RMIRegServ]: Raggiunto numero massimo di giocatori registrati.\n");
-			return -1;
+			return -2;
 		}
-
 	}
 
 	/**
@@ -95,20 +82,19 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 	 */
 	public synchronized void stopService() {
 		isServiceOpen = false;
-		System.out.println("[RMIRegServ]: Tempo scaduto per registrarsi come giocatore.");
+		System.out.println("[RMIRegServ]: Time expired to register.");
 
-		// the turn is assigned to the first registered player, which has id = 1, with
-		// index 0 in the arraylist
 		if(players.size()>0){
-			players.get(0).setMyTurn(true);  // setting the turn to the 1st registered player
+            // setting the turn to the 1st registered player
+			players.get(0).setMyTurn(true);
 
-			System.out.println("[RMIRegServ]: Lista dei giocatori:");
+			System.out.println("[RMIRegServ]: Player list:");
 			for (int i = 0; i < players.size(); i++) { // iterate over the players print infos
 				System.out.println("[RMIRegServ]: " + players.get(i).toString()); // players infos
 			}
 
-			System.out.println("[RMIRegServ]: Inizio del gioco.");
-			start = true;
+			System.out.println("[RMIRegServ]: Game started.");
+			startGame = true;
 			notifyAll();
 		}
 	}
@@ -118,7 +104,7 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 	 * @return arraylist of players
 	 */
 	public synchronized ArrayList<Player> getPlayers() {
-		if (!start)
+		if (startGame == false)
 			try {
 				wait();
 			} catch (InterruptedException ie) {
@@ -131,7 +117,6 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 	 * @desc creating and getting the game status, creating not showing cards
 	 * @return gameStatus object
 	 */
-
 	public synchronized GameStatus getGameStatus() {
 		
 		GameStatus gameStatus = new GameStatus(players, // list of players
@@ -141,13 +126,12 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 				null // move is null when it is the first time that the gameStatus is initialized
 		);
 
-		if (!start)
+        if (startGame == false)
 			try {
 				wait();
 			} catch (InterruptedException ie) {
 				ie.printStackTrace();
 			}
-
 		return gameStatus;
 	}
 }

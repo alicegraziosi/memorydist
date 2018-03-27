@@ -1,11 +1,6 @@
 package model.player;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-
-import model.player.PLAYER_STATE;
-import utils.Node;
-import java.net.InetAddress;
 
 /**
  * @desc Class representing the memory player
@@ -121,9 +116,6 @@ public class Player extends Node implements Serializable{
 		this.score = score;
 	}
 	
-	/**
-	 * @desc set to string player info
-	 */
 
 	public boolean isMyTurn() {
 		return isMyTurn;
@@ -133,15 +125,18 @@ public class Player extends Node implements Serializable{
 		isMyTurn = myTurn;
 	}
 
+	/**
+	 * @desc set to string player info
+	 */
 	@Override
 	public String toString() {
 		return "Player " + id + " { " +
 				"id=" + id +
 				", nickName='" + nickName +
-				"', state=" + state +
+				", state=" + state +
 				", score=" + score +
-				", host =" + host +
-				", port =" + port +
+				", host=" + host +
+				", port=" + port +
 				" }";
 	}
 }

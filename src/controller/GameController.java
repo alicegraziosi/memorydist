@@ -17,9 +17,7 @@ import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import client.PlayerClient;
 import listener.DataReceiverListener;
-import server.PlayerServer;
-import view.board.Board;
-import view.board.Info;
+import view.board.BoardView;
 
 /**
  * Controller of the game, contains the following attributes
@@ -48,8 +46,7 @@ public class GameController implements DataReceiverListener {
 
     private int turnNumber;
 
-    private Board board;
-    private int id;
+    private BoardView boardView;
 
     /**
      * GameController constructor
@@ -58,15 +55,17 @@ public class GameController implements DataReceiverListener {
                           ArrayList<Player> players,
                           GameStatus gameStatus,
                           BlockingQueue<GameStatus> buffer,
-                          Board board) {
+                          BoardView boardView) {
         this.currentId = id;
         this.gameStatus = gameStatus;
         this.players = players;
         this.buffer = buffer;
         this.turnNumber = 0;
         this.msgId = 0;
-        this.board = board;
-        board.init();
+        this.boardView = boardView;
+
+        // viene inizializzato e mostrato il tavolo di gioco
+        boardView.init();
     }
 
     /**
@@ -80,7 +79,7 @@ public class GameController implements DataReceiverListener {
             public void run() {
 
                 gameStatus.setMove(null);
-                board.reset(gameStatus);
+                boardView.reset(gameStatus);
 
                 try {
                     turnNumber++;
@@ -92,12 +91,11 @@ public class GameController implements DataReceiverListener {
 
                         // 0) se ci sono ancora carte da scoprire e se è rimasto più di un giocatore, altrimenti si lascia giocare l'ultimo giocatore
 
-                        if (gameStatus.getPlayersList().get(id).isMyTurn()) {
-                            System.out.println("[GameController]: E' il mio turno (Giocatore " + id + ").");
-                            //System.out.println("[GameController[: gameStatus corrente: " + gameStatus.toString());
+                        if (gameStatus.getPlayersList().get(currentId).isMyTurn()) {
+                            System.out.println("[GameController]: It is my turn (Player " + currentId + ").");
 
-                            board.unblockCards();
-                            board.getInfo().update(gameStatus, id);
+                            boardView.unblockCards();
+                            boardView.getInfoView().update(gameStatus, currentId);
 
                             /** E' il turno del giocatore, cose da fare:
                              1) accertarsi che il giocatore corrente abbia un $gameStatus aggiornato
@@ -122,13 +120,6 @@ public class GameController implements DataReceiverListener {
                             //
                             //                }
 
-                            // PER IL MOMENTO COMMENTATO CODICE PER SETTARE A FALSE IL TURNO DI TUTTI GLI ALTRI
-                            // id parte da 1, l'indice da 0
-                            //                for (int i = 0; i < players.size(); i++) {
-                            //                    // setto tutti a myTurn false
-                            //                    players.get(i).setMyTurn(false);
-                            //                }
-
                             /**
                              * 4) gestione passaggio del turno
                              * */
@@ -140,7 +131,7 @@ public class GameController implements DataReceiverListener {
                                 players.get(i).setMyTurn(false);
                             }
 
-                            int index = id + 1;
+                            int index = currentId + 1;
                             // se il giocatore corrente è l'ultimo, il prossimo è il primo
                             if (index == players.size()) {
                                 index = 0;
@@ -150,64 +141,44 @@ public class GameController implements DataReceiverListener {
                             for (int i = index; i < players.size(); i++) {
                                 if (!players.get(i).isCrashed()) {
                                     players.get(i).setMyTurn(true);
-                                    System.out.println("Il prossimo giocatore è : " + Integer.valueOf(i).toString());
+                                    System.out.println("Next player is player: " + Integer.valueOf(i).toString());
                                     break;
-                                } else {
-                                    System.out.println("sarebbe stato il turnNumber di " + players.get(i).getId() + " ma è crashed");
                                 }
                             }
 
-                            System.out.println("Faccio broadcast di questa informazione.");
+                            System.out.println("Broadcast a message containing this info.");
                             gameStatus.setPlayersList(players);
-                            gameStatus.setIdSender(id);
-                            gameStatus.setId(gameStatus.getId() + 1);
+                            gameStatus.setIdSender(currentId);
                             broadcastMessage(gameStatus);
 
 
                             // mossa
                             // notifica mossa
                             // aggiorna game status
-                            // aggiorna board
-                            // board.update(gameStatus);
-
+                            // aggiorna boardView
                             // aggiornamento punteggio
-
-                            // prova per vedere se un altro processo è in crash
-                            // todo da togliere, è solo una prova
-                                /*
-                                System.out.println("Faccio broadcast di un messaggio..");
-                                gameStatus.setIdSender(id);
-                                broadcastMessage(gameStatus);
-
-                                // prova per vedere se un altro processo è in crash
-                                // todo da togliere, è solo una prova
-                                System.out.println("Faccio un altro broadcast di un messaggio..");
-                                gameStatus.setIdSender(id);
-                                broadcastMessage(gameStatus);
-                                */
 
                             // nel frattempo può andare in crash
 
                             //sleep(10 * 1000);
 
                         } else {
-                            // Se non è il suo turnNumber
+                            // Se non è il suo turno
 
                             for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
                                 if (gameStatus.getPlayersList().get(i).isMyTurn()) {
-                                    System.out.println("NON è il mio turno, è il turno del giocatore " + Integer.valueOf(i).toString());
-                                    // la board è bloccata
-                                    board.blockCards();
-                                    board.getInfo().update(gameStatus, i);
+                                    System.out.println("NOT my turn, it is turn of player " + i);
+                                    // la boardView è bloccata
+                                    boardView.blockCards();
+                                    boardView.getInfoView().update(gameStatus, i);
                                     break;
                                 }
                             }
-                            System.out.println("(Io sono il giocatore " + id + ").");
-                            System.out.println("Resto in ascolto di messaggi...");
+                            System.out.println("(I'm player " + currentId + ").");
+                            System.out.println("I'm listening for messages...");
 
-                            // se non arrivano mess
+                            // todo cotrollare se non arrivano mess
                             // un giocatore è in crash oppure non ha fatto mosse
-
 
                             //sleep(20 * 1000);
 
@@ -227,13 +198,11 @@ public class GameController implements DataReceiverListener {
                     } else {
                         // all cards are matched
                         // current player is the winner
-                        // id parte da 1, l'indice da 0
-                        if (gameStatus.getPlayersList().get(id).isMyTurn()) {
+                        if (gameStatus.getPlayersList().get(currentId).isMyTurn()) {
                             // todo this is the winner
                             System.out.println("You are the winner!");
-                            // broadcast(gamestatus)
                         } else {
-                            // todo all other playes need to know that the game ended
+                            // todo all other players need to know that the game ended
                             System.out.println("Another player won the game.");
                         }
                     }
@@ -242,10 +211,8 @@ public class GameController implements DataReceiverListener {
                 }
             }
         });
-
         t.start();
     }
-
     
     /**
      * function which manages the timers of the round
@@ -264,43 +231,39 @@ public class GameController implements DataReceiverListener {
     }
 
     /**
-     * function which broadcast the global game status to the other players
+     * function which broadcasts the global game status to the other players
      * @param GameStatus $message
      * */
     public void broadcastMessage(GameStatus gamestatus) {
 
         System.setProperty("java.security.policy", "file:./security.policy");
 
-        // I download server's stubs ==> must set a SecurityManager
+        // I download server's stubs so I must set a SecurityManager
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
 
         for (int i = 0; i < players.size(); i++) {
             // non lo rimanda a se stesso e ai nodi in crash
-            if(i+1 != currentId && !players.get(i).isCrashed()) {
-                Registry registry = null;
             if(i != currentId && !players.get(i).isCrashed()) {
-
-            	try {
+                try {
                     String remoteHost = players.get(i).getHost().toString();
                     int remotePort = players.get(i).getPort();
 
-                    // mi sa che nel client non serve
+                    // mi sa che nel client non serve ma non ne sono sicura
                     System.setProperty("java.rmi.server.hostname", remoteHost);
 
-                    registry = LocateRegistry.getRegistry(remoteHost, remotePort);
-
+                    Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
                     String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
-
                     RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
 
+                    gamestatus.setId(gamestatus.getId()+1);
                     int response = stub.sendMessage(gamestatus);
-                    System.out.println("Risposta dal giocatore con id " + Integer.valueOf(i) + ": " + response);
+                    System.out.println("[GameCtrl]: Response from player " + i + ": " + response);
 
                 } catch (RemoteException e) {
                     e.printStackTrace();
-                    System.out.println("Il giocatore con id " + Integer.valueOf(i) + " non ha ricevuto il messaggio, è in crash.");
+                    System.out.println("Player " + i + " crashed.");
 
                     // todo settarlo in crash
                     players.get(i).setCrashed(true);
@@ -314,65 +277,86 @@ public class GameController implements DataReceiverListener {
             }
         }
     }
-    }
+
     /**
-     * function which checks if a det player is active sending to him a message
-     * @param GameStatus $message ?, int $playerId
+     * function which broadcasts the global game status to the other players
+     * @param GameStatus $message
      * */
-    public void sendMessageToHost(GameStatus gamestatus, int playerId) {
-        try {
+    public void sendMessageToHost(GameStatus gamestatus, int idPlayer) {
 
-            String remoteHost = players.get(playerId).getHost().toString();
-            int remotePort = players.get(playerId).getPort();
+        System.setProperty("java.security.policy", "file:./security.policy");
 
-            String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
-
-            RemoteMessageServiceInt stub = (RemoteMessageServiceInt) Naming.lookup(location);
-
-            int response = stub.sendMessage(gamestatus);
-            System.out.println("Risposta dal giocatore con id " + Integer.valueOf(playerId) + ": " + response);
-
-        } catch (RemoteException e) {
-            //e.printStackTrace();
-            System.out.println("Il giocatore con id " + playerId + " non ha ricevuto il messaggio, è in crash.");
-
-            // settarlo in crash
-            players.get(playerId).setCrashed(true);
-
-            // todo notificare l' informazione a tutti
-            gameStatus.setPlayersList(players);
-            //broadcastMessage(gameStatus);
-
-        } catch (NotBoundException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        // I download server's stubs so I must set a SecurityManager
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new SecurityManager());
         }
 
+        if(!players.get(idPlayer).isCrashed()) {
+            try {
+                String remoteHost = players.get(idPlayer).getHost().toString();
+                int remotePort = players.get(idPlayer).getPort();
+
+                // mi sa che nel client non serve ma non ne sono sicura
+                System.setProperty("java.rmi.server.hostname", remoteHost);
+
+                Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
+                String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
+                RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
+
+                int response = stub.sendMessage(gamestatus);
+                System.out.println("Response from player " + idPlayer + ": " + response);
+
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                System.out.println("Player " + idPlayer + " crashed.");
+
+                // todo settarlo in crash
+                players.get(idPlayer).setCrashed(true);
+
+                // todo notificare l' informazione a tutti
+                gameStatus.setPlayersList(players);
+
+            } catch (NotBoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
-    
+
+    /**
+     * ?
+     * */
+    // todo
 	private boolean isMyTurn(GameStatus gameStatus) {
 		return gameStatus.getCurrentPlayer().getId() == this.currentId;
 	}
-    
-	
-	/**
-	 * @desc getting id of current player
-	 * @return int $currentId 
-	 * */
-	public int getCurrentId() {
-		return currentId;
+
+
+    /**
+     * @desc called by remoteMessageServiceImpl when a player receives a messages
+     * containing a new move from the current player
+     * @param int $move
+     * */
+    public void updateBoardAfterMove(Move move){
+        boardView.updateBoardAfterMove(move);
+    }
+
+    /**
+     * ?
+     * */
+    @Override
+	public void setupRemoteClient(GameStatus gameStatus) throws RemoteException, NotBoundException {
+		//this.playerClient = new PlayerClient(game, id);
+		//setGame(game);
 	}
 
-	/**
-	 * @desc setting id of current player
-	 * @param int $currentId
-	 * */
-	public void setCurrentId(int currentId) {
-		this.currentId = currentId;
+    /**
+     * ?
+     * */
+	@Override
+	public void setGame(GameStatus gameStatus) throws RemoteException, NotBoundException {
+		// TODO Auto-generated method stub
 	}
-	
-	
+
     /**
      * getting the game status
      * @return GameStatus $gameStatus
@@ -389,23 +373,20 @@ public class GameController implements DataReceiverListener {
         this.gameStatus = gameStatus;
     }
 
-
-    public void updateBoardAfterMove(Move move){
-        board.updateBoardAfterMove(move);
+    /**
+     * @desc getting id of current player
+     * @return int $currentId
+     * */
+    public int getCurrentId() {
+        return currentId;
     }
 
-    //?
-    @Override
-	public void setupRemoteClient(GameStatus gameStatus) throws RemoteException, NotBoundException {
-		//this.playerClient = new PlayerClient(game, id);
-		//setGame(game);
-	}
-
-    //?
-	@Override
-	public void setGame(GameStatus gameStatus) throws RemoteException, NotBoundException {
-		// TODO Auto-generated method stub
-		
-	}
+    /**
+     * @desc setting id of current player
+     * @param int $currentId
+     * */
+    public void setCurrentId(int currentId) {
+        this.currentId = currentId;
+    }
 }
 
