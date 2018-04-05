@@ -123,8 +123,9 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 				-1, // id sender = -1 means that the sender is the registration service
 				showingCards, // list of showing cards
 				notShowingCards, // list of not showing cards
-				null // move is null when it is the first time that the gameStatus is initialized
-		);
+				null, // move is null when it is the first time that the gameStatus is initialized
+				players.get(0) // setting the current player of the first turn
+				);
 
         if (startGame == false)
 			try {

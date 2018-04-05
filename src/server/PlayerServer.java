@@ -74,4 +74,10 @@ public class PlayerServer implements RemoteGameInterface{
 		// TODO Auto-generated method stub
 		mListener.setGame(gameStatus);
 	}
+
+	@Override
+	public void helloThere() throws RemoteException, NotBoundException{
+		// TODO Auto-generated method stub
+		
+	}
 }

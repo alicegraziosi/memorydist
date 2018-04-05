@@ -102,7 +102,7 @@ public class BoardView extends Container{
         }
 
         // when click a card
-        setCardClickActionListener();
+//        setCardClickActionListener();
 
         borderPanelBoard.add(gridPanelCards,BorderLayout.EAST);
 
@@ -142,18 +142,18 @@ public class BoardView extends Container{
         }
     }
 
-    public void showMatchedCards(){
-        for (CardView cardView: cardViewsMatch) {
-            cardView.setImage();
-            cardView.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    cardView.setImage();
-                    cardView.removeActionListener(this);
-                }
-            });
-        }
-    }
+//    public void showMatchedCards(){
+//        for (CardView cardView: cardViewsMatch) {
+//            cardView.setImage();
+//            cardView.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    cardView.setImage();
+//                    cardView.removeActionListener(this);
+//                }
+//            });
+//        }
+//    }
 
     public void reset(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
@@ -187,60 +187,60 @@ public class BoardView extends Container{
      *
      * When it is the second card selected
      * */
-    public void setCardClickActionListener(){
-        for (CardView cardView: cardViews) {
-            cardView.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                    if(selectedCard1 == null && selectedCard2 == null){
-
-                        selectedCard1 = cardView;
-                        cardView.setImage();
-                        move = new Move(selectedCard1.getCard());
-                        gameStatus.setMove(move);
-
-                        broadcastMessageMove(gameStatus);
-
-                        System.out.println("[BoardView]: First selected card: " + move.getCard1().getValue());
-                    } else if (selectedCard2==null) {
-
-                        selectedCard2 = cardView;
-                        cardView.setImage();
-                        move = new Move(selectedCard1.getCard(), selectedCard2.getCard());
-                        gameStatus.setMove(move);
-
-                        System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
-                        System.out.println("[BoardView]: Match: " + move.isMatch());
-
-                        if(move.isMatch()){
-                            //update score of current player
-                            int score = gameStatus.getPlayersList().get(id).getScore() + 1;
-                            gameStatus.getPlayersList().get(id).setScore(score);
-                            infoView.updateScores(gameStatus);
-
-                            // add matched card to showingCard array
-                            gameStatus.getShowingCards().add(move.getCard1());
-                            gameStatus.getShowingCards().add(move.getCard2());
-                            cardViewsMatch.add(selectedCard1);
-                            cardViewsMatch.add(selectedCard2);
-
-                            showMatchedCards();
-
-                            if(gameStatus.getShowingCards().size()==20){
-                                gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
-                                showGameWinnerMessage();
-                            }
-                        }
-
-                        broadcastMessageMove(gameStatus);
-                    } else {
-                        System.out.println("[BoardView]: Two card in this turn have been already selected.");
-                    }
-                }
-            });
-        }
-    }
+//    public void setCardClickActionListener(){
+//        for (CardView cardView: cardViews) {
+//            cardView.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//
+//                    if(selectedCard1 == null && selectedCard2 == null){
+//
+//                        selectedCard1 = cardView;
+//                        cardView.setImage();
+//                        move = new Move(selectedCard1.getCard());
+//                        gameStatus.setMove(move);
+//
+//                        broadcastMessageMove(gameStatus);
+//
+//                        System.out.println("[BoardView]: First selected card: " + move.getCard1().getValue());
+//                    } else if (selectedCard2==null) {
+//
+//                        selectedCard2 = cardView;
+//                        cardView.setImage();
+//                        move = new Move(selectedCard1.getCard(), selectedCard2.getCard());
+//                        gameStatus.setMove(move);
+//
+//                        System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
+//                        System.out.println("[BoardView]: Match: " + move.isMatch());
+//
+//                        if(move.isMatch()){
+//                            //update score of current player
+//                            int score = gameStatus.getPlayersList().get(id).getScore() + 1;
+//                            gameStatus.getPlayersList().get(id).setScore(score);
+//                            infoView.updateScores(gameStatus);
+//
+//                            // add matched card to showingCard array
+//                            gameStatus.getShowingCards().add(move.getCard1());
+//                            gameStatus.getShowingCards().add(move.getCard2());
+//                            cardViewsMatch.add(selectedCard1);
+//                            cardViewsMatch.add(selectedCard2);
+//
+//                            showMatchedCards();
+//
+//                            if(gameStatus.getShowingCards().size()==20){
+//                                gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
+//                                showGameWinnerMessage();
+//                            }
+//                        }
+//
+//                        broadcastMessageMove(gameStatus);
+//                    } else {
+//                        System.out.println("[BoardView]: Two card in this turn have been already selected.");
+//                    }
+//                }
+//            });
+//        }
+//    }
 
     /**
      * Called when a move is performed

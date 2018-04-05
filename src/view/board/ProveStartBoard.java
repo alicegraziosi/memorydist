@@ -39,7 +39,7 @@ public class ProveStartBoard {
         Collections.shuffle(notShowingCards);
 
 
-        GameStatus gameStatus = new GameStatus( players, -1, showingCards, notShowingCards, null);
+        GameStatus gameStatus = new GameStatus( players, -1, showingCards, notShowingCards, null, players.get(0));
         BoardView board = new BoardView(gameStatus, 0, null);
         board.init();
 
@@ -47,9 +47,9 @@ public class ProveStartBoard {
             @Override
             public void run() {
             System.out.println("try your move");
-            board.unblockCards();
-            board.showMatchedCards();
-            board.clearSelectedCards();
+//            board.unblockCards();
+//            board.showMatchedCards();
+//            board.clearSelectedCards();
             }
         };
 
