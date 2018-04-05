@@ -37,12 +37,8 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " received from player " + gameStatus.getIdSender());
 		//System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());
 
-		for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
-			if (gameStatus.getPlayersList().get(i).isMyTurn()) {
-				System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " said that next player is: " + Integer.valueOf(i).toString());
-				break;
-			}
-		}
+		System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " said that next player is: " + gameStatus.getCurrentPlayer().getId());
+	
 		gameController.setGameStatus(gameStatus);
 
 		if(gameStatus.getMove() != null){

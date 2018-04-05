@@ -226,7 +226,8 @@ public class GameController implements DataReceiverListener {
                     Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
                     String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
                     RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
-
+                    
+                    System.out.println("[GameCtrl]: Sending gameStatus to " + remoteHost + " " + remotePort);
                     gamestatus.setId(gamestatus.getId());
                     int response = stub.sendMessage(gamestatus);
                     System.out.println("[GameCtrl]: Response from player " + i + ": " + response);
