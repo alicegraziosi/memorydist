@@ -36,11 +36,13 @@ public class GameStatus implements Serializable {
      * Starting game constructor
      * */
     public GameStatus(ArrayList<Player> playersList,
+    				  int idSender,
 					  ArrayList<Card> showingCards,
 					  ArrayList<Card> notShowingCards,
 					  Move move) {
 
 		this.playersList = playersList;
+		this.idSender = idSender;
 		this.showingCards = showingCards;
 		this.notShowingCards = notShowingCards;
 		
@@ -54,23 +56,7 @@ public class GameStatus implements Serializable {
 
 		this.move = move;
 	}
-    
-
-    /** constructor */
-    public GameStatus(ArrayList<Player> playersList,
-                      int idSender,
-                      ArrayList<Card> showingCards,
-                      ArrayList<Card> notShowingCards,
-                      Move move, 
-                      Player currentPlayer) {
-        this.playersList = playersList;
-        this.idSender = idSender;
-        this.showingCards = showingCards;
-        this.notShowingCards = notShowingCards;
-        this.move = move;
-        this.currentPlayer = currentPlayer;
-    }
-    
+   
     
     
     /**
@@ -79,12 +65,10 @@ public class GameStatus implements Serializable {
      * */
     public void setNextPlayer(){
     	
-    	System.out.println("[GameStatus.setNextTurn]: idCurrentPlayer " + this.currentPlayer.getId());
     	// compute id next player
         int indexNextPlayer = this.currentPlayer.getId() + 1;
         
         // se il giocatore corrente è l'ultimo, il prossimo è il primo
-        System.out.println("PLAYERLIST.SIZE: " + playersList.size());
         if(indexNextPlayer >= playersList.size()){
             indexNextPlayer = 0;
         }
@@ -95,7 +79,7 @@ public class GameStatus implements Serializable {
         	
             if(!playersList.get(i).isCrashed()) {
                 this.currentPlayer = iteratePlayer;
-            	System.out.println("[GameStatus]: Il prossimo giocatore (settato) è : " + Integer.valueOf(i).toString());
+            	System.out.println("[GameStatus]: Il prossimo giocatore (settato) sarà : " + Integer.valueOf(i).toString());
             	break;
             } else {
                 System.out.println(playersList.get(i).toString());

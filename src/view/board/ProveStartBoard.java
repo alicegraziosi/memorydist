@@ -39,7 +39,7 @@ public class ProveStartBoard {
         Collections.shuffle(notShowingCards);
 
 
-        GameStatus gameStatus = new GameStatus( players, -1, showingCards, notShowingCards, null, players.get(0));
+        GameStatus gameStatus = new GameStatus( players, -1, showingCards, notShowingCards, null);
         BoardView board = new BoardView(gameStatus, 0, null);
         board.init();
 

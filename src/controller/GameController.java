@@ -91,7 +91,7 @@ public class GameController implements DataReceiverListener {
 
                         // 0) se ci sono ancora carte da scoprire e se è rimasto più di un giocatore, altrimenti si lascia giocare l'ultimo giocatore
 
-                        if (gameStatus.getCurrentPlayer().getId() == currentId) {
+                        if (isMyTurn()) {
                             System.out.println("[GameController]: It is my turn (Player " + currentId + ").");
 
                             boardView.unblockCards();
@@ -106,6 +106,7 @@ public class GameController implements DataReceiverListener {
                              a) gioca la carta con controllo matching e tutto il resto
                              b) aggiorna $gameStatus facendo BROADCAST
                              4) gestire il "passaggio" del turno
+                             5) aggiorna $gameStatus facendo BROADCAST
                              */
 
 
@@ -113,8 +114,10 @@ public class GameController implements DataReceiverListener {
                              * 4) gestione passaggio del turno
                              * */
                             gameStatus.setNextPlayer();
-                        
 
+                            /**
+                            *5) aggiorna $gameStatus facendo BROADCAST
+                			* */
                             System.out.println("Broadcast a message containing this info.");
                             gameStatus.setPlayersList(players);
                             gameStatus.setIdSender(currentId);
@@ -133,20 +136,19 @@ public class GameController implements DataReceiverListener {
 
                         } else {
                             // Se non è il suo turno
+                        	System.out.println("NOT my turn, it is turn of player " + gameStatus.getCurrentPlayer().getId());
+                        	System.out.println("(I'm player " + currentId + ").");
+                        	System.out.println("I'm listening for messages...");
 
                             for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
                                 if (gameStatus.getCurrentPlayer().getId() != currentId) {
-                                    System.out.println("NOT my turn, it is turn of player " + i);
                                     // la boardView è bloccata
                                     boardView.blockCards();
                                     boardView.getInfoView().update(gameStatus, i);
                                     break;
                                 }
                             }
-                            System.out.println("(IS NOT MY TURN)");
-                            System.out.println("(I'm player " + currentId + ").");
-                            System.out.println("I'm listening for messages...");
-
+                           
                             // todo cotrollare se non arrivano mess
                             // un giocatore è in crash oppure non ha fatto mosse
 
@@ -219,7 +221,8 @@ public class GameController implements DataReceiverListener {
                 try {
                     String remoteHost = gameStatus.getPlayersList().get(i).getHost().toString();
                     int remotePort = gameStatus.getPlayersList().get(i).getPort();
-
+                    int playerId = gameStatus.getPlayersList().get(i).getId();
+                    
                     // mi sa che nel client non serve ma non ne sono sicura
                     System.setProperty("java.rmi.server.hostname", remoteHost);
 
@@ -227,17 +230,16 @@ public class GameController implements DataReceiverListener {
                     String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
                     RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
                     
-                    System.out.println("[GameCtrl]: Sending gameStatus to " + remoteHost + " " + remotePort);
+                    System.out.println("[GameCtrl]: Sending gameStatus to player " + playerId);
                     gamestatus.setId(gamestatus.getId());
                     int response = stub.sendMessage(gamestatus);
-                    System.out.println("[GameCtrl]: Response from player " + i + ": " + response);
-
+                    
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     System.out.println("Player " + i + " crashed.");
 
                     // todo settarlo in crash
-                    players.get(i).setCrashed(true);
+                    gameStatus.getPlayersList().get(i).setCrashed(true);
 
                     // todo notificare l' informazione a tutti
                     gameStatus.setPlayersList(players);
@@ -297,8 +299,8 @@ public class GameController implements DataReceiverListener {
      * ?
      * */
     // todo
-	private boolean isMyTurn(GameStatus gameStatus) {
-		return gameStatus.getCurrentPlayer().getId() == this.currentId;
+	private boolean isMyTurn() {
+		return this.gameStatus.getCurrentPlayer().getId() == this.currentId;
 	}
 
 
