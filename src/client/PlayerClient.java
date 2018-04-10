@@ -44,9 +44,11 @@ public class PlayerClient {
 
     public static void main(final String[] args) {
 
+        /*
         Thread thread = new Thread(new Runnable() {
             //@Override
             public void run() {
+        */
                 try {
 
                     // the registration server ip is read from util.txt
@@ -68,6 +70,7 @@ public class PlayerClient {
                     // the registration server port
                     regServerPort = 1099;
 
+                    // in lab funziona con la riga seguente non commentata
                     System.setProperty("java.rmi.server.hostname", regServerHost);
 
                     System.setProperty("java.security.policy", "file:./security.policy");
@@ -152,9 +155,11 @@ public class PlayerClient {
                     e.printStackTrace();
                     System.exit(-1);
                 }
+                /*
             }
         });
         thread.start();
+        */
     }
 
     /**

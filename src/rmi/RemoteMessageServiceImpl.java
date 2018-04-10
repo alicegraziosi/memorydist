@@ -48,6 +48,13 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		if(gameStatus.getMove() != null){
 			System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " contains a move");
 			gameController.updateBoardAfterMove(gameStatus.getMove());
+
+			if(gameStatus.getMove().getCard2() != null) {
+				// due carte girate
+				// riparte play game
+				gameController.playGame();
+				return 2;
+			}
 		}
 
 		return 1;

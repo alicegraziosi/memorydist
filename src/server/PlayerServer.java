@@ -30,6 +30,9 @@ public class PlayerServer implements RemoteGameInterface{
                                                  BlockingQueue<GameStatus> buffer,
                                                  GameController gameController){
 
+        // in lab funziona con la riga seguente non commentata
+        System.setProperty("java.rmi.server.hostname", host);
+
         System.setProperty("java.security.policy", "file:./security.policy");
 
         if (System.getSecurityManager() == null) {

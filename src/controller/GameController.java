@@ -11,10 +11,14 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import client.PlayerClient;
 import listener.DataReceiverListener;
 import view.board.BoardView;
@@ -74,9 +78,11 @@ public class GameController implements DataReceiverListener {
     public void playGame() {
 
         // todo con i thread o senza!? non lo so...
+        /*
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
+            */
 
                 gameStatus.setMove(null);
                 boardView.reset(gameStatus);
@@ -149,7 +155,17 @@ public class GameController implements DataReceiverListener {
                             System.out.println("Broadcast a message containing this info.");
                             gameStatus.setPlayersList(players);
                             gameStatus.setIdSender(currentId);
-                            broadcastMessage(gameStatus);
+
+
+                            System.out.print("Prossimo giocatore: ") ;
+                            for (int j = 0; j < gameStatus.getPlayersList().size(); j++) {
+                                if (gameStatus.getPlayersList().get(j).isMyTurn()) {
+                                    System.out.println(j);
+                                    break;
+                                }
+                            }
+
+                            //broadcastMessage(gameStatus);
 
 
                             // mossa
@@ -210,24 +226,33 @@ public class GameController implements DataReceiverListener {
                     e.printStackTrace();
                 }
             }
+        /*
         });
-        t.start();
-    }
+                t.start();
+            }
+    */
     
     /**
      * function which manages the timers of the round
      * @param int $delay, int $period
      * */
     public void startTimeout(int delay, int period){
-        timerTask  = new TimerTask() {
-            @Override
+
+        /*
+        Runnable runnable = new Runnable() {
             public void run() {
+                System.out.println();
+                // task to run goes here
                 playGame();
             }
         };
 
-        timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask, delay * 1000, period * 1000);
+        ScheduledExecutorService service = Executors
+                .newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(runnable, delay, period, TimeUnit.MILLISECONDS);
+        */
+
+        playGame();
     }
 
     /**
@@ -251,7 +276,8 @@ public class GameController implements DataReceiverListener {
                     int remotePort = players.get(i).getPort();
 
                     // mi sa che nel client non serve ma non ne sono sicura
-                    System.setProperty("java.rmi.server.hostname", remoteHost);
+                    // in lab funziona con la riga seguente commentato
+                    // System.setProperty("java.rmi.server.hostname", remoteHost);
 
                     Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
                     String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
@@ -260,6 +286,17 @@ public class GameController implements DataReceiverListener {
                     gamestatus.setId(gamestatus.getId()+1);
                     int response = stub.sendMessage(gamestatus);
                     System.out.println("[GameCtrl]: Response from player " + i + ": " + response);
+
+                    if(response == 2){
+                        System.out.print("Prossimo giocatore: ") ;
+                        for (int j = 0; j < gameStatus.getPlayersList().size(); j++) {
+                            if (gameStatus.getPlayersList().get(j).isMyTurn()) {
+                                System.out.println(j);
+                                break;
+                            }
+                        }
+                        playGame();
+                    }
 
                 } catch (RemoteException e) {
                     e.printStackTrace();
