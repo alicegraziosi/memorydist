@@ -50,7 +50,6 @@ public class BoardView extends Container implements GameGUIListener{
         this.frame = new JFrame("Memory Game - Player " + id);
         this.gridPanelCards = new JPanel();
         this.gridPanelCards.setLayout(new GridLayout(4, 5));
-
         this.playerClient = playerClient;
     }
 
@@ -225,7 +224,7 @@ public class BoardView extends Container implements GameGUIListener{
 
                         System.out.println("[BoardView]: First selected card: " + move.getCard1().getValue());
 
-                        //broadcastMessageMove(gameStatus);
+                        broadcastMessageMove(gameStatus);
 
                     } else if (selectedCard2==null) {
 
@@ -274,7 +273,7 @@ public class BoardView extends Container implements GameGUIListener{
      * Called when a move is performed
      * */
     public void broadcastMessageMove(GameStatus gameStatus){
-        playerClient.broadcastMessageMove(gameStatus);
+        gameController.broadcastMessage(gameStatus);
     }
 
     /**

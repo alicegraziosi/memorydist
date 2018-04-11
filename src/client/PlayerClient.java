@@ -125,6 +125,7 @@ public class PlayerClient {
                 board = new BoardView(gameStatus, id, playerClient);
                 gameController = new GameController(id, players, gameStatus, buffer, board);
                 board.setGameController(gameController);
+                
                 // each player has a registry and an remote object on his host and port
                 // player port (player host is set before)
                 port = players.get(id).getPort();
