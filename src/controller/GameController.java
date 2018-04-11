@@ -84,6 +84,8 @@ public class GameController implements DataReceiverListener {
             turnNumber++;
             System.out.println("\n\n******** Turn number " + turnNumber + " ********");
 
+            // todo controllare se è rimasto un solo giocatore
+            // todo lasciar giocare da solo l'ultimo giocatore
             //se ci sono ancora carte da scoprire e se è rimasto più di un giocatore
             if (gameStatus.getShowingCards().size() < 20) {
                 // altrimenti si lascia giocare l'ultimo giocatore
@@ -238,11 +240,6 @@ public class GameController implements DataReceiverListener {
 
                     System.out.println("[GameCtrl]: Response from player " + i + ": " + response);
 
-                    if(response == 2){
-
-                        playGame();
-                    }
-
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     System.out.println("Player " + i + " crashed.");
@@ -257,6 +254,10 @@ public class GameController implements DataReceiverListener {
                     e.printStackTrace();
                 }
             }
+        }
+
+        if(gameStatus.getMove().getCard2() != null){
+            playGame();
         }
     }
 

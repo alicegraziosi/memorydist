@@ -58,10 +58,10 @@ public class BoardView extends Container{
          * Il timer mi permette di avere un margine di secondi per vedere le carte,
          * di default e' settato a 750 ma si può variare
          */
-        t = new javax.swing.Timer(750, new ActionListener() {
+        t = new javax.swing.Timer(2000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                broadcastMessageMove(gameStatus);
+
             }
         });
 
@@ -156,6 +156,7 @@ public class BoardView extends Container{
     }
 
     public void showMatchedCards(){
+        // todo showMatchedCards
         for (CardView cardView: cardViewsMatch) {
             cardView.setImage();
             cardView.addActionListener(new ActionListener() {
@@ -191,13 +192,7 @@ public class BoardView extends Container{
                     break;
                 }
             }
-        }
-
-        // Utilizzato per rallentare l'animazione
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
+            t.start();
         }
     }
 
@@ -260,8 +255,8 @@ public class BoardView extends Container{
                         System.out.println("[BoardView]: Two card in this turn have been already selected.");
                     }
 
-                    //broadcastMessageMove(gameStatus);
-                    t.start();
+                    broadcastMessageMove(gameStatus);
+
                 }
             });
         }

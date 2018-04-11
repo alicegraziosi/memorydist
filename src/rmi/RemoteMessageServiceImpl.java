@@ -34,7 +34,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		// todo processare messaggio quando l id del msg è minore dell id corrente
 
 		System.out.println("[RMISImpl]: Message received from player " + gameStatus.getIdSender());
-		//System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());
+
 
 		System.out.println("[RMISImpl]: Message said that next player is: " + gameStatus.getCurrentPlayer().getId());
 	
@@ -60,6 +60,8 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 				gameController.playGame();
 				return 2;
 			}
+		} else {
+			System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());
 		}
 
 		return 1;
