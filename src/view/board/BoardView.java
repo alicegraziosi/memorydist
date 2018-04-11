@@ -1,10 +1,12 @@
 package view.board;
 
 import client.PlayerClient;
+import controller.GameController;
 import model.gameStatus.GameStatus;
 import model.move.Move;
 import model.player.PLAYER_STATE;
 import view.card.CardView;
+import view.listener.GameGUIListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +17,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.Timer;
 
-public class BoardView extends Container{
+public class BoardView extends Container implements GameGUIListener{
 
     private JPanel panel1;
     private JLabel label1;
@@ -33,6 +35,7 @@ public class BoardView extends Container{
     private JPanel gridPanelCards;
 
     private PlayerClient playerClient;
+    private GameController gameController;
     private Timer t;
 
     public BoardView(GameStatus gameStatus, int id, PlayerClient playerClient) {
@@ -47,7 +50,6 @@ public class BoardView extends Container{
         this.frame = new JFrame("Memory Game - Player " + id);
         this.gridPanelCards = new JPanel();
         this.gridPanelCards.setLayout(new GridLayout(4, 5));
-
         this.playerClient = playerClient;
     }
 
@@ -156,7 +158,9 @@ public class BoardView extends Container{
     }
 
     public void showMatchedCards(){
+
         // todo showMatchedCards
+        // il codice sotto non è giusto
         for (CardView cardView: cardViewsMatch) {
             cardView.setImage();
             cardView.addActionListener(new ActionListener() {
@@ -203,7 +207,7 @@ public class BoardView extends Container{
      * When it is the second card selected
      * */
     public void setCardClickActionListener(){
-        for (CardView cardView: cardViews) {
+        for (final CardView cardView: cardViews) {
             cardView.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -216,8 +220,6 @@ public class BoardView extends Container{
                         gameStatus.setMove(move);
 
                         System.out.println("[BoardView]: First selected card: " + move.getCard1().getValue());
-
-                        //broadcastMessageMove(gameStatus);
 
                     } else if (selectedCard2==null) {
 
@@ -266,7 +268,7 @@ public class BoardView extends Container{
      * Called when a move is performed
      * */
     public void broadcastMessageMove(GameStatus gameStatus){
-        playerClient.broadcastMessageMove(gameStatus);
+        gameController.broadcastMessage(gameStatus);
     }
 
     /**
@@ -307,5 +309,12 @@ public class BoardView extends Container{
     public InfoView getInfoView() {
         return infoView;
     }
+
+	@Override
+	public void setGameController(GameController gameController) {
+		// TODO Auto-generated method stub
+		this.gameController = gameController;
+		
+	}
 }
 

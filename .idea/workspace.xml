@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8b85b1ff-a92d-4b85-aceb-da4beb877268" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/src/view/listener/GameGUIListener.java" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/controller/GameController.java" afterPath="$PROJECT_DIR$/src/controller/GameController.java" />
-      <change beforePath="$PROJECT_DIR$/src/rmi/RemoteMessageServiceImpl.java" afterPath="$PROJECT_DIR$/src/rmi/RemoteMessageServiceImpl.java" />
+      <change beforePath="$PROJECT_DIR$/src/client/PlayerClient.java" afterPath="$PROJECT_DIR$/src/client/PlayerClient.java" />
       <change beforePath="$PROJECT_DIR$/src/view/board/BoardView.java" afterPath="$PROJECT_DIR$/src/view/board/BoardView.java" />
+      <change beforePath="$PROJECT_DIR$/src/view/board/ProveStartBoard.java" afterPath="$PROJECT_DIR$/src/view/board/ProveStartBoard.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -52,14 +53,13 @@
       <file leaf-file-name="BoardView.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/view/board/BoardView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-257">
-              <caret line="194" column="22" lean-forward="false" selection-start-line="194" selection-start-column="22" selection-end-line="194" selection-end-column="22" />
+            <state relative-caret-position="-3282">
+              <caret line="162" column="39" lean-forward="false" selection-start-line="162" selection-start-column="39" selection-end-line="162" selection-end-column="39" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#8921#8922#0" expanded="true" />
-                <element signature="e#8982#8983#0" expanded="true" />
-                <element signature="e#10249#10250#0" expanded="true" />
-                <element signature="e#10280#10281#0" expanded="true" />
+                <element signature="e#9048#9049#0" expanded="true" />
+                <element signature="e#9107#9108#0" expanded="true" />
+                <element signature="e#10374#10375#0" expanded="true" />
+                <element signature="e#10405#10406#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -847,7 +847,7 @@
         <state relative-caret-position="2753">
           <caret line="165" column="60" lean-forward="false" selection-start-line="165" selection-start-column="60" selection-end-line="165" selection-end-column="60" />
           <folding>
-            <element signature="e#6383#6384#0" expanded="false" />
+            <element signature="e#6456#6457#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -918,14 +918,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/view/board/BoardView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-257">
-          <caret line="194" column="22" lean-forward="false" selection-start-line="194" selection-start-column="22" selection-end-line="194" selection-end-column="22" />
+        <state relative-caret-position="-3282">
+          <caret line="162" column="39" lean-forward="false" selection-start-line="162" selection-start-column="39" selection-end-line="162" selection-end-column="39" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#8921#8922#0" expanded="true" />
-            <element signature="e#8982#8983#0" expanded="true" />
-            <element signature="e#10249#10250#0" expanded="true" />
-            <element signature="e#10280#10281#0" expanded="true" />
+            <element signature="e#9048#9049#0" expanded="true" />
+            <element signature="e#9107#9108#0" expanded="true" />
+            <element signature="e#10374#10375#0" expanded="true" />
+            <element signature="e#10405#10406#0" expanded="true" />
           </folding>
         </state>
       </provider>
