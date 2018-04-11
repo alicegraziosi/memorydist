@@ -1,10 +1,12 @@
 package view.board;
 
 import client.PlayerClient;
+import controller.GameController;
 import model.gameStatus.GameStatus;
 import model.move.Move;
 import model.player.PLAYER_STATE;
 import view.card.CardView;
+import view.listener.GameGUIListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +17,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import javax.swing.Timer;
 
-public class BoardView extends Container{
+public class BoardView extends Container implements GameGUIListener{
 
     private JPanel panel1;
     private JLabel label1;
@@ -33,6 +35,7 @@ public class BoardView extends Container{
     private JPanel gridPanelCards;
 
     private PlayerClient playerClient;
+    private GameController gameController;
     private Timer t;
 
     public BoardView(GameStatus gameStatus, int id, PlayerClient playerClient) {
@@ -156,7 +159,7 @@ public class BoardView extends Container{
     }
 
     public void showMatchedCards(){
-        for (CardView cardView: cardViewsMatch) {
+        for (final CardView cardView: cardViewsMatch) {
             cardView.setImage();
             cardView.addActionListener(new ActionListener() {
                 @Override
@@ -208,7 +211,7 @@ public class BoardView extends Container{
      * When it is the second card selected
      * */
     public void setCardClickActionListener(){
-        for (CardView cardView: cardViews) {
+        for (final CardView cardView: cardViews) {
             cardView.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -312,5 +315,12 @@ public class BoardView extends Container{
     public InfoView getInfoView() {
         return infoView;
     }
+
+	@Override
+	public void setGameController(GameController gameController) {
+		// TODO Auto-generated method stub
+		this.gameController = gameController;
+		
+	}
 }
 

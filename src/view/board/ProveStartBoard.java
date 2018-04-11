@@ -40,7 +40,7 @@ public class ProveStartBoard {
 
 
         GameStatus gameStatus = new GameStatus( players, -1, showingCards, notShowingCards, null);
-        BoardView board = new BoardView(gameStatus, 0, null);
+        final BoardView board = new BoardView(gameStatus, 0, null);
         board.init();
 
         TimerTask timerTask  = new TimerTask() {
