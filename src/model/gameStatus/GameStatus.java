@@ -15,14 +15,6 @@ import java.util.Random;
  */
 public class GameStatus implements Serializable {
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	private int id;
     private ArrayList<Player> playersList;
     private int idSender; // ?
@@ -230,6 +222,14 @@ public class GameStatus implements Serializable {
      */
 	public void setCurrentPlayer(Player currentPlayer) {
 		this.currentPlayer = currentPlayer;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

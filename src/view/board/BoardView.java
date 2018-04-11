@@ -149,7 +149,7 @@ public class BoardView extends Container implements GameGUIListener{
         }
     }
 
-    // make cards ckickable
+    // make cards clickable
     public void unblockCards(){
         for (CardView cardView: cardViews) {
             cardView.setLogo();
@@ -161,7 +161,7 @@ public class BoardView extends Container implements GameGUIListener{
 
         // todo showMatchedCards
         // il codice sotto non è giusto
-        for (CardView cardView: cardViewsMatch) {
+        for (final CardView cardView: cardViewsMatch) {
             cardView.setImage();
             cardView.addActionListener(new ActionListener() {
                 @Override
@@ -203,7 +203,6 @@ public class BoardView extends Container implements GameGUIListener{
     /**
      * When a card is selected.
      * When it is the first card selected
-     *
      * When it is the second card selected
      * */
     public void setCardClickActionListener(){
@@ -211,8 +210,8 @@ public class BoardView extends Container implements GameGUIListener{
             cardView.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-
-                    if(selectedCard1 == null && selectedCard2 == null){
+                	
+                    if(selectedCard1 == null && selectedCard2 == null){ // prima mossa eseguita
 
                         selectedCard1 = cardView;
                         cardView.setImage();
@@ -221,7 +220,7 @@ public class BoardView extends Container implements GameGUIListener{
 
                         System.out.println("[BoardView]: First selected card: " + move.getCard1().getValue());
 
-                    } else if (selectedCard2==null) {
+                    } else if (selectedCard2==null) { // seconda mossa eseguita
 
                         selectedCard2 = cardView;
                         cardView.setImage();
@@ -257,7 +256,7 @@ public class BoardView extends Container implements GameGUIListener{
                         System.out.println("[BoardView]: Two card in this turn have been already selected.");
                     }
 
-                    broadcastMessageMove(gameStatus);
+                    broadcastMessageMove(gameStatus); // invio messaggio con gameStatus aggiornato
 
                 }
             });
@@ -265,7 +264,9 @@ public class BoardView extends Container implements GameGUIListener{
     }
 
     /**
-     * Called when a move is performed
+     * @desc Called when a move is performed
+     * @param GameStatus $gameStatus
+     * @return void
      * */
     public void broadcastMessageMove(GameStatus gameStatus){
         gameController.broadcastMessage(gameStatus);
@@ -312,9 +313,7 @@ public class BoardView extends Container implements GameGUIListener{
 
 	@Override
 	public void setGameController(GameController gameController) {
-		// TODO Auto-generated method stub
 		this.gameController = gameController;
-		
 	}
 }
 

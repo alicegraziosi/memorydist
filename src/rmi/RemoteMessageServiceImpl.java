@@ -2,6 +2,8 @@ package rmi;
 
 import controller.GameController;
 import model.gameStatus.GameStatus;
+import model.player.Player;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.BlockingQueue;
@@ -24,7 +26,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		msgCounterLock = new ReentrantLock();
 		messageCounter = 0;
 	}
-
+	
 	public int sendMessage(GameStatus gameStatus) throws RemoteException {
 		// un processo invoca sendMessage su un altro processo
 		// il processo su cui è invocato sendMessage riceve il messaggio in questo punto
@@ -67,6 +69,24 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		return 1;
 	}
 
+	public int ping() {
+		return 1;
+	}
+	
+
+	@Override
+	public int sendCrashMessage(GameStatus gameStatus, Player crashedPlayer) throws RemoteException {
+
+		System.out.println("[RMISImpl]: Crash message received from player " + gameStatus.getIdSender());
+
+
+		System.out.println("[RMISImpl]: Crash message said that next player is: " + gameStatus.getCurrentPlayer().getId());
+	
+		gameController.setGameStatus(gameStatus); // setting the new updated gameStatus
+
+		return 0;
+	}
+	
 	public void incMessageCounter() throws RemoteException{
 		msgCounterLock.lock();
 		try {
@@ -91,4 +111,5 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 	public void setMessageCounter(int messageCounter) {
 		this.messageCounter = messageCounter;
 	}
+
 }

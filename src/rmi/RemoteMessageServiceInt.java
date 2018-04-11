@@ -1,6 +1,7 @@
 package rmi;
 
 import model.gameStatus.GameStatus;
+import model.player.Player;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -15,4 +16,10 @@ public interface RemoteMessageServiceInt extends Remote {
 	 * @param GameStatus $message
 	 */
 	int sendMessage(GameStatus message) throws RemoteException;
+	
+	int sendCrashMessage(GameStatus message, Player crashedPlayer) throws RemoteException;
+	
+	int ping () throws RemoteException;
+
+
 }
