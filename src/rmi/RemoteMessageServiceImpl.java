@@ -2,7 +2,6 @@ package rmi;
 
 import controller.GameController;
 import model.gameStatus.GameStatus;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.BlockingQueue;
@@ -34,24 +33,30 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 
 		// todo processare messaggio quando l id del msg è minore dell id corrente
 
-		System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " received from player " + gameStatus.getIdSender());
+		System.out.println("[RMISImpl]: Message received from player " + gameStatus.getIdSender());
 		//System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());
 
-		for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
-			if (gameStatus.getPlayersList().get(i).isMyTurn()) {
-				System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " said that next player is: " + Integer.valueOf(i).toString());
-				break;
-			}
-		}
-		gameController.setGameStatus(gameStatus);
+		System.out.println("[RMISImpl]: Message said that next player is: " + gameStatus.getCurrentPlayer().getId());
+	
+		gameController.setGameStatus(gameStatus); // setting the new updated gameStatus
 
 		if(gameStatus.getMove() != null){
 			System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " contains a move");
+
 			gameController.updateBoardAfterMove(gameStatus.getMove());
 
 			if(gameStatus.getMove().getCard2() != null) {
 				// due carte girate
 				// riparte play game
+
+				/*
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				*/
+
 				gameController.playGame();
 				return 2;
 			}

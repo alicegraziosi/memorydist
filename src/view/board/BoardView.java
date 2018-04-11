@@ -13,8 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-
-import static java.lang.Thread.sleep;
+import javax.swing.Timer;
 
 public class BoardView extends Container{
 
@@ -34,6 +33,7 @@ public class BoardView extends Container{
     private JPanel gridPanelCards;
 
     private PlayerClient playerClient;
+    private Timer t;
 
     public BoardView(GameStatus gameStatus, int id, PlayerClient playerClient) {
         this.gameStatus = gameStatus;
@@ -53,6 +53,19 @@ public class BoardView extends Container{
 
     //public static void main(String[] args) {
     public void init(){
+
+        /*
+         * Il timer mi permette di avere un margine di secondi per vedere le carte,
+         * di default e' settato a 750 ma si può variare
+         */
+        t = new javax.swing.Timer(750, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                broadcastMessageMove(gameStatus);
+            }
+        });
+
+        t.setRepeats(false);
 
         // look and feel (superfluo e quindi commentato)
         /*
@@ -179,6 +192,13 @@ public class BoardView extends Container{
                 }
             }
         }
+
+        // Utilizzato per rallentare l'animazione
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
     }
 
     /**
@@ -200,18 +220,16 @@ public class BoardView extends Container{
                         move = new Move(selectedCard1.getCard());
                         gameStatus.setMove(move);
 
-                        broadcastMessageMove(gameStatus);
-
                         System.out.println("[BoardView]: First selected card: " + move.getCard1().getValue());
+
+                        //broadcastMessageMove(gameStatus);
+
                     } else if (selectedCard2==null) {
 
                         selectedCard2 = cardView;
                         cardView.setImage();
                         move = new Move(selectedCard1.getCard(), selectedCard2.getCard());
                         gameStatus.setMove(move);
-
-                        System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
-                        System.out.println("[BoardView]: Match: " + move.isMatch());
 
                         if(move.isMatch()){
                             //update score of current player
@@ -233,10 +251,17 @@ public class BoardView extends Container{
                             }
                         }
 
-                        broadcastMessageMove(gameStatus);
+                        System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
+                        System.out.println("[BoardView]: Match: " + move.isMatch());
+
+                        //broadcastMessageMove(gameStatus);
+
                     } else {
                         System.out.println("[BoardView]: Two card in this turn have been already selected.");
                     }
+
+                    //broadcastMessageMove(gameStatus);
+                    t.start();
                 }
             });
         }

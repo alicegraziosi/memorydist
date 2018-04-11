@@ -72,7 +72,7 @@ public class RegistrationServiceServer {
                 ex.printStackTrace();
             }
 
-            RemoteRegistrationServerImpl registration = new RemoteRegistrationServerImpl();
+            final RemoteRegistrationServerImpl registration = new RemoteRegistrationServerImpl();
             String location = "rmi://" + host + ":" + port + "/registrazione";
             registry.rebind(location, registration);
 

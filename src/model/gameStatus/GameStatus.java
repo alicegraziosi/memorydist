@@ -36,11 +36,13 @@ public class GameStatus implements Serializable {
      * Starting game constructor
      * */
     public GameStatus(ArrayList<Player> playersList,
+    				  int idSender,
 					  ArrayList<Card> showingCards,
 					  ArrayList<Card> notShowingCards,
 					  Move move) {
 
 		this.playersList = playersList;
+		this.idSender = idSender;
 		this.showingCards = showingCards;
 		this.notShowingCards = notShowingCards;
 		
@@ -54,44 +56,20 @@ public class GameStatus implements Serializable {
 
 		this.move = move;
 	}
-    
-	/** constructor */
-    public GameStatus(ArrayList<Player> playersList,
-                      int idSender,
-                      ArrayList<Card> showingCards,
-                      ArrayList<Card> notShowingCards,
-                      Move move,
-                      Player currentPlayer) {}
-
-
-    /** constructor */
-    public GameStatus(ArrayList<Player> playersList,
-                      int idSender,
-                      ArrayList<Card> showingCards,
-                      ArrayList<Card> notShowingCards,
-                      Move move) {
-        this.playersList = playersList;
-        this.idSender = idSender;
-        this.showingCards = showingCards;
-        this.notShowingCards = notShowingCards;
-        this.move = move;
-        this.currentPlayer = currentPlayer;
-    }
-    
+   
     
     
     /**
      * setting the next turn managing players array list in gameStatus
      * @param GameStatus $gameStatus
      * */
-    public Player getNextPlayer() throws NextPlayerNotFoundException{
+    public void setNextPlayer(){
     	
-    	System.out.println("[GameStatus.setNextTurn]: idCurrentPlayer " + this.currentPlayer.getId());
     	// compute id next player
         int indexNextPlayer = this.currentPlayer.getId() + 1;
         
         // se il giocatore corrente è l'ultimo, il prossimo è il primo
-        if(indexNextPlayer > playersList.size()){
+        if(indexNextPlayer >= playersList.size()){
             indexNextPlayer = 0;
         }
 
@@ -100,15 +78,15 @@ public class GameStatus implements Serializable {
         	Player iteratePlayer = playersList.get(i);
         	
             if(!playersList.get(i).isCrashed()) {
-                Player newCurrentPlayer = iteratePlayer;
-            	System.out.println("[GameStatus]: Il prossimo giocatore (settato) è : " + Integer.valueOf(i).toString());
-                return newCurrentPlayer;
+                this.currentPlayer = iteratePlayer;
+            	System.out.println("[GameStatus]: Il prossimo giocatore (settato) sarà : " + Integer.valueOf(i).toString());
+            	break;
             } else {
                 System.out.println(playersList.get(i).toString());
             }
         }
         
-        throw new NextPlayerNotFoundException();
+//        throw new NextPlayerNotFoundException();
     }
     
     /**
@@ -152,7 +130,8 @@ public class GameStatus implements Serializable {
 				"playerList=" + playersList + newLine +	
 				", showingCards='" + showingCards + newLine +	
 				"', notShowingCards=" + notShowingCards + newLine +	
-				", move=" + move + newLine +	
+				", move=" + move + newLine +
+				", currentPlayer=" + currentPlayer + newLine +
 				" }";
 	}
 

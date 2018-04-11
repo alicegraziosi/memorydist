@@ -22,4 +22,6 @@ public interface RemoteGameInterface {
 	 * @throws NotBoundException
 	 */
 	void sendGame(GameStatus gameStatus) throws RemoteException, NotBoundException;
+
+	void helloThere()  throws RemoteException, NotBoundException;
 }
