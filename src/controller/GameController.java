@@ -105,6 +105,15 @@ public class GameController implements DataReceiverListener {
                     * */
                     gameStatus.setPlayersList(players);
                     gameStatus.setIdSender(currentId);
+                    
+                    /**
+                     * controllo che gli altri giocatori non siano crashati
+                     * */
+                    for(int i = 0; i < gameStatus.getPlayersList().size(); i++) {
+                    	Player iteratePlayer = gameStatus.getPlayersList().get(i);
+                    	if( iteratePlayer.getId() != currentId)
+                    		pingAPlayer(gameStatus, iteratePlayer.getId());
+                    }
            
                 } else { // Se non è il suo turno
             		System.out.println("NOT my turn, it is turn of player " + gameStatus.getCurrentPlayer().getId());
