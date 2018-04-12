@@ -118,9 +118,14 @@ public class GameController implements DataReceiverListener {
                             break;
                         }
                     }
-                    // pingo giocatore corrente per controllare che sia vivo                    
-                    pingCurrentPlayer(gameStatus, gameStatus.getCurrentPlayer().getId());
-                    
+                    // pingo giocatore corrente per controllare che sia vivo      
+                    // faccio questo solo se sono il successivo 
+                    Player nextPlayer = gameStatus.getNextPlayer();
+                    if ( nextPlayer != null && nextPlayer.getId() == currentId ) {
+                    	System.out.println("[GameCtrl] sono player " + currentId + " e pingo player " + 
+                    			gameStatus.getCurrentPlayer().getId());
+                    	pingCurrentPlayer(gameStatus, gameStatus.getCurrentPlayer().getId());
+                    }
                    
                     // todo controllare se non arrivano mess
                     
@@ -282,6 +287,7 @@ public class GameController implements DataReceiverListener {
 
             } catch (RemoteException e) {
                 //e.printStackTrace();
+            	// PLAYER PINGATO CRASHATO
                 System.out.println("Player " + idPlayer + " crashed.");
                 
                 int currentPlayerId = gameStatus.getCurrentPlayer().getId();
@@ -290,6 +296,7 @@ public class GameController implements DataReceiverListener {
                 players.get(idPlayer).setCrashed(true);
                 gameStatus.setPlayersList(players);
                 
+                // to do gestione aggiornamento gameStatus dopo crash giocatore corrente
                 for (int i = currentPlayerId; i < playersNumber; i++) {
                 	if(i == currentId && !gameStatus.getPlayersList().get(i).isCrashed()) {
                         // setto in crash 
@@ -341,7 +348,8 @@ public class GameController implements DataReceiverListener {
                     gamestatus.setId(gamestatus.getId());
                     
                     int response = stub.sendCrashMessage(gamestatus, crashedPlayer);
-                    
+                    if (response == 0)
+                    	playGame();
                     if (response == 1)
                 		System.out.println("[GameCtrl]: Response from player " + i + ": ALIVE");
 

@@ -53,7 +53,6 @@ public class GameStatus implements Serializable {
     
     /**
      * setting the next turn managing players array list in gameStatus
-     * @param GameStatus $gameStatus
      * */
     public void setNextPlayer(){
     	
@@ -77,6 +76,36 @@ public class GameStatus implements Serializable {
                 System.out.println(playersList.get(i).toString());
             }
         }
+        
+//        throw new NextPlayerNotFoundException();
+    }
+    
+    /**
+     * getting the next turn managing players array list in gameStatus
+     * */
+    public Player getNextPlayer(){
+    	
+    	// compute id next player
+        int indexNextPlayer = this.currentPlayer.getId() + 1;
+        
+        // se il giocatore corrente è l'ultimo, il prossimo è il primo
+        if(indexNextPlayer >= playersList.size()){
+            indexNextPlayer = 0;
+        }
+
+        // setto il turno al prossimo giocatore non in crash
+        for (int i = indexNextPlayer; i < playersList.size(); i++){
+        	Player iteratePlayer = playersList.get(i);
+        	
+            if(!iteratePlayer.isCrashed()) {
+               System.out.println("[GameStatus]: Il prossimo giocatore (settato) sarà : " + Integer.valueOf(i).toString());
+            	return iteratePlayer;
+            } else {
+                System.out.println(playersList.get(i).toString());
+            }
+        }
+        
+        return null;
         
 //        throw new NextPlayerNotFoundException();
     }
