@@ -3,6 +3,7 @@ package controller;
 import model.gameStatus.GameStatus;
 import model.move.Move;
 import model.player.Player;
+import rmi.RemoteMessageServiceImpl;
 import rmi.RemoteMessageServiceInt;
 import server.PlayerServer;
 import java.net.MalformedURLException;
@@ -124,7 +125,7 @@ public class GameController implements DataReceiverListener {
                     if ( nextPlayer != null && nextPlayer.getId() == currentId ) {
                     	System.out.println("[GameCtrl] sono player " + currentId + " e pingo player " + 
                     			gameStatus.getCurrentPlayer().getId());
-                    	pingCurrentPlayer(gameStatus, gameStatus.getCurrentPlayer().getId());
+                    	pingAPlayer(gameStatus, gameStatus.getCurrentPlayer().getId());
                     }
                    
                     // todo controllare se non arrivano mess
@@ -160,7 +161,11 @@ public class GameController implements DataReceiverListener {
         }
     }
 
-    public void pingCurrentPlayer(final GameStatus gameStatus,final int playerId) {
+    /**
+     * @desc function that pings a player to check that is alive
+     * @param GameStatus $gameStatus, int $playerId 
+     * */
+    public void pingAPlayer(final GameStatus gameStatus,final int playerId) {
     	 Runnable runnable = new Runnable() {
              public void run() {
                  System.out.println("[GameCtrl]: sto pingando giocatore corrente.");
@@ -169,10 +174,12 @@ public class GameController implements DataReceiverListener {
                  ;
              }
          };
-
+         
+         // ping every ms 
+         int ms = 10000;
          ScheduledExecutorService service = Executors
                  .newSingleThreadScheduledExecutor();
-         service.scheduleAtFixedRate(runnable, 0, 10000, TimeUnit.MILLISECONDS);
+         service.scheduleAtFixedRate(runnable, 0, ms, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -222,7 +229,10 @@ public class GameController implements DataReceiverListener {
                     // mi sa che nel client non serve ma non ne sono sicura
                     // in lab funziona con la riga seguente commentata (NON MODIFICARE)
                     // System.setProperty("java.rmi.server.hostname", remoteHost);
-
+                    
+//                    RemoteMessageServiceInt stub = getAndLookupRegistry(remoteHost, remotePort, 
+//                    		"messageService");
+//                    
                     Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
                     String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
                     RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
@@ -277,10 +287,12 @@ public class GameController implements DataReceiverListener {
                 // mi sa che nel client non serve ma non ne sono sicura
                 System.setProperty("java.rmi.server.hostname", remoteHost);
 
+//                RemoteMessageServiceInt stub = getAndLookupRegistry(remoteHost, remotePort, 
+//                		"messageService");
                 Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
-                String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
-                RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
-
+    			String location = "rmi://" + remoteHost + ":" + remotePort + "/" + "messageService";
+    		    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
+                
                 int response = stub.ping();
                 if (response == 1)
             		System.out.println("[GameCtrl]: Response from player " + idPlayer + ": ALIVE");
@@ -296,7 +308,7 @@ public class GameController implements DataReceiverListener {
                 players.get(idPlayer).setCrashed(true);
                 gameStatus.setPlayersList(players);
                 
-                // to do gestione aggiornamento gameStatus dopo crash giocatore corrente
+                //gestione aggiornamento gameStatus dopo crash giocatore corrente
                 for (int i = currentPlayerId; i < playersNumber; i++) {
                 	if(i == currentId && !gameStatus.getPlayersList().get(i).isCrashed()) {
                         // setto in crash 
@@ -310,8 +322,9 @@ public class GameController implements DataReceiverListener {
             	}    
 
             } catch (NotBoundException e) {
-                e.printStackTrace();
-            }
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
     
@@ -339,16 +352,15 @@ public class GameController implements DataReceiverListener {
                     // mi sa che nel client non serve ma non ne sono sicura
                     // in lab funziona con la riga seguente commentata (NON MODIFICARE)
                     // System.setProperty("java.rmi.server.hostname", remoteHost);
-
-                    Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
-                    String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
-                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
                     
+                    RemoteMessageServiceInt stub = getAndLookupRegistry(remoteHost, remotePort, 
+                    		"messageService");
+                   
                     System.out.println("[GameCtrl]: Sending gameStatus to player " + playerId);
                     gamestatus.setId(gamestatus.getId());
                     
                     int response = stub.sendCrashMessage(gamestatus, crashedPlayer);
-                    if (response == 0)
+                    if (response == 1)
                     	playGame();
                     if (response == 1)
                 		System.out.println("[GameCtrl]: Response from player " + i + ": ALIVE");
@@ -364,8 +376,6 @@ public class GameController implements DataReceiverListener {
                     gameStatus.setPlayersList(players);
                     
 
-                } catch (NotBoundException e) {
-                    e.printStackTrace();
                 }
             }
         }
@@ -375,7 +385,29 @@ public class GameController implements DataReceiverListener {
         }
     }
 
-
+    /**
+     * @desc function that connect to a remote Registry
+     * @param String $remoteHost, int $remotePort, String $serviceName
+     * @return RMSInt stub
+     * */
+    public RemoteMessageServiceInt getAndLookupRegistry(String remoteHost, int remotePort, String serviceName) {
+    	Registry registry;
+		try {
+			registry = LocateRegistry.getRegistry(remoteHost, remotePort);
+			String location = "rmi://" + remoteHost + ":" + remotePort + "/" + serviceName;
+		    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
+		    
+		    return stub;
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;        
+    }
+    
     /**
      * ?
      * */

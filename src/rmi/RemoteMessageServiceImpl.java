@@ -84,7 +84,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 	
 		gameController.setGameStatus(gameStatus); // setting the new updated gameStatus
 		gameController.playGame();
-		return 0;
+		return 1;
 	}
 	
 	public void incMessageCounter() throws RemoteException{
