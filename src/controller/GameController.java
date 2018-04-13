@@ -107,13 +107,12 @@ public class GameController implements DataReceiverListener {
                     gameStatus.setIdSender(currentId);
                     
                     /**
-                     * controllo che gli altri giocatori non siano crashati
+                     * controllo che il prossimo giocatore non sia crashato
                      * */
-                    for(int i = 0; i < gameStatus.getPlayersList().size(); i++) {
-                    	Player iteratePlayer = gameStatus.getPlayersList().get(i);
-                    	if( iteratePlayer.getId() != currentId)
-                    		pingAPlayer(gameStatus, iteratePlayer.getId());
-                    }
+                    Player nextPlayer = gameStatus.getCurrentPlayer(); //il corrente qui è il prossimo settato su
+                    if (nextPlayer != null)
+                    		pingAPlayer(gameStatus, nextPlayer.getId(), false);
+                    
            
                 } else { // Se non è il suo turno
             		System.out.println("NOT my turn, it is turn of player " + gameStatus.getCurrentPlayer().getId());
@@ -131,10 +130,11 @@ public class GameController implements DataReceiverListener {
                     // pingo giocatore corrente per controllare che sia vivo      
                     // faccio questo solo se sono il successivo 
                     Player nextPlayer = gameStatus.getNextPlayer();
+                    int currentPlayerId = gameStatus.getCurrentPlayer().getId();
                     if ( nextPlayer != null && nextPlayer.getId() == currentId ) {
                     	System.out.println("[GameCtrl] sono player " + currentId + " e pingo player " + 
                     			gameStatus.getCurrentPlayer().getId());
-                    	pingAPlayer(gameStatus, gameStatus.getCurrentPlayer().getId());
+                    	pingAPlayer(gameStatus, currentPlayerId, true);
                     }
                    
                     // todo controllare se non arrivano mess
@@ -174,13 +174,14 @@ public class GameController implements DataReceiverListener {
      * @desc function that pings a player to check that is alive
      * @param GameStatus $gameStatus, int $playerId 
      * */
-    public void pingAPlayer(final GameStatus gameStatus,final int playerId) {
+    public void pingAPlayer(final GameStatus gameStatus,final int playerId, final boolean isCurrentPlayerCrashed) {
     	 Runnable runnable = new Runnable() {
              public void run() {
-                 System.out.println("[GameCtrl]: sto pingando giocatore corrente.");
+                 System.out.println("[GameCtrl]: sto pingando giocatore " + playerId + 
+                		 " isCurrent = " + isCurrentPlayerCrashed);
                  // task to run goes here
-                 pingAHost(gameStatus, playerId);
-                 ;
+                 pingAHost(gameStatus, playerId, isCurrentPlayerCrashed);
+                 
              }
          };
          
@@ -279,7 +280,7 @@ public class GameController implements DataReceiverListener {
      * function which ping a det player to check if is alive
      * @param GameStatus $message
      * */
-    public void pingAHost(GameStatus gamestatus, int idPlayer) {
+    public void pingAHost(GameStatus gamestatus, int idPlayer, boolean isCurrentPlayerCrashed) {
 
         System.setProperty("java.security.policy", "file:./security.policy");
 
@@ -323,7 +324,7 @@ public class GameController implements DataReceiverListener {
                         // setto in crash 
 		                gameStatus.setNextPlayer();
 		                gameStatus.setIdSender(currentId);
-		                broadcastCrashMessage(gameStatus, gameStatus.getCurrentPlayer());
+		                broadcastCrashMessage(gameStatus, players.get(idPlayer), isCurrentPlayerCrashed);
 		                break;
                 	}else {
                 		
@@ -341,7 +342,7 @@ public class GameController implements DataReceiverListener {
      * function which broadcasts a crash message to other player
      * @param GameStatus $message
      * */
-    public void broadcastCrashMessage(GameStatus gamestatus, Player crashedPlayer) {
+    public void broadcastCrashMessage(GameStatus gamestatus, Player crashedPlayer, boolean isCurrentPlayerCrashed) {
 
         System.setProperty("java.security.policy", "file:./security.policy");
 
@@ -368,9 +369,11 @@ public class GameController implements DataReceiverListener {
                     System.out.println("[GameCtrl]: Sending gameStatus to player " + playerId);
                     gamestatus.setId(gamestatus.getId());
                     
-                    int response = stub.sendCrashMessage(gamestatus, crashedPlayer);
-                    if (response == 1)
-                    	playGame();
+                    int response = stub.sendCrashMessage(gamestatus, crashedPlayer, isCurrentPlayerCrashed);
+                    if ( isCurrentPlayerCrashed )
+                    	if (response == 1)
+                    		playGame();
+                    
                     if (response == 1)
                 		System.out.println("[GameCtrl]: Response from player " + i + ": ALIVE");
 

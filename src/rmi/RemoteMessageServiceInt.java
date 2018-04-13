@@ -17,7 +17,7 @@ public interface RemoteMessageServiceInt extends Remote {
 	 */
 	int sendMessage(GameStatus message) throws RemoteException;
 	
-	int sendCrashMessage(GameStatus message, Player crashedPlayer) throws RemoteException;
+	int sendCrashMessage(GameStatus message, Player crashedPlayer, boolean isCurrentPlayerCrashed) throws RemoteException;
 	
 	int ping () throws RemoteException;
 
