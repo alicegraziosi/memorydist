@@ -99,7 +99,7 @@ public class GameController implements DataReceiverListener {
                      * gestione passaggio del turno, setto prossimo giocatore
                      * */
                     gameStatus.setNextPlayer();
-
+             
                     /**
                     * setto giocatori nel gameStatus e idSender
                     * */
@@ -107,11 +107,12 @@ public class GameController implements DataReceiverListener {
                     gameStatus.setIdSender(currentId);
                     
                     /**
-                     * controllo che il prossimo giocatore non sia crashato
+                     * controllo che altri giocatori non siano crashati
                      * */
-                    Player nextPlayer = gameStatus.getCurrentPlayer(); //il corrente qui è il prossimo settato su
-                    if (nextPlayer != null)
-                    		pingAPlayer(gameStatus, nextPlayer.getId(), false);
+                    for (int i = 0; i < gameStatus.getPlayersList().size(); i++) 
+                    		if( gameStatus.getPlayersList().get(i).getId() != currentId &&
+                    				!gameStatus.getPlayersList().get(i).isCrashed())
+                    			pingAPlayer(gameStatus, gameStatus.getPlayersList().get(i).getId(), false);
                     
            
                 } else { // Se non è il suo turno
@@ -127,11 +128,15 @@ public class GameController implements DataReceiverListener {
                             break;
                         }
                     }
-                    // pingo giocatore corrente per controllare che sia vivo      
-                    // faccio questo solo se sono il successivo 
+                    
+                    /**
+                     * controlle che giocatore corrente sia vivo
+                     * faccio questo solo se sono il successivo 
+                     * **/
                     Player nextPlayer = gameStatus.getNextPlayer();
                     int currentPlayerId = gameStatus.getCurrentPlayer().getId();
-                    if ( nextPlayer != null && nextPlayer.getId() == currentId ) {
+                    if ( nextPlayer != null && nextPlayer.getId() == currentId 
+                    		&& !nextPlayer.isCrashed()) {
                     	System.out.println("[GameCtrl] sono player " + currentId + " e pingo player " + 
                     			gameStatus.getCurrentPlayer().getId());
                     	pingAPlayer(gameStatus, currentPlayerId, true);
@@ -177,6 +182,9 @@ public class GameController implements DataReceiverListener {
     public void pingAPlayer(final GameStatus gameStatus,final int playerId, final boolean isCurrentPlayerCrashed) {
     	 Runnable runnable = new Runnable() {
              public void run() {
+            	 /**
+            	  * pingo giocatore con id $playerId
+            	  * */
                  System.out.println("[GameCtrl]: sto pingando giocatore " + playerId + 
                 		 " isCurrent = " + isCurrentPlayerCrashed);
                  // task to run goes here
@@ -197,21 +205,6 @@ public class GameController implements DataReceiverListener {
      * @param int $delay, int $period
      * */
     public void startTimeout(int delay, int period){
-
-        /*
-        Runnable runnable = new Runnable() {
-            public void run() {
-                System.out.println();
-                // task to run goes here
-                playGame();
-            }
-        };
-
-        ScheduledExecutorService service = Executors
-                .newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(runnable, delay, period, TimeUnit.MILLISECONDS);
-        */
-
         playGame();
     }
 
@@ -296,41 +289,73 @@ public class GameController implements DataReceiverListener {
 
                 // mi sa che nel client non serve ma non ne sono sicura
                 System.setProperty("java.rmi.server.hostname", remoteHost);
-
-//                RemoteMessageServiceInt stub = getAndLookupRegistry(remoteHost, remotePort, 
-//                		"messageService");
+                
+                /** apro registro RMI */
                 Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
     			String location = "rmi://" + remoteHost + ":" + remotePort + "/" + "messageService";
     		    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
-                
+    		    
+    		    /** faccio il ping */
                 int response = stub.ping();
                 if (response == 1)
             		System.out.println("[GameCtrl]: Response from player " + idPlayer + ": ALIVE");
 
-            } catch (RemoteException e) {
-                //e.printStackTrace();
-            	// PLAYER PINGATO CRASHATO
+            } catch (RemoteException e) { 
+            	/** player pingato CRASHATO*/
+                
                 System.out.println("Player " + idPlayer + " crashed.");
                 
                 int currentPlayerId = gameStatus.getCurrentPlayer().getId();
                 int playersNumber = gameStatus.getPlayersList().size();
                 
+                /** setto nel gameStatus giocatore crashato */ 
+                System.out.println("Setto crashato player " + idPlayer);
                 players.get(idPlayer).setCrashed(true);
-                gameStatus.setPlayersList(players);
+                gameStatus.setPlayersList(players);  
                 
-                //gestione aggiornamento gameStatus dopo crash giocatore corrente
-                for (int i = currentPlayerId; i < playersNumber; i++) {
-                	if(i == currentId && !gameStatus.getPlayersList().get(i).isCrashed()) {
-                        // setto in crash 
-		                gameStatus.setNextPlayer();
-		                gameStatus.setIdSender(currentId);
-		                broadcastCrashMessage(gameStatus, players.get(idPlayer), isCurrentPlayerCrashed);
-		                break;
-                	}else {
-                		
+                /**
+                 * se è crashato il giocatore corrente
+                 * (entro qui solo se sono giocatore successivo)
+                 * */
+                if( isCurrentPlayerCrashed ) { 
+                	/**
+                	 * setto nuovo giocatore successivo e mittente
+                	 * */
+                	gameStatus.setNextPlayer();  
+	                gameStatus.setIdSender(currentId); 
+	                
+                	/** 
+                	* gestione aggiornamento gameStatus dopo crash giocatore CORRENTE
+            		* broadcast a tutti nuovo game status
+            		*/
+            		broadcastCrashMessage(gameStatus, players.get(idPlayer), isCurrentPlayerCrashed);
+	            }
+                else {
+                	/**
+            	 	* gestione aggiornamento gameStatus dopo crash giocatore NON CORRENTE
+                	* in questo stato il successivo  è già stato settato
+                	*/
+                	System.out.println("gamestatus crash giocatore non corrente " + gameStatus.toString());
+                	if ( idPlayer == gameStatus.getCurrentPlayer().getId()) {
+                		/** crash giocatore SUCCESSIVO */
+                		/**
+                    	 * setto nuovo giocatore successivo e mittente
+                    	 * */
+                		gameStatus.setNextPlayer(); 
+    	                gameStatus.setIdSender(currentId);
+    	                /** broadcast a tutti gameStatus */
+                		broadcastCrashMessage(gameStatus, players.get(idPlayer), isCurrentPlayerCrashed);
                 	}
-            	}    
-
+                	else { 
+                		/** crash giocatore NON SUCCESSIVO */
+                		/** non ho bisogno di settare nuovo giocatore successivo, setto mittente */
+                		gameStatus.setIdSender(currentId); 
+                		/** broadcast a tutti gameStatus */
+                		broadcastCrashMessage(gameStatus, players.get(idPlayer), isCurrentPlayerCrashed);
+                    }
+                		
+                }
+                
             } catch (NotBoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -359,17 +384,23 @@ public class GameController implements DataReceiverListener {
                     int remotePort = gameStatus.getPlayersList().get(i).getPort();
                     int playerId = gameStatus.getPlayersList().get(i).getId();
                     
+                    System.out.println("[GameCtrl.broadcastCrashMessage]: invio new game a player " + playerId);
                     // mi sa che nel client non serve ma non ne sono sicura
                     // in lab funziona con la riga seguente commentata (NON MODIFICARE)
                     // System.setProperty("java.rmi.server.hostname", remoteHost);
                     
+                    /** apro registro RMI */
                     RemoteMessageServiceInt stub = getAndLookupRegistry(remoteHost, remotePort, 
                     		"messageService");
-                   
+                    
+                    /** setto mittente messaggio */
                     System.out.println("[GameCtrl]: Sending gameStatus to player " + playerId);
                     gamestatus.setId(gamestatus.getId());
                     
+                    /** invio messaggio di crash */
                     int response = stub.sendCrashMessage(gamestatus, crashedPlayer, isCurrentPlayerCrashed);
+                    
+                    /** se è crashato il giocatore corrente allora devo ricominciare il turno */
                     if ( isCurrentPlayerCrashed )
                     	if (response == 1)
                     		playGame();
