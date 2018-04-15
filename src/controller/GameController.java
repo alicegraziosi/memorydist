@@ -88,7 +88,7 @@ public class GameController implements DataReceiverListener {
             // todo controllare se è rimasto un solo giocatore
             // todo lasciar giocare da solo l'ultimo giocatore
             // se ci sono ancora carte da scoprire e se è rimasto più di un giocatore
-            if (gameStatus.getShowingCards().size() < 20) {
+            if (gameStatus.getShowingCards().size() < 20 && gameStatus.countPlayersActive() > 0) {
                 if (isMyTurn()) { // se è il mio turno
                     System.out.println("[GameController]: It is my turn (Player " + currentId + ").");
 
@@ -141,23 +141,6 @@ public class GameController implements DataReceiverListener {
                     			gameStatus.getCurrentPlayer().getId());
                     	pingAPlayer(gameStatus, currentPlayerId, true);
                     }
-                   
-                    // todo controllare se non arrivano mess
-                    
-                    // un giocatore è in crash oppure non ha fatto mosse
-
-                    // nel frattempo può andare in crash
-
-                    // nel frattempo riceve messaggi
-                        /*
-                        GameStatus receivedMessage = buffer.poll();
-                        if(receivedMessage!=null){
-                            System.out.println("Processo il messaggio.");
-                            gameStatus = receivedMessage;
-                        } else {
-                            System.out.println("receivedMessage poll null");
-                        }*/
-
                 }
             } else {
                 // all cards are matched

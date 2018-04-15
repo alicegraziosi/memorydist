@@ -124,6 +124,18 @@ public class GameStatus implements Serializable {
 		return false;
 	}
     
+    public int countPlayersActive() {
+    	int playersActive = 0;
+    	for(int i = 0; i < this.playersAvailability.size(); i++) {
+    		PLAYER_STATE value = playersAvailability.get(i);
+    		if ( value == PLAYER_STATE.ACTIVE)
+    			playersActive ++;
+    	}
+    		
+    	return playersActive;
+    }
+    
+    
     /**
      * @desc setting the state of det player
      * @param int $id of the player, PLAYER_STATE $state of the player
