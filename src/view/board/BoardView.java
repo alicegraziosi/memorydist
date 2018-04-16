@@ -229,14 +229,11 @@ public class BoardView extends Container implements GameGUIListener{
                 		int card2Index = selectedCard2.getCard().getIndex();
                 		
                 		/** controllo match delle carte solo se non ho selezionato due volte la stessa*/
-                        if ( (card1Value != card2Value) && (card1Index != card2Index)) {                                 
+                        if ( (card1Index != card2Index) ) {                                 
 	                		cardView.setImage();
 	                        move = new Move(selectedCard1.getCard(), selectedCard2.getCard());
 	                        gameStatus.setMove(move);
-	                        
-	                        
-	                        
-	
+	                
 	                        if(move.isMatch()){
 	                            //update score of current player
 	                            int score = gameStatus.getPlayersList().get(id).getScore() + 1;
@@ -262,7 +259,7 @@ public class BoardView extends Container implements GameGUIListener{
 	                        System.out.println("[BoardView]: Match: " + move.isMatch());
 	                     
                         }    
-                        else {
+                        else if (card1Index == card2Index){
                         	/** Doppio click sulla stessa carta*/
                         	selectedCard2 = null;
                         	System.out.println("[BoardView]: Same card already selected.");
