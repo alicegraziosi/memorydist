@@ -60,6 +60,7 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 			if (isServiceOpen) {
 
 				playerIndex++; // player id
+				nickName = "player " + playerIndex;
 				int port = 2000 + playerIndex; // player port, each player has a different port
 				Player player = new Player(playerIndex, nickName, hostAddress, port); // create player
 				System.out.println("[RMIRegServ]: New player: " + player.toString());

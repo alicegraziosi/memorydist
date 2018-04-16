@@ -130,7 +130,7 @@ public class GameController implements DataReceiverListener {
                     }
                     
                     /**
-                     * controlle che giocatore corrente sia vivo
+                     * controllo che giocatore corrente sia vivo
                      * faccio questo solo se sono il successivo 
                      * **/
                     Player nextPlayer = gameStatus.getNextPlayer();
@@ -246,7 +246,8 @@ public class GameController implements DataReceiverListener {
                 }
             }
         }
-
+        
+        System.out.println("[GameCtrl.broadcastMessage] gameStatus: " + gameStatus.getMove().getCard2());
         if(gameStatus.getMove().getCard2() != null){
             playGame();
         }

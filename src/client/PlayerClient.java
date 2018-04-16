@@ -88,7 +88,7 @@ public class PlayerClient {
             String name = "rmi://" + regServerHost + ":" + regServerPort + "/registrazione";
             RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) registry.lookup(name);
 
-            // todo prenderlo da terminale
+         // todo prenderlo da terminale
             String nomeGiocatore = "default name";
 
             // registration server returns id of the player
