@@ -120,14 +120,10 @@ public class GameController implements DataReceiverListener {
                     System.out.println("(I'm player " + currentId + ").");
                     System.out.println("I'm listening for messages...");
 
-                    for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
-                        if (gameStatus.getCurrentPlayer().getId() != currentId) {
-                            // la boardView è bloccata
-                            boardView.blockCards();
-                            boardView.getInfoView().update(gameStatus, i);
-                            break;
-                        }
-                    }
+                    // la boardView è bloccata
+                    boardView.blockCards();
+                    boardView.getInfoView().update(gameStatus, gameStatus.getCurrentPlayer().getId());
+
                     
                     /**
                      * controllo che giocatore corrente sia vivo
@@ -135,7 +131,7 @@ public class GameController implements DataReceiverListener {
                      * **/
                     Player nextPlayer = gameStatus.getNextPlayer();
                     int currentPlayerId = gameStatus.getCurrentPlayer().getId();
-                    if ( nextPlayer != null && nextPlayer.getId() == currentId 
+                    if ( nextPlayer != null && nextPlayer.getId() == currentId
                     		&& !nextPlayer.isCrashed()) {
                     	System.out.println("[GameCtrl] sono player " + currentId + " e pingo player " + 
                     			gameStatus.getCurrentPlayer().getId());
@@ -151,6 +147,8 @@ public class GameController implements DataReceiverListener {
                 } else {
                     // todo all other players need to know that the game ended
                     System.out.println("Another player won the game.");
+                    // todo non fuunziona la riga sotto
+                    boardView.showAnotherPlayerIsWinnerMessage(gameStatus.getCurrentPlayer());
                 }
             }
         } catch (Exception e) {
@@ -168,8 +166,8 @@ public class GameController implements DataReceiverListener {
             	 /**
             	  * pingo giocatore con id $playerId
             	  * */
-                 System.out.println("[GameCtrl]: sto pingando giocatore " + playerId + 
-                		 " isCurrent = " + isCurrentPlayerCrashed);
+                 System.out.println("[GameCtrl]: ping to player " + playerId +
+                		 " isCurrentPlayerCrashed = " + isCurrentPlayerCrashed);
                  // task to run goes here
                  pingAHost(gameStatus, playerId, isCurrentPlayerCrashed);
                  
@@ -177,10 +175,10 @@ public class GameController implements DataReceiverListener {
          };
          
          // ping every ms 
-         int ms = 10000;
+         int ms = 1000;
          ScheduledExecutorService service = Executors
                  .newSingleThreadScheduledExecutor();
-         service.scheduleAtFixedRate(runnable, 0, ms, TimeUnit.MILLISECONDS);
+         service.scheduleAtFixedRate(runnable, 0, 10 * ms, TimeUnit.MILLISECONDS);
 	}
 
 	/**

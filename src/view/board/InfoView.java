@@ -10,7 +10,6 @@ public class InfoView extends JPanel {
     private GameStatus gameStatus;
     private int id;
     private JLabel labelTurnOf;
-    private JLabel labelTime;
     private JLabel labelScore;
 
     public InfoView(GameStatus gameStatus, int id) {
@@ -22,7 +21,6 @@ public class InfoView extends JPanel {
         JLabel labelPlayers = new JLabel("Players:");
         this.add(labelPlayers);
         labelTurnOf = null;
-        labelTime = null;
         labelScore = null;
 
         // players info
@@ -41,9 +39,6 @@ public class InfoView extends JPanel {
 
         if(!gameStatus.getPlayersList().get(id).isCrashed() && gameStatus.getPlayersList().get(id).isMyTurn()) {
             labelTurnOf = new JLabel("It's your turn!");
-
-            labelTime = new JLabel("Time:");
-
             labelScore = new JLabel("Score: " + gameStatus.getPlayersList().get(id).getScore());
 
         } else {
@@ -53,15 +48,10 @@ public class InfoView extends JPanel {
                     break;
                 }
             }
-            labelTime = new JLabel("");
-
             labelScore = new JLabel("");
         }
         labelTurnOf.setForeground(Color.red);
         this.add(labelTurnOf);
-
-        labelTime.setForeground(Color.red);
-        this.add(labelTime);
 
         labelScore.setForeground(Color.red);
         this.add(labelScore);
@@ -81,16 +71,18 @@ public class InfoView extends JPanel {
 
     public void update(GameStatus gameStatus, int currentId){
 
-        this.gameStatus = gameStatus;
+        setGameStatus(gameStatus);
+
+        //todo aggiornare punteggi
+
 
         if(currentId == id) {
             labelTurnOf.setText("It's your turn!");
-            labelTime.setText("Time:");
-            labelScore.setText("Score: " + gameStatus.getPlayersList().get(id).getScore());
+            labelScore.setVisible(true);
+            labelScore.setText("Score: " + this.gameStatus.getPlayersList().get(currentId).getScore());
         } else {
-            labelTurnOf.setText("It's turn of: " + currentId + " " + gameStatus.getPlayersList().get(currentId).getNickName());
-            labelTime.setText("");
-            labelScore.setText("");
+            labelTurnOf.setText("It's turn of: " + currentId + " " + this.gameStatus.getPlayersList().get(currentId).getNickName());
+            labelScore.setVisible(false);
         }
     }
 }

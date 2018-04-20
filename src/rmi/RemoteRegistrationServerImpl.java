@@ -45,7 +45,7 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 				notShowingCards.add(card);
 			}
 		}
-		Collections.shuffle(notShowingCards);
+		//Collections.shuffle(notShowingCards);
 	}
 
 	/**
