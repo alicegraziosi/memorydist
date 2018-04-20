@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import client.PlayerClient;
 import listener.DataReceiverListener;
 import view.board.BoardView;
+import view.card.CardView;
 
 /**
  * Controller of the game, contains the following attributes
@@ -51,7 +52,7 @@ public class GameController implements DataReceiverListener {
 
     private int turnNumber;
 
-    private BoardView boardView;
+	private BoardView boardView;
 
     /**
      * GameController constructor
@@ -81,6 +82,7 @@ public class GameController implements DataReceiverListener {
         gameStatus.setMove(null);
         boardView.reset(gameStatus);
 
+        System.out.println("NEW GAMESTATUS: " + gameStatus.toString() );
         try {
             turnNumber++;
             System.out.println("\n\n******** Turn number " + turnNumber + " ********");
@@ -91,9 +93,10 @@ public class GameController implements DataReceiverListener {
             if (gameStatus.getShowingCards().size() < 20 && gameStatus.countPlayersActive() > 0) {
                 if (isMyTurn()) { // se è il mio turno
                     System.out.println("[GameController]: It is my turn (Player " + currentId + ").");
-
+                    //updateCardsView();
                     boardView.unblockCards();
                     boardView.getInfoView().update(gameStatus, currentId);
+                    boardView.showTurnMessage();
 
                     /**
                      * gestione passaggio del turno, setto prossimo giocatore
@@ -123,8 +126,11 @@ public class GameController implements DataReceiverListener {
                     for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
                         if (gameStatus.getCurrentPlayer().getId() != currentId) {
                             // la boardView è bloccata
-                            boardView.blockCards();
+                        	
+                        	updateCardsView();
+                    		boardView.blockCards();
                             boardView.getInfoView().update(gameStatus, i);
+                            boardView.showTurnMessage();
                             break;
                         }
                     }
@@ -443,6 +449,24 @@ public class GameController implements DataReceiverListener {
 		return this.gameStatus.getCurrentPlayer().getId() == this.currentId;
 	}
 
+	public void updateCardsView() {
+		boardView.update();
+//		ArrayList<CardView> newCardViews = new ArrayList();
+//		ArrayList<CardView> newCardViewsMatch = new ArrayList();
+//		
+//		for(int i = 0; i < gameStatus.getShowingCards().size(); i++)
+//			newCardViewsMatch.add(new CardView(gameStatus.getShowingCards().get(i)) );
+//		
+//		System.out.println("Carte matchate: " + gameStatus.getShowingCards());
+//		 
+//		for(int i = 0; i < gameStatus.getNotShowingCards().size(); i++)
+//			newCardViews.add(new CardView(gameStatus.getNotShowingCards().get(i)) );
+//
+//		System.out.println("Carte non matchate: " + gameStatus.getNotShowingCards());
+//		
+//		boardView.setCardViews(newCardViews);
+//		boardView.setCardViewsMatch(newCardViewsMatch);
+	}
 
     /**
      * @desc called by remoteMessageServiceImpl when a player receives a messages
@@ -501,5 +525,13 @@ public class GameController implements DataReceiverListener {
     public void setCurrentId(int currentId) {
         this.currentId = currentId;
     }
+    
+    public int getTurnNumber() {
+ 		return turnNumber;
+ 	}
+
+ 	public void setTurnNumber(int turnNumber) {
+ 		this.turnNumber = turnNumber;
+ 	}
 }
 

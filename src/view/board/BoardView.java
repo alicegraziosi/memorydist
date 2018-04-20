@@ -25,7 +25,7 @@ public class BoardView extends Container implements GameGUIListener{
 
     private GameStatus gameStatus;
     private ArrayList<CardView> cardViews;
-    private ArrayList<CardView> cardViewsMatch;
+   	private ArrayList<CardView> cardViewsMatch;
     private CardView selectedCard1;
     private CardView selectedCard2;
     private Move move;
@@ -109,13 +109,14 @@ public class BoardView extends Container implements GameGUIListener{
         panel1.add(infoView, BorderLayout.NORTH);
         borderPanelBoard.add(panel1, BorderLayout.WEST);
 
-        // cards
+        // riempio il tavolo con tutte le carte ancora non girate
         for(int i=0; i<gameStatus.getNotShowingCards().size(); i++){
             CardView cardView = new CardView(gameStatus.getNotShowingCards().get(i));
             cardViews.add(cardView);
             gridPanelCards.add(cardView);
         }
-
+        
+      
         // when click a card
         setCardClickActionListener();
 
@@ -143,36 +144,78 @@ public class BoardView extends Container implements GameGUIListener{
 
     // make carks unclickable
     public void blockCards(){
+//    	gridPanelCards.removeAll();
+//    	gridPanelCards.revalidate();
+//    	gridPanelCards.repaint();
+    	
+    	// aggiornare da GameStatus
         for (CardView cardView: cardViews) {
-            cardView.setLogo();
+        	cardView.setLogo();
             cardView.setEnabled(false);
+//            gridPanelCards.add(cardView);
+        	System.out.println("sto coprendo " +  cardView.getCard());
+//        	
+        }
+        for (CardView cardView: cardViewsMatch) {
+            cardView.setImage();
+            cardView.setEnabled(false);
+//            gridPanelCards.add(cardView);
         }
     }
 
     // make cards clickable
     public void unblockCards(){
+//    	gridPanelCards.removeAll();
+//    	gridPanelCards.revalidate();
+//    	gridPanelCards.repaint();
+    	
+    	// aggiornare da GameStatus
+    	
         for (CardView cardView: cardViews) {
             cardView.setLogo();
             cardView.setEnabled(true);
         }
+	    for (CardView cardView: cardViewsMatch) {
+	        cardView.setImage();
+	        cardView.setEnabled(false);
+	    }
+//	    for(int i=0; i<gameStatus.getShowingCards().size(); i++){
+//            CardView cardViewMatch = new CardView(gameStatus.getShowingCards().get(i));
+//            cardViewsMatch.add(cardViewMatch);
+//            gridPanelCards.add(cardViewMatch);
+//        }
     }
 
     public void showMatchedCards(){
 
         // todo showMatchedCards
         // il codice sotto non è giusto
-        for (final CardView cardView: cardViewsMatch) {
-            cardView.setImage();
-            cardView.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    cardView.setImage();
-                    cardView.removeActionListener(this);
-                }
-            });
-        }
+//        for (final CardView cardView: cardViewsMatch) {
+//            
+//            cardView.addActionListener(new ActionListener() {
+//                @Override
+//                public void actionPerformed(ActionEvent e) {
+//                    cardView.setImage();
+//                    cardView.setMatched();
+//                    cardView.removeActionListener(this);
+//                }
+//            });
+//        }
+//    	for ( int i = 0; i < gameStatus.getShowingCards().size(); i++) {
+//    		if ( cardViews.get(i).getCard().getIndex() == gameStatus.getShowingCards().get(i).getIndex() )
+//    			cardViews.get(i).setImage();
+//    				
+//    	}
     }
 
+    public void update() {
+    	for ( int i = 0; i < gameStatus.getShowingCards().size(); i++) {
+    		if ( cardViews.get(i).getCard().getValue() == gameStatus.getShowingCards().get(i).getValue() )
+    			cardViews.get(i).setImage();
+    				
+    	}
+    }
+    
     public void reset(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
         selectedCard1 = null;
@@ -197,7 +240,8 @@ public class BoardView extends Container implements GameGUIListener{
                 }
             }
             t.start();
-        }
+            
+        }	
     }
 
     /**
@@ -235,17 +279,27 @@ public class BoardView extends Container implements GameGUIListener{
 	                        gameStatus.setMove(move);
 	                
 	                        if(move.isMatch()){
+	                        	
+	                        	JOptionPane.showMessageDialog(null, "Matched!");
 	                            //update score of current player
-	                            int score = gameStatus.getPlayersList().get(id).getScore() + 1;
+	                            int score = gameStatus.getPlayersList().get(id).getScore() + 100;
 	                            gameStatus.getPlayersList().get(id).setScore(score);
 	                            infoView.updateScores(gameStatus);
+	                            infoView.update(gameStatus, id);
 	
 	                            // add matched card to showingCard array
 	                            gameStatus.getShowingCards().add(move.getCard1());
 	                            gameStatus.getShowingCards().add(move.getCard2());
+	                            // remove matched card 
+	                            gameStatus.getNotShowingCards().remove(move.getCard1());
+	                            gameStatus.getNotShowingCards().remove(move.getCard2());
+	                            // add card matched
 	                            cardViewsMatch.add(selectedCard1);
 	                            cardViewsMatch.add(selectedCard2);
-	
+	                            // remove card matched from cardViews
+                                cardViews.remove(selectedCard1);
+	                            cardViews.remove(selectedCard2);
+		                       
 	                            showMatchedCards();
 	
 	                            if(gameStatus.getShowingCards().size()==20){
@@ -301,6 +355,15 @@ public class BoardView extends Container implements GameGUIListener{
         }
     }
 
+    public void showTurnMessage() {
+    	
+    	if(gameStatus.getCurrentPlayer().getId() == id && !gameStatus.getCurrentPlayer().isCrashed())
+	    	JOptionPane.showMessageDialog(null, "It is YOUR turn !");
+    	else
+    		JOptionPane.showMessageDialog(null, "It is the turn of " + gameStatus.getCurrentPlayer().getId() + " !");
+    }
+    
+    
     /**
      * @desc Called when a move is performed
      * @param GameStatus $gameStatus
@@ -353,5 +416,24 @@ public class BoardView extends Container implements GameGUIListener{
 	public void setGameController(GameController gameController) {
 		this.gameController = gameController;
 	}
+	
+	 
+    public ArrayList<CardView> getCardViews() {
+		return cardViews;
+	}
+
+	public void setCardViews(ArrayList<CardView> cardViews) {
+		this.cardViews = cardViews;
+	}
+
+	public ArrayList<CardView> getCardViewsMatch() {
+		return cardViewsMatch;
+	}
+
+	public void setCardViewsMatch(ArrayList<CardView> cardViewsMatch) {
+		this.cardViewsMatch = cardViewsMatch;
+	}
+
+
 }
 

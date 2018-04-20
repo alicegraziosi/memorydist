@@ -58,6 +58,18 @@ public class CardView extends JButton {
             e.printStackTrace();
         }
     }
+    
+    public void setMatched(){
+        BufferedImage img = null;
+        try {
+        	img = ImageIO.read(new File("./images/" + card.getValue() + ".jpg"));
+            this.setIcon(new ImageIcon(img));
+            this.setBackground(Color.BLACK);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
 
     public Card getCard() {
         return card;
