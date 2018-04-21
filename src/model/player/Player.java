@@ -139,4 +139,8 @@ public class Player extends Node implements Serializable{
 				", port=" + port +
 				" }";
 	}
+
+	public void updateScore(){
+		this.setScore(this.getScore()+2);
+	}
 }

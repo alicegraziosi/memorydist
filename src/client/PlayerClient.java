@@ -33,7 +33,6 @@ public class PlayerClient {
 
     public static ArrayList<Player> players; // array list of player
     public static GameStatus gameStatus; // global status of the game
-    public static BlockingQueue<GameStatus> buffer; // ?
 
     public static BoardView board;
     public static GameController gameController;
@@ -123,7 +122,7 @@ public class PlayerClient {
                 // create a board and a controller
                 PlayerClient playerClient = new PlayerClient();
                 board = new BoardView(gameStatus, id, playerClient);
-                gameController = new GameController(id, players, gameStatus, buffer, board);
+                gameController = new GameController(id, players, gameStatus, board);
                 board.setGameController(gameController);
                 
                 // each player has a registry and an remote object on his host and port
@@ -156,9 +155,7 @@ public class PlayerClient {
      * Setup a registry and a remote object for each player
      * */
     public static void setupRMIregistryAndServer(GameController gameController){
-        // todo buffer non so se serve o no
-        buffer = new LinkedBlockingQueue();
-        PlayerServer.setupRMIregistryAndServer(host, port, buffer, gameController);
+        PlayerServer.setupRMIregistryAndServer(host, port, gameController);
     }
 
     /**

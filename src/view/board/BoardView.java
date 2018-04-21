@@ -144,7 +144,6 @@ public class BoardView extends Container implements GameGUIListener{
 
     // make carks unclickable
     public void blockCards(){
-
         for (CardView cardView: cardViews) {
             cardView.setLogo();
             cardView.setEnabled(false);
@@ -199,7 +198,6 @@ public class BoardView extends Container implements GameGUIListener{
                     break;
                 }
             }
-            t.start();
         }
     }
 
@@ -246,9 +244,7 @@ public class BoardView extends Container implements GameGUIListener{
 
                             if (move.isMatch()) {
                                 //update score of current player
-                                int score = gameStatus.getPlayersList().get(id).getScore() + 1;
-                                gameStatus.getPlayersList().get(id).setScore(score);
-                                infoView.updateScores(gameStatus);
+                                gameStatus.getPlayersList().get(id).updateScore();
 
                                 // add matched card to showingCard array
                                 gameStatus.getShowingCards().add(move.getCard1());
@@ -259,7 +255,6 @@ public class BoardView extends Container implements GameGUIListener{
 
                                 if (gameStatus.getShowingCards().size() == 20) {
                                     gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
-                                    showGameWinnerMessage();
                                 }
                             }
 
@@ -283,10 +278,10 @@ public class BoardView extends Container implements GameGUIListener{
                     	System.out.println("[BoardView]: SELECTED CARDS" + selectedCard1 +
                     			" e " + selectedCard2);
                     	System.out.println("[BoardView]: AL CLICK DI DUE CARTE ");
-                    	System.out.println("[BoardView]: gameStatus: " + gameStatus);
+                    	//System.out.println("[BoardView]: gameStatus: " + gameStatus);
                     	
                     	if ( gameStatus.getMove() != null )
-	                        broadcastMessageMove(gameStatus);                 
+	                        broadcastMessageMove(gameStatus);
                         
                         t.stop();
                     }
@@ -307,6 +302,7 @@ public class BoardView extends Container implements GameGUIListener{
      * @return void
      * */
     public void broadcastMessageMove(GameStatus gameStatus){
+
         gameController.broadcastMessage(gameStatus);
     }
 

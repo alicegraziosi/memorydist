@@ -40,7 +40,6 @@ public class GameController implements DataReceiverListener {
     public int currentId; // current player id
  	public ArrayList<Player> players; // array list of player
     public GameStatus gameStatus; // global status of the game, with info of current player
-    public BlockingQueue<GameStatus> buffer; // ?
     private PlayerClient playerClient; 
     private PlayerServer playerServer;
     private int msgId;
@@ -59,12 +58,10 @@ public class GameController implements DataReceiverListener {
     public GameController(int id,
                           ArrayList<Player> players,
                           GameStatus gameStatus,
-                          BlockingQueue<GameStatus> buffer,
                           BoardView boardView) {
         this.currentId = id;
         this.gameStatus = gameStatus;
         this.players = players;
-        this.buffer = buffer;
         this.turnNumber = 0;
         this.msgId = 0;
         this.boardView = boardView;
@@ -79,75 +76,78 @@ public class GameController implements DataReceiverListener {
     public void playGame() {
 
         gameStatus.setMove(null);
-        boardView.reset(gameStatus);
 
         try {
             turnNumber++;
             System.out.println("\n\n******** Turn number " + turnNumber + " ********");
 
-            // todo controllare se è rimasto un solo giocatore
-            // todo lasciar giocare da solo l'ultimo giocatore
             // se ci sono ancora carte da scoprire e se è rimasto più di un giocatore
-            if (gameStatus.getShowingCards().size() < 20 && gameStatus.countPlayersActive() > 0) {
-                if (isMyTurn()) { // se è il mio turno
-                    System.out.println("[GameController]: It is my turn (Player " + currentId + ").");
+            if (gameStatus.getShowingCards().size() < 20){
 
-                    boardView.unblockCards();
-                    boardView.getInfoView().update(gameStatus, currentId);
+                if(gameStatus.countPlayersActive() != 1) {
 
-                    /**
-                     * gestione passaggio del turno, setto prossimo giocatore
-                     * */
-                    gameStatus.setNextPlayer();
-             
-                    /**
-                    * setto giocatori nel gameStatus e idSender
-                    * */
-                    gameStatus.setPlayersList(players);
-                    gameStatus.setIdSender(currentId);
-                    
-                    /**
-                     * controllo che altri giocatori non siano crashati
-                     * */
-                    for (int i = 0; i < gameStatus.getPlayersList().size(); i++) 
-                    		if( gameStatus.getPlayersList().get(i).getId() != currentId &&
-                    				!gameStatus.getPlayersList().get(i).isCrashed())
-                    			pingAPlayer(gameStatus, gameStatus.getPlayersList().get(i).getId(), false);
-                    
-           
-                } else { // Se non è il suo turno
-            		System.out.println("NOT my turn, it is turn of player " + gameStatus.getCurrentPlayer().getId());
-                    System.out.println("(I'm player " + currentId + ").");
-                    System.out.println("I'm listening for messages...");
+                    if (isMyTurn()) { // se è il mio turno
 
-                    // la boardView è bloccata
-                    boardView.blockCards();
-                    boardView.getInfoView().update(gameStatus, gameStatus.getCurrentPlayer().getId());
+                        boardView.getInfoView().update(gameStatus, currentId);
 
-                    
-                    /**
-                     * controllo che giocatore corrente sia vivo
-                     * faccio questo solo se sono il successivo 
-                     * **/
-                    Player nextPlayer = gameStatus.getNextPlayer();
-                    int currentPlayerId = gameStatus.getCurrentPlayer().getId();
-                    if ( nextPlayer != null && nextPlayer.getId() == currentId
-                    		&& !nextPlayer.isCrashed()) {
-                    	System.out.println("[GameCtrl] sono player " + currentId + " e pingo player " + 
-                    			gameStatus.getCurrentPlayer().getId());
-                    	pingAPlayer(gameStatus, currentPlayerId, true);
+                        System.out.println("[GameController]: It is my turn (Player " + currentId + ").");
+
+                        /**
+                         * gestione passaggio del turno, setto prossimo giocatore
+                         * */
+                        gameStatus.setNextPlayer();
+
+                        /**
+                         * setto giocatori nel gameStatus e idSender
+                         * */
+                        if(gameStatus.getPlayersList()==null)
+                            gameStatus.setPlayersList(players);
+
+                        gameStatus.setIdSender(currentId);
+
+                        boardView.reset(gameStatus);
+                        boardView.unblockCards();
+
+                    } else { // Se non è il suo turno
+                        System.out.println("NOT my turn, it is turn of player " + gameStatus.getCurrentPlayer().getId());
+                        System.out.println("(I'm player " + currentId + ").");
+                        System.out.println("I'm listening for messages...");
+
+                        // la boardView è bloccata
+                        boardView.reset(gameStatus);
+                        boardView.blockCards();
+                        boardView.getInfoView().update(gameStatus, gameStatus.getCurrentPlayer().getId());
+
+
+                        /**
+                         * controllo che giocatore corrente sia vivo
+                         * faccio questo solo se sono il successivo
+                         * **/
+                        Player nextPlayer = gameStatus.getNextPlayer();
+                        int currentPlayerId = gameStatus.getCurrentPlayer().getId();
+
+                        if (nextPlayer != null && nextPlayer.getId() == currentId
+                                && !nextPlayer.isCrashed()) {
+                            System.out.println("[GameCtrl] sono player " + currentId + " e pingo player " +
+                                    gameStatus.getCurrentPlayer().getId());
+                            pingAPlayer(currentPlayerId, true);
+                        }
                     }
+                } else {
+                    // todo controllare se è rimasto un solo giocatore
+                    // todo lasciar giocare da solo l'ultimo giocatore
+                    System.out.println("Sei l'ultimo giocatore rimasto in gioco!");
                 }
             } else {
                 // all cards are matched
                 // current player is the winner
-                if (gameStatus.getPlayersList().get(currentId).isMyTurn()) {
+                if (isMyTurn()) { // se è il mio turno
                     // todo this is the winner
                     System.out.println("You are the winner!");
+                    boardView.showGameWinnerMessage();
                 } else {
                     // todo all other players need to know that the game ended
                     System.out.println("Another player won the game.");
-                    // todo non fuunziona la riga sotto
                     boardView.showAnotherPlayerIsWinnerMessage(gameStatus.getCurrentPlayer());
                 }
             }
@@ -160,25 +160,22 @@ public class GameController implements DataReceiverListener {
      * @desc function that pings a player to check that is alive
      * @param GameStatus $gameStatus, int $playerId 
      * */
-    public void pingAPlayer(final GameStatus gameStatus,final int playerId, final boolean isCurrentPlayerCrashed) {
+    public void pingAPlayer(final int playerId, final boolean isCurrentPlayerCrashed) {
     	 Runnable runnable = new Runnable() {
              public void run() {
             	 /**
             	  * pingo giocatore con id $playerId
             	  * */
-                 System.out.println("[GameCtrl]: ping to player " + playerId +
-                		 " isCurrentPlayerCrashed = " + isCurrentPlayerCrashed);
+                 System.out.println("[GameCtrl]: ping to player " + playerId + " isCurrentPlayerCrashed = " + isCurrentPlayerCrashed);
                  // task to run goes here
-                 pingAHost(gameStatus, playerId, isCurrentPlayerCrashed);
+                 pingAHost(playerId, isCurrentPlayerCrashed);
                  
              }
          };
          
-         // ping every ms 
-         int ms = 1000;
-         ScheduledExecutorService service = Executors
-                 .newSingleThreadScheduledExecutor();
-         service.scheduleAtFixedRate(runnable, 0, 10 * ms, TimeUnit.MILLISECONDS);
+         // ping every 20s
+         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+         service.scheduleAtFixedRate(runnable, 20, 20, TimeUnit.SECONDS);
 	}
 
 	/**
@@ -244,8 +241,7 @@ public class GameController implements DataReceiverListener {
                 }
             }
         }
-        
-        System.out.println("[GameCtrl.broadcastMessage] gameStatus: " + gameStatus.getMove().getCard2());
+
         if(gameStatus.getMove().getCard2() != null){
             playGame();
         }
@@ -255,7 +251,7 @@ public class GameController implements DataReceiverListener {
      * function which ping a det player to check if is alive
      * @param GameStatus $message
      * */
-    public void pingAHost(GameStatus gamestatus, int idPlayer, boolean isCurrentPlayerCrashed) {
+    public void pingAHost(int idPlayer, boolean isCurrentPlayerCrashed) {
 
         System.setProperty("java.security.policy", "file:./security.policy");
 

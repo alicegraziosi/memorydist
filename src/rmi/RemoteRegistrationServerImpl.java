@@ -33,8 +33,8 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 
 		// card generation
 		int cardNumber = 20;
-		showingCards = new ArrayList<Card>(); // no one
-		notShowingCards = new ArrayList<Card>(); // all
+		showingCards = new ArrayList<Card>(); // no one uncovered on start
+		notShowingCards = new ArrayList<Card>(); // all covered on start
 
 		for (int i = 0; i < 20; i++) {
 			if (i >= 10) { // if true generate cards with same values of previous cards, (10,0), (11,1)
@@ -45,6 +45,7 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 				notShowingCards.add(card);
 			}
 		}
+		// todo commentata per fare prove con carte matched, SCOMMENTARE!!
 		//Collections.shuffle(notShowingCards);
 	}
 
