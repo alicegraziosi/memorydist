@@ -27,10 +27,9 @@ public class PlayerServer implements RemoteGameInterface{
 	private DataReceiverListener mListener;
 
     public static void setupRMIregistryAndServer(String host, int port,
-                                                 BlockingQueue<GameStatus> buffer,
                                                  GameController gameController){
 
-        // in lab funziona con la riga seguente non commentata
+        // in lab funziona con la riga seguente non commentata (non modificare!!!)
         System.setProperty("java.rmi.server.hostname", host);
 
         System.setProperty("java.security.policy", "file:./security.policy");
@@ -52,7 +51,7 @@ public class PlayerServer implements RemoteGameInterface{
                 ex.printStackTrace();
             }
 
-            RemoteMessageServiceInt messageService = new RemoteMessageServiceImpl(buffer, gameController);
+            RemoteMessageServiceInt messageService = new RemoteMessageServiceImpl(gameController);
             String location = "rmi://" + host + ":" + port + "/messageService";
             registry.rebind(location, messageService);
 

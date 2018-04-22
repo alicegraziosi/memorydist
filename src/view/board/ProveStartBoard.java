@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
-// da cancellare è solo per provare la grafica della board senza dover lanciare il gioco
+// todo file interamente da cancellare
+// è solo per provare la grafica della board senza dover lanciare il gioco
 public class ProveStartBoard {
     public static void main(String[] args) {
         ArrayList<Player> players = new ArrayList<>();
