@@ -5,6 +5,7 @@ import controller.GameController;
 import model.gameStatus.GameStatus;
 import model.move.Move;
 import model.player.PLAYER_STATE;
+import model.player.Player;
 import view.card.CardView;
 import view.listener.GameGUIListener;
 
@@ -144,11 +145,7 @@ public class BoardView extends Container implements GameGUIListener{
 
     // make carks unclickable
     public void blockCards(){
-//    	gridPanelCards.removeAll();
-//    	gridPanelCards.revalidate();
-//    	gridPanelCards.repaint();
-    	
-    	// aggiornare da GameStatus
+
         for (CardView cardView: cardViews) {
         	cardView.setLogo();
             cardView.setEnabled(false);
@@ -161,6 +158,7 @@ public class BoardView extends Container implements GameGUIListener{
             cardView.setEnabled(false);
 //            gridPanelCards.add(cardView);
         }
+        showMatchedCards();
     }
 
     // make cards clickable
@@ -184,28 +182,21 @@ public class BoardView extends Container implements GameGUIListener{
 //            cardViewsMatch.add(cardViewMatch);
 //            gridPanelCards.add(cardViewMatch);
 //        }
+        showMatchedCards();
     }
 
+    //show already matched cards
     public void showMatchedCards(){
-
-        // todo showMatchedCards
-        // il codice sotto non è giusto
-//        for (final CardView cardView: cardViewsMatch) {
-//            
-//            cardView.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    cardView.setImage();
-//                    cardView.setMatched();
-//                    cardView.removeActionListener(this);
-//                }
-//            });
-//        }
-//    	for ( int i = 0; i < gameStatus.getShowingCards().size(); i++) {
-//    		if ( cardViews.get(i).getCard().getIndex() == gameStatus.getShowingCards().get(i).getIndex() )
-//    			cardViews.get(i).setImage();
-//    				
-//    	}
+        for (int i=0; i<gameStatus.getShowingCards().size(); i++) {
+            for (CardView cardView: cardViews) {
+                if(gameStatus.getShowingCards().get(i).getIndex() == cardView.getCard().getIndex() &&
+                        gameStatus.getShowingCards().get(i).getValue() == cardView.getCard().getValue()){
+                    cardView.setImage();
+                    cardView.setEnabled(false);
+                    break;
+                }
+            }
+        }
     }
 
     public void update() {
@@ -271,7 +262,7 @@ public class BoardView extends Container implements GameGUIListener{
                 		int card2Value = selectedCard2.getCard().getValue();
                 		int card1Index = selectedCard1.getCard().getIndex();
                 		int card2Index = selectedCard2.getCard().getIndex();
-                		
+
                 		/** controllo match delle carte solo se non ho selezionato due volte la stessa*/
                         if ( (card1Index != card2Index) ) {                                 
 	                		cardView.setImage();
@@ -318,7 +309,35 @@ public class BoardView extends Container implements GameGUIListener{
                         	selectedCard2 = null;
                         	System.out.println("[BoardView]: Same card already selected.");
                         	JOptionPane.showMessageDialog(null, "Same card already selected!");
-                                                  	
+       
+                        } else {
+                            /** controllo match delle carte solo se non ho selezionato due volte la stessa*/
+                            cardView.setImage();
+
+                            move = new Move(selectedCard1.getCard(), selectedCard2.getCard());
+                            gameStatus.setMove(move);
+
+                            if (move.isMatch()) {
+                                //update score of current player
+                                int score = gameStatus.getPlayersList().get(id).getScore() + 1;
+                                gameStatus.getPlayersList().get(id).setScore(score);
+                                infoView.updateScores(gameStatus);
+
+                                // add matched card to showingCard array
+                                gameStatus.getShowingCards().add(move.getCard1());
+                                gameStatus.getShowingCards().add(move.getCard2());
+
+                                cardViewsMatch.add(selectedCard1);
+                                cardViewsMatch.add(selectedCard2);
+
+                                if (gameStatus.getShowingCards().size() == 20) {
+                                    gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
+                                    showGameWinnerMessage();
+                                }
+                            }
+
+                            System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
+                            System.out.println("[BoardView]: Match: " + move.isMatch());
                         }
                     } else {
                     	/** Due carte già selezionate*/
@@ -408,6 +427,18 @@ public class BoardView extends Container implements GameGUIListener{
         }
     }
 
+    public void showAnotherPlayerIsWinnerMessage(Player winner){
+        int input = JOptionPane.showConfirmDialog(null,
+                "Player " + winner.getId() + " " + winner.getNickName() + " won :(" +
+                        " \n\nDo you want to exit the game?",
+                "Game over.",
+                JOptionPane.CLOSED_OPTION,
+                JOptionPane.INFORMATION_MESSAGE, null);
+        if (input == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }
+
     public InfoView getInfoView() {
         return infoView;
     }
@@ -416,7 +447,7 @@ public class BoardView extends Container implements GameGUIListener{
 	public void setGameController(GameController gameController) {
 		this.gameController = gameController;
 	}
-	
+
 	 
     public ArrayList<CardView> getCardViews() {
 		return cardViews;
@@ -436,4 +467,5 @@ public class BoardView extends Container implements GameGUIListener{
 
 
 }
+
 

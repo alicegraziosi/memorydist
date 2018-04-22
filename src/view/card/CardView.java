@@ -13,7 +13,18 @@ import java.io.IOException;
 
 public class CardView extends JButton {
 
+    @Override
+    public String toString() {
+        return "CardView{" +
+                "card value=" + card.getValue() +
+                ", card index=" + card.getIndex() +
+                ", matched=" + matched +
+                '}';
+    }
+
     private Card card;
+
+    private boolean matched;
 
     public CardView(Card card) {
         try {
@@ -28,6 +39,7 @@ public class CardView extends JButton {
         }
 
         this.card = card;
+        this.matched = false;
         this.setPreferredSize(new Dimension(120, 140));
         this.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.WHITE, 2),
@@ -77,5 +89,9 @@ public class CardView extends JButton {
 
     public void setCard(Card card) {
         this.card = card;
+    }
+
+    public void setMatched(boolean matched) {
+        this.matched = matched;
     }
 }

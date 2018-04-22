@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -53,6 +54,8 @@ public class GameController implements DataReceiverListener {
     private int turnNumber;
 
 	private BoardView boardView;
+	
+	private Future f;
 
     /**
      * GameController constructor
@@ -81,8 +84,9 @@ public class GameController implements DataReceiverListener {
 
         gameStatus.setMove(null);
         boardView.reset(gameStatus);
-
-        System.out.println("NEW GAMESTATUS: " + gameStatus.toString() );
+        if( f != null)
+        	this.f.cancel(true);
+//        System.out.println("NEW GAMESTATUS: " + gameStatus.toString() );
         try {
             turnNumber++;
             System.out.println("\n\n******** Turn number " + turnNumber + " ********");
@@ -92,7 +96,7 @@ public class GameController implements DataReceiverListener {
             // se ci sono ancora carte da scoprire e se è rimasto più di un giocatore
             if (gameStatus.getShowingCards().size() < 20 && gameStatus.countPlayersActive() > 0) {
                 if (isMyTurn()) { // se è il mio turno
-                    System.out.println("[GameController]: It is my turn (Player " + currentId + ").");
+                    System.out.println("******** It is my turn (Player " + currentId + ")"+ " ********");
                     //updateCardsView();
                     boardView.unblockCards();
                     boardView.getInfoView().update(gameStatus, currentId);
@@ -112,28 +116,33 @@ public class GameController implements DataReceiverListener {
                     /**
                      * controllo che altri giocatori non siano crashati
                      * */
-                    for (int i = 0; i < gameStatus.getPlayersList().size(); i++) 
+                    for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
                     		if( gameStatus.getPlayersList().get(i).getId() != currentId &&
-                    				!gameStatus.getPlayersList().get(i).isCrashed())
+                    				!gameStatus.getPlayersList().get(i).isCrashed()) {
+                    			System.out.println("pingo giocatore non corrente " + false);
                     			pingAPlayer(gameStatus, gameStatus.getPlayersList().get(i).getId(), false);
-                    
-           
+                    		}
+                    }
                 } else { // Se non è il suo turno
             		System.out.println("NOT my turn, it is turn of player " + gameStatus.getCurrentPlayer().getId());
                     System.out.println("(I'm player " + currentId + ").");
                     System.out.println("I'm listening for messages...");
 
-                    for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
-                        if (gameStatus.getCurrentPlayer().getId() != currentId) {
-                            // la boardView è bloccata
-                        	
-                        	updateCardsView();
-                    		boardView.blockCards();
-                            boardView.getInfoView().update(gameStatus, i);
-                            boardView.showTurnMessage();
-                            break;
-                        }
-                    }
+//                        if (gameStatus.getCurrentPlayer().getId() != currentId) {
+//                            // la boardView è bloccata
+//                        	
+//                        	updateCardsView();
+//                    		boardView.blockCards();
+//                            boardView.getInfoView().update(gameStatus, i);
+//                            boardView.showTurnMessage();
+//                            break;
+//                        }
+//                    }
+                    // la boardView è bloccata
+                    boardView.blockCards();
+                    boardView.getInfoView().update(gameStatus, gameStatus.getCurrentPlayer().getId());
+
+
                     
                     /**
                      * controllo che giocatore corrente sia vivo
@@ -141,7 +150,7 @@ public class GameController implements DataReceiverListener {
                      * **/
                     Player nextPlayer = gameStatus.getNextPlayer();
                     int currentPlayerId = gameStatus.getCurrentPlayer().getId();
-                    if ( nextPlayer != null && nextPlayer.getId() == currentId 
+                    if ( nextPlayer != null && nextPlayer.getId() == currentId
                     		&& !nextPlayer.isCrashed()) {
                     	System.out.println("[GameCtrl] sono player " + currentId + " e pingo player " + 
                     			gameStatus.getCurrentPlayer().getId());
@@ -157,6 +166,8 @@ public class GameController implements DataReceiverListener {
                 } else {
                     // todo all other players need to know that the game ended
                     System.out.println("Another player won the game.");
+                    // todo non fuunziona la riga sotto
+                    boardView.showAnotherPlayerIsWinnerMessage(gameStatus.getCurrentPlayer());
                 }
             }
         } catch (Exception e) {
@@ -174,8 +185,9 @@ public class GameController implements DataReceiverListener {
             	 /**
             	  * pingo giocatore con id $playerId
             	  * */
-                 System.out.println("[GameCtrl]: sto pingando giocatore " + playerId + 
-                		 " isCurrent = " + isCurrentPlayerCrashed);
+     			
+                 System.out.println("[GameCtrl]: ping to player " + playerId +
+                		 " isCurrentPlayerCrashed = " + isCurrentPlayerCrashed);
                  // task to run goes here
                  pingAHost(gameStatus, playerId, isCurrentPlayerCrashed);
                  
@@ -183,10 +195,11 @@ public class GameController implements DataReceiverListener {
          };
          
          // ping every ms 
-         int ms = 10000;
+         int ms = 1000;
          ScheduledExecutorService service = Executors
                  .newSingleThreadScheduledExecutor();
-         service.scheduleAtFixedRate(runnable, 0, ms, TimeUnit.MILLISECONDS);
+         this.f = service.scheduleAtFixedRate(runnable, 0, 10 * ms, TimeUnit.MILLISECONDS);
+         //service.shutdown();
 	}
 
 	/**
