@@ -375,7 +375,9 @@ public class BoardView extends Container implements GameGUIListener{
     		JOptionPane.showMessageDialog(null, "It is the turn of " + gameStatus.getCurrentPlayer().getId() + " !");
     }
     
-    
+    public void showMessage(String msg) {
+    	JOptionPane.showMessageDialog(null, msg);
+    }
     /**
      * @desc Called when a move is performed
      * @param GameStatus $gameStatus

@@ -62,8 +62,8 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		System.out.println("[RMISImpl]: Crash message said that next player is: " + gameStatus.getCurrentPlayer().getId());
 		
 		/** se non è crashato il giocatore corrente allora devo aggiorna il next player*/
-		if (!isCurrentPlayerCrashed)
-			gameStatus.getNextPlayer();
+//		if (!isCurrentPlayerCrashed)
+//			gameStatus.getNextPlayer();
 		gameController.setGameStatus(gameStatus); // setting the new updated gameStatus
 
 		/** se è crashato il giocatore corrente allora ricomincio il turno (sono giocatore non corrente)*/

@@ -2,6 +2,7 @@ package controller;
 
 import model.gameStatus.GameStatus;
 import model.move.Move;
+import model.player.PLAYER_STATE;
 import model.player.Player;
 import rmi.RemoteMessageServiceImpl;
 import rmi.RemoteMessageServiceInt;
@@ -90,7 +91,8 @@ public class GameController implements DataReceiverListener {
 
             // se ci sono ancora carte da scoprire e se è rimasto più di un giocatore
             if (gameStatus.getShowingCards().size() < 20){
-
+            	
+            	boardView.showMessage("Giocatori rimasti: " +  gameStatus.countPlayersActive());
                 if(gameStatus.countPlayersActive() != 1) {
 
                     if (isMyTurn()) { // se è il mio turno
@@ -114,6 +116,15 @@ public class GameController implements DataReceiverListener {
 
                         boardView.reset(gameStatus);
                         boardView.unblockCards();
+                        
+                        
+                        /**
+                         * pingo giocatori non correnti
+                         * */
+                        for(int i = 0; i < gameStatus.getPlayersList().size(); i++)
+                        	if( gameStatus.getPlayersList().get(i).getId() != currentId &&
+                        			!gameStatus.getPlayersList().get(i).isCrashed())
+                        		pingAPlayer(gameStatus.getPlayersList().get(i).getId(), false);
 
                     } else { // Se non è il suo turno
                         System.out.println("NOT my turn, it is turn of player " + gameStatus.getCurrentPlayer().getId());
@@ -144,6 +155,7 @@ public class GameController implements DataReceiverListener {
                     // todo controllare se è rimasto un solo giocatore
                     // todo lasciar giocare da solo l'ultimo giocatore
                     System.out.println("Sei l'ultimo giocatore rimasto in gioco!");
+                    boardView.showMessage("Sei l'ultimo giocatore rimasto in gioco!");
                 }
             } else {
                 // all cards are matched
@@ -271,10 +283,10 @@ public class GameController implements DataReceiverListener {
             System.setSecurityManager(new SecurityManager());
         }
 
-        if(!players.get(idPlayer).isCrashed()) {
+        if(!gameStatus.getPlayersList().get(idPlayer).isCrashed()) {
             try {
-                String remoteHost = players.get(idPlayer).getHost().toString();
-                int remotePort = players.get(idPlayer).getPort();
+                String remoteHost = gameStatus.getPlayersList().get(idPlayer).getHost().toString();
+                int remotePort = gameStatus.getPlayersList().get(idPlayer).getPort();
 
                 // mi sa che nel client non serve ma non ne sono sicura
                 System.setProperty("java.rmi.server.hostname", remoteHost);
@@ -292,15 +304,17 @@ public class GameController implements DataReceiverListener {
             } catch (RemoteException e) { 
             	/** player pingato CRASHATO*/
                 
-                System.out.println("Player " + idPlayer + " crashed.");
+                System.out.println("XXXXXXX Player " + idPlayer + " crashed XXXXXXX");
                 
                 int currentPlayerId = gameStatus.getCurrentPlayer().getId();
                 int playersNumber = gameStatus.getPlayersList().size();
                 
                 /** setto nel gameStatus giocatore crashato */ 
-                System.out.println("Setto crashato player " + idPlayer);
+                System.out.println("XXXXXXX Setto crashato player " + idPlayer + " XXXXXXX");
                 players.get(idPlayer).setCrashed(true);
+                gameStatus.setPlayerState(idPlayer, PLAYER_STATE.CRASH);
                 gameStatus.setPlayersList(players);  
+                System.out.println("XXXXXXX Nuova lista giocatori " + gameStatus.getPlayersList() + " XXXXXXX");
                 
                 /**
                  * se è crashato il giocatore corrente
@@ -324,7 +338,6 @@ public class GameController implements DataReceiverListener {
             	 	* gestione aggiornamento gameStatus dopo crash giocatore NON CORRENTE
                 	* in questo stato il successivo  è già stato settato
                 	*/
-                	System.out.println("gamestatus crash giocatore non corrente " + gameStatus.toString());
                 	if ( idPlayer == gameStatus.getCurrentPlayer().getId()) {
                 		/** crash giocatore SUCCESSIVO */
                 		/**

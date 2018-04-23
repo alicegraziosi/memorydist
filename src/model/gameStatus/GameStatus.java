@@ -127,11 +127,13 @@ public class GameStatus implements Serializable {
     public int countPlayersActive() {
     	int playersActive = 0;
     	for(int i = 0; i < this.playersAvailability.size(); i++) {
-    		PLAYER_STATE value = playersAvailability.get(i);
+    		PLAYER_STATE value = this.playersAvailability.get(i);
+    		System.out.println("[GameStatus]: player: " + i + " " + value);
     		if ( value == PLAYER_STATE.ACTIVE)
     			playersActive ++;
     	}
-    		
+    	
+    	
     	return playersActive;
     }
     
