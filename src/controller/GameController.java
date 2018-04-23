@@ -139,7 +139,7 @@ public class GameController implements DataReceiverListener {
 
                         /**
                          * controllo che giocatore corrente sia vivo
-                         * faccio questo solo se sono il successivo
+                         * (faccio questo solo se sono il successivo)
                          * **/
                         Player nextPlayer = gameStatus.getNextPlayer();
                         int currentPlayerId = gameStatus.getCurrentPlayer().getId();
@@ -377,54 +377,60 @@ public class GameController implements DataReceiverListener {
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
-
-        for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
-            // non lo rimanda a se stesso e ai nodi in crash
-            if(i != currentId && !gameStatus.getPlayersList().get(i).isCrashed()) {
-                try {
-                    String remoteHost = gameStatus.getPlayersList().get(i).getHost().toString();
-                    int remotePort = gameStatus.getPlayersList().get(i).getPort();
-                    int playerId = gameStatus.getPlayersList().get(i).getId();
-                    
-                    System.out.println("[GameCtrl.broadcastCrashMessage]: invio new game a player " + playerId);
-                    // mi sa che nel client non serve ma non ne sono sicura
-                    // in lab funziona con la riga seguente commentata (NON MODIFICARE)
-                    // System.setProperty("java.rmi.server.hostname", remoteHost);
-                    
-                    /** apro registro RMI */
-                    RemoteMessageServiceInt stub = getAndLookupRegistry(remoteHost, remotePort, 
-                    		"messageService");
-                    
-                    /** setto mittente messaggio */
-                    System.out.println("[GameCtrl]: Sending gameStatus to player " + playerId);
-                    gamestatus.setId(gamestatus.getId());
-                    
-                    /** invio messaggio di crash */
-                    int response = stub.sendCrashMessage(gamestatus, crashedPlayer, isCurrentPlayerCrashed);
-                    
-                    /** se è crashato il giocatore corrente allora devo ricominciare il turno */
-                    if ( isCurrentPlayerCrashed )
-                    	if (response == 1)
-                    		playGame();
-                    
-                    if (response == 1)
-                		System.out.println("[GameCtrl]: Response from player " + i + ": ALIVE");
-
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                    System.out.println("Player " + i + " crashed.");
-
-                    // todo settarlo in crash
-                    gameStatus.getPlayersList().get(i).setCrashed(true);
-
-                    // todo notificare l' informazione a tutti
-                    gameStatus.setPlayersList(players);
-                    
-
-                }
-            }
+        
+        if( gameStatus.countPlayersActive() == 1 && 
+        		gameStatus.getPlayerState(currentId) == PLAYER_STATE.ACTIVE) {
+        	playGame();
         }
-
+        else {
+	        for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
+	            // non lo rimanda a se stesso e ai nodi in crash
+	            if(i != currentId && !gameStatus.getPlayersList().get(i).isCrashed()) {
+	                try {
+	                    String remoteHost = gameStatus.getPlayersList().get(i).getHost().toString();
+	                    int remotePort = gameStatus.getPlayersList().get(i).getPort();
+	                    int playerId = gameStatus.getPlayersList().get(i).getId();
+	                    
+	                    System.out.println("[GameCtrl.broadcastCrashMessage]: invio new game a player " + playerId);
+	                    // mi sa che nel client non serve ma non ne sono sicura
+	                    // in lab funziona con la riga seguente commentata (NON MODIFICARE)
+	                    // System.setProperty("java.rmi.server.hostname", remoteHost);
+	                    
+	                    /** apro registro RMI */
+	                    RemoteMessageServiceInt stub = getAndLookupRegistry(remoteHost, remotePort, 
+	                    		"messageService");
+	                    
+	                    /** setto mittente messaggio */
+	                    System.out.println("[GameCtrl]: Sending gameStatus to player " + playerId);
+	                    gamestatus.setId(gamestatus.getId());
+	                    
+	                    /** invio messaggio di crash */
+	                    int response = stub.sendCrashMessage(gamestatus, crashedPlayer, isCurrentPlayerCrashed);
+	                    
+	                    /** se è crashato il giocatore corrente allora devo ricominciare il turno */
+	                    if ( isCurrentPlayerCrashed )
+	                    	if (response == 1)
+	                    		playGame();
+	                    
+	                    if (response == 1)
+	                		System.out.println("[GameCtrl]: Response from player " + i + ": ALIVE");
+	
+	                } catch (RemoteException e) {
+	                    e.printStackTrace();
+	                    System.out.println("Player " + i + " crashed.");
+	
+	                    // todo settarlo in crash
+	                    gameStatus.getPlayersList().get(i).setCrashed(true);
+	
+	                    // todo notificare l' informazione a tutti
+	                    gameStatus.setPlayersList(players);
+	                    
+	
+	                }
+	            }
+	        }
+        }
+        
         if(gameStatus.getMove().getCard2() != null){
             playGame();
         }
