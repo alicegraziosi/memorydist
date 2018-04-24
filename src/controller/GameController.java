@@ -16,6 +16,7 @@ import java.rmi.registry.Registry;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -141,6 +142,7 @@ public class GameController implements DataReceiverListener {
                          * controllo che giocatore corrente sia vivo
                          * (faccio questo solo se sono il successivo)
                          * **/
+                        
                         Player nextPlayer = gameStatus.getNextPlayer();
                         int currentPlayerId = gameStatus.getCurrentPlayer().getId();
 
@@ -221,7 +223,7 @@ public class GameController implements DataReceiverListener {
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
-
+        
         for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
             // non lo rimanda a se stesso e ai nodi in crash
             if(i != currentId && !gameStatus.getPlayersList().get(i).isCrashed()) {
@@ -236,7 +238,7 @@ public class GameController implements DataReceiverListener {
                     
 //                    RemoteMessageServiceInt stub = getAndLookupRegistry(remoteHost, remotePort, 
 //                    		"messageService");
-//                    
+                    
                     Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
                     String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
                     RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
@@ -283,6 +285,7 @@ public class GameController implements DataReceiverListener {
             System.setSecurityManager(new SecurityManager());
         }
 
+        /** controllo che giocatore da pingare non sia crashato */
         if(!gameStatus.getPlayersList().get(idPlayer).isCrashed()) {
             try {
                 String remoteHost = gameStatus.getPlayersList().get(idPlayer).getHost().toString();
@@ -377,12 +380,16 @@ public class GameController implements DataReceiverListener {
         if (System.getSecurityManager() == null) {
             System.setSecurityManager(new SecurityManager());
         }
-        
+        /** caso unico giocatore rimasto*/
         if( gameStatus.countPlayersActive() == 1 && 
         		gameStatus.getPlayerState(currentId) == PLAYER_STATE.ACTIVE) {
         	playGame();
         }
         else {
+        	/** creo struttura di controllo ricezione messaggi da parte di ogni player */
+        	Map<String, Boolean> responsesCtrl = new HashMap<>();
+        	
+        	/** ciclo che si occupa di inviare nuovo gameStatus a tutti i players attivi rimasti */
 	        for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
 	            // non lo rimanda a se stesso e ai nodi in crash
 	            if(i != currentId && !gameStatus.getPlayersList().get(i).isCrashed()) {
@@ -390,6 +397,7 @@ public class GameController implements DataReceiverListener {
 	                    String remoteHost = gameStatus.getPlayersList().get(i).getHost().toString();
 	                    int remotePort = gameStatus.getPlayersList().get(i).getPort();
 	                    int playerId = gameStatus.getPlayersList().get(i).getId();
+	                    responsesCtrl.put(remoteHost + remotePort, false);
 	                    
 	                    System.out.println("[GameCtrl.broadcastCrashMessage]: invio new game a player " + playerId);
 	                    // mi sa che nel client non serve ma non ne sono sicura
@@ -407,10 +415,10 @@ public class GameController implements DataReceiverListener {
 	                    /** invio messaggio di crash */
 	                    int response = stub.sendCrashMessage(gamestatus, crashedPlayer, isCurrentPlayerCrashed);
 	                    
-	                    /** se è crashato il giocatore corrente allora devo ricominciare il turno */
+	                    /** se è crashato il giocatore corrente allora popolo la struttura di Ctrl risposte */
 	                    if ( isCurrentPlayerCrashed )
 	                    	if (response == 1)
-	                    		playGame();
+	                    		responsesCtrl.put(remoteHost + remotePort, true);
 	                    
 	                    if (response == 1)
 	                		System.out.println("[GameCtrl]: Response from player " + i + ": ALIVE");
@@ -421,13 +429,27 @@ public class GameController implements DataReceiverListener {
 	
 	                    // todo settarlo in crash
 	                    gameStatus.getPlayersList().get(i).setCrashed(true);
-	
 	                    // todo notificare l' informazione a tutti
 	                    gameStatus.setPlayersList(players);
-	                    
-	
 	                }
 	            }
+	        }
+	        
+	        /** controllo effettivo che tutti abbiano ricevuto il messaggio e quindi ricomincio turno*/
+	        if( isCurrentPlayerCrashed) {
+	        	int playerResponse = 0;
+	        	System.out.println("***** map: " + responsesCtrl.keySet().toString() + 
+            		" - " + responsesCtrl.values().toString());
+	        	for (Entry<String, Boolean> entry : responsesCtrl.entrySet())
+	        	{
+	        	    System.out.println("responseCtrl: " + entry.getKey() + " / " + entry.getValue());
+	        	    if( entry.getValue() == true)
+	        	    	playerResponse ++;
+	        	}
+	        	
+	        	/** se tutti mi hanno risposto comincia nuovo turno*/
+	        	if( playerResponse == responsesCtrl.size())
+	        		playGame();
 	        }
         }
         
