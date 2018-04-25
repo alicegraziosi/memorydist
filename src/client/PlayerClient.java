@@ -43,7 +43,6 @@ public class PlayerClient {
 
     public static void main(final String[] args) {
         try {
-
             // the registration server ip is read from util.txt
             BufferedReader br = null;
             FileReader fr = null;
@@ -87,7 +86,7 @@ public class PlayerClient {
             String name = "rmi://" + regServerHost + ":" + regServerPort + "/registrazione";
             RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) registry.lookup(name);
 
-         // todo prenderlo da terminale
+            // todo prenderlo da terminale
             String nomeGiocatore = "default name";
 
             // registration server returns id of the player
@@ -156,12 +155,5 @@ public class PlayerClient {
      * */
     public static void setupRMIregistryAndServer(GameController gameController){
         PlayerServer.setupRMIregistryAndServer(host, port, gameController);
-    }
-
-    /**
-     * Called by BoardView class when a move is performed
-     * */
-    public void broadcastMessageMove(GameStatus gameStatus){
-        gameController.broadcastMessage(gameStatus);
     }
 }

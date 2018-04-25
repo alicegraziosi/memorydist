@@ -1,3 +1,4 @@
+//todo eliminare se non serve
 package exception;
 
 public class NextPlayerNotFoundException extends Exception {

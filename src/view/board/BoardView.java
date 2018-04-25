@@ -70,38 +70,9 @@ public class BoardView extends Container implements GameGUIListener{
 
         t.setRepeats(false);
 
-        // look and feel (superfluo e quindi commentato)
-        /*
-        try {
-            for (UIManager.LookAndFeelInfo infoView : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(infoView.getName())) {
-                    UIManager.setLookAndFeel(infoView.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            // If Nimbus is not available, you can set the GUI to another look and feel.
-        }
-        */
 
-        // background image sfondo tavolo verde (superfluo e quindi commentato)
-        /*
-        BufferedImage img = null;
-        try {
-            img = ImageIO.read(new File("./images/board.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
         JPanel borderPanelBoard = new JPanel();
         borderPanelBoard.setLayout(new BorderLayout());
-
-        // background image sfondo tavolo verde (superfluo e quindi commentato)
-        //JLabel label1 = new JLabel(new ImageIcon(img));
-        //JPanel panel2 = new JPanel();
-        //panel2.setLayout(new FlowLayout());
-        //panel2.add(label1);
-        //borderPanelBoard.add(panel2, BorderLayout.EAST);
 
         // pannello laterale con infoView di gioco
         JPanel panel1 = new JPanel();
@@ -116,21 +87,17 @@ public class BoardView extends Container implements GameGUIListener{
             cardViews.add(cardView);
             gridPanelCards.add(cardView);
         }
-        
       
         // when click a card
         setCardClickActionListener();
 
         borderPanelBoard.add(gridPanelCards,BorderLayout.EAST);
-
         frame.add(borderPanelBoard);
-
         frame.setSize(800, 650);
         //frame.pack(); // o setSize o pack
 
         ImageIcon img = new ImageIcon("./images/frameIcon.jpg");
         frame.setIconImage(img.getImage());
-
         frame.setVisible(true);
 
         // ask before exit
@@ -149,7 +116,7 @@ public class BoardView extends Container implements GameGUIListener{
         	cardView.setLogo();
             cardView.setEnabled(false);
 //            gridPanelCards.add(cardView);
-        	System.out.println("sto coprendo " +  cardView.getCard());
+//        	System.out.println("sto coprendo " +  cardView.getCard());
 //        	
         }
         for (CardView cardView: cardViewsMatch) {
@@ -366,14 +333,6 @@ public class BoardView extends Container implements GameGUIListener{
             });
         }
     }
-
-    public void showTurnMessage() {
-    	
-    	if(gameStatus.getCurrentPlayer().getId() == id && !gameStatus.getCurrentPlayer().isCrashed())
-	    	JOptionPane.showMessageDialog(null, "It is YOUR turn !");
-    	else
-    		JOptionPane.showMessageDialog(null, "It is the turn of " + gameStatus.getCurrentPlayer().getId() + " !");
-    }
     
     public void showMessage(String msg) {
     	JOptionPane.showMessageDialog(null, msg);
@@ -443,25 +402,6 @@ public class BoardView extends Container implements GameGUIListener{
 	public void setGameController(GameController gameController) {
 		this.gameController = gameController;
 	}
-
-	 
-    public ArrayList<CardView> getCardViews() {
-		return cardViews;
-	}
-
-	public void setCardViews(ArrayList<CardView> cardViews) {
-		this.cardViews = cardViews;
-	}
-
-	public ArrayList<CardView> getCardViewsMatch() {
-		return cardViewsMatch;
-	}
-
-	public void setCardViewsMatch(ArrayList<CardView> cardViewsMatch) {
-		this.cardViewsMatch = cardViewsMatch;
-	}
-
-
 }
 
 

@@ -1,3 +1,4 @@
+//todo eliminare se non serve
 package rmi;
 
 import java.rmi.NotBoundException;

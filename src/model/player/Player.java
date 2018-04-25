@@ -29,13 +29,11 @@ public class Player extends Node implements Serializable{
 	  * @return bool 
 	*/
     public Boolean isCrashed() {
-    	if(this.state == PLAYER_STATE.CRASH) {
+    	if(this.state == PLAYER_STATE.CRASH)
     		return true;
-    	}
     	else
-    	{
     		return false;
-    	}
+
     }
     
     /**
@@ -46,7 +44,6 @@ public class Player extends Node implements Serializable{
     	if (crashed == true)
     		this.state = PLAYER_STATE.CRASH;
     }
-
 	
     /**
 	  * @desc get the id of the player
@@ -55,15 +52,6 @@ public class Player extends Node implements Serializable{
     public int getId() {
 		return id;
 	}
-    
-    /**
-     * @desc set id of a player
-     * @param int $id
-     * @return void
-   */
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	/**
 	  * @desc get the nickName of the player
@@ -71,15 +59,6 @@ public class Player extends Node implements Serializable{
 	*/
 	public String getNickName() {
 		return nickName;
-	}
-
-	/**
-     * @desc set nickName of a player
-     * @param int $nick-name
-     * @return void
-   */
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
 	}
 	
 	/**
@@ -114,11 +93,6 @@ public class Player extends Node implements Serializable{
    */
 	public void setScore(int score) {
 		this.score = score;
-	}
-	
-
-	public boolean isMyTurn() {
-		return isMyTurn;
 	}
 
 	public void setMyTurn(boolean myTurn) {

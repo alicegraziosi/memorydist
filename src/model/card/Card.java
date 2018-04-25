@@ -21,32 +21,11 @@ public class Card implements Serializable{
 	}
 	
 	/**
-	 * @desc set to string card
-	 */
-	@Override
-	public String toString() {
-		String newLine = System.getProperty("line.separator");
-		return "Card " +" { " +
-				"index=" + index +	
-				", value='" + value + 
-				" }" + newLine;
-	}
-	
-	/**
 	  * @desc get the index of a card
 	  * @return int $index
 	*/
     public int getIndex() {
         return index;
-    }
-
-    /**
-     * @desc set index of a card
-     * @param int $index
-     * @return void
-   */
-    public void setIndex(int index) {
-        this.index = index;
     }
     
     /**
@@ -57,12 +36,15 @@ public class Card implements Serializable{
         return value;
     }
 
-    /**
-     * @desc set value of a card
-     * @param int $value
-     * @return void
-   */
-    public void setValue(int value) {
-        this.value = value;
-    }
+	/**
+	 * @desc set to string card
+	 */
+	@Override
+	public String toString() {
+		String newLine = System.getProperty("line.separator");
+		return "Card " +" { " +
+				"index=" + index +
+				", value='" + value +
+				" }" + newLine;
+	}
 }

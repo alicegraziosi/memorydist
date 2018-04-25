@@ -27,17 +27,6 @@ public class CardView extends JButton {
     private boolean matched;
 
     public CardView(Card card) {
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            // If Nimbus is not available, you can set the GUI to another look and feel.
-        }
-
         this.card = card;
         this.matched = false;
         this.setPreferredSize(new Dimension(120, 140));
@@ -70,28 +59,8 @@ public class CardView extends JButton {
             e.printStackTrace();
         }
     }
-    
-    public void setMatched(){
-        BufferedImage img = null;
-        try {
-        	img = ImageIO.read(new File("./images/" + card.getValue() + ".jpg"));
-            this.setIcon(new ImageIcon(img));
-            this.setBackground(Color.BLACK);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
 
     public Card getCard() {
         return card;
-    }
-
-    public void setCard(Card card) {
-        this.card = card;
-    }
-
-    public void setMatched(boolean matched) {
-        this.matched = matched;
     }
 }

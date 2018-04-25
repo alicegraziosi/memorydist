@@ -46,32 +46,12 @@ public class Move implements Serializable{
 	}
 	
 	/**
-     * @desc check if two cards match or not setting match 
-     * @param card $card1, card $card2
-     * @return void
-   */
-	public void match(Card card1, Card card2) {
-		if (card1.getValue() == card2.getValue()){
-			this.match = true;
-		}
-	}
-	
-	/**
      * @desc get the first card
      * @param 
      * @return card $card1
    */
 	public Card getCard1() {
 		return card1;
-	}
-
-	/**
-     * @desc set the first card
-     * @param card $card1
-     * @return void
-   */
-	public void setCard1(Card card1) {
-		this.card1 = card1;
 	}
 	
 	/**
@@ -81,15 +61,6 @@ public class Move implements Serializable{
    */
 	public Card getCard2() {
 		return card2;
-	}
-
-	/**
-     * @desc set the second card
-     * @param card $card2
-     * @return void
-   */
-	public void setCard2(Card card2) {
-		this.card2 = card2;
 	}
 
 	public boolean isMatch() {

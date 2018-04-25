@@ -209,14 +209,6 @@ public class GameStatus implements Serializable {
     public ArrayList<Card> getShowingCards() {
  		return showingCards;
  	}
-    
-    /**
-     *  @desc set the showing cards
-     *  @param array list $showingCards
-     */
- 	public void setShowingCards(ArrayList<Card> showingCards) {
- 		this.showingCards = showingCards;
- 	}
  	
  	/**
      *  @desc get the not showing cards
@@ -224,14 +216,6 @@ public class GameStatus implements Serializable {
      */
  	public ArrayList<Card> getNotShowingCards() {
  		return notShowingCards;
- 	}
- 	
- 	/**
-     *  @desc set the not showing cards
-     *  @param array list $notShowingCards
-     */
- 	public void setNotShowingCards(ArrayList<Card> notShowingCards) {
- 		this.notShowingCards = notShowingCards;
  	}
  	
  	/**
@@ -257,16 +241,7 @@ public class GameStatus implements Serializable {
     public Player getCurrentPlayer() {
 		return currentPlayer;
 	}
-    
-	/**
-     *  @desc set current player
-     *  @param Player $currentPlayer
-     *  @return void
-     */
-	public void setCurrentPlayer(Player currentPlayer) {
-		this.currentPlayer = currentPlayer;
-	}
-	
+
 	public int getId() {
 		return id;
 	}

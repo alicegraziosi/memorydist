@@ -80,6 +80,5 @@ public class PlayerServer implements RemoteGameInterface{
 	@Override
 	public void helloThere() throws RemoteException, NotBoundException{
 		// TODO Auto-generated method stub
-		
 	}
 }

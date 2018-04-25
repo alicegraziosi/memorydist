@@ -4,17 +4,12 @@ import model.gameStatus.GameStatus;
 import model.move.Move;
 import model.player.PLAYER_STATE;
 import model.player.Player;
-import rmi.RemoteMessageServiceImpl;
 import rmi.RemoteMessageServiceInt;
 import server.PlayerServer;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.BlockingQueue;
@@ -26,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import client.PlayerClient;
 import listener.DataReceiverListener;
 import view.board.BoardView;
-import view.card.CardView;
 
 /**
  * Controller of the game, contains the following attributes
@@ -46,8 +40,6 @@ public class GameController implements DataReceiverListener {
     public GameStatus gameStatus; // global status of the game, with info of current player
     private PlayerClient playerClient; 
     private PlayerServer playerServer;
-    private int msgId;
-
     // timer mossa
     private Timer timer;
     private TimerTask timerTask;
@@ -69,7 +61,6 @@ public class GameController implements DataReceiverListener {
         this.gameStatus = gameStatus;
         this.players = players;
         this.turnNumber = 0;
-        this.msgId = 0;
         this.boardView = boardView;
 
         // viene inizializzato e mostrato il tavolo di gioco
@@ -93,7 +84,7 @@ public class GameController implements DataReceiverListener {
             // se ci sono ancora carte da scoprire e se è rimasto più di un giocatore
             if (gameStatus.getShowingCards().size() < 20){
             	
-            	boardView.showMessage("Giocatori rimasti: " +  gameStatus.countPlayersActive());
+            	// boardView.showMessage("Giocatori rimasti: " +  gameStatus.countPlayersActive());
                 if(gameStatus.countPlayersActive() != 1) {
 
                     if (isMyTurn()) { // se è il mio turno
@@ -148,16 +139,16 @@ public class GameController implements DataReceiverListener {
 
                         if (nextPlayer != null && nextPlayer.getId() == currentId
                                 && !nextPlayer.isCrashed()) {
-                            System.out.println("[GameCtrl] sono player " + currentId + " e pingo player " +
-                                    gameStatus.getCurrentPlayer().getId());
                             pingAPlayer(currentPlayerId, true);
                         }
                     }
                 } else {
-                    // todo controllare se è rimasto un solo giocatore
-                    // todo lasciar giocare da solo l'ultimo giocatore
                     System.out.println("Sei l'ultimo giocatore rimasto in gioco!");
                     boardView.showMessage("Sei l'ultimo giocatore rimasto in gioco!");
+
+                    boardView.getInfoView().update(gameStatus, currentId);
+                    boardView.reset(gameStatus);
+                    boardView.unblockCards();
                 }
             } else {
                 // all cards are matched
@@ -187,8 +178,11 @@ public class GameController implements DataReceiverListener {
             	 /**
             	  * pingo giocatore con id $playerId
             	  * */
-                 System.out.println("[GameCtrl]: ping to player " + playerId +
-                		 " isCurrentPlayerCrashed = " + isCurrentPlayerCrashed);
+            	 if(isCurrentPlayerCrashed)
+                    System.out.println("[GameCtrl]: ping to CURRENT player " + playerId);
+                 else
+                     System.out.println("[GameCtrl]: ping to NOT CURRENT player " + playerId);
+
                  // task to run goes here
                  pingAHost(playerId, isCurrentPlayerCrashed);
                  
@@ -316,7 +310,8 @@ public class GameController implements DataReceiverListener {
                 System.out.println("XXXXXXX Setto crashato player " + idPlayer + " XXXXXXX");
                 players.get(idPlayer).setCrashed(true);
                 gameStatus.setPlayerState(idPlayer, PLAYER_STATE.CRASH);
-                gameStatus.setPlayersList(players);  
+                gameStatus.setPlayersList(players);
+                gameStatus.getPlayersList().get(idPlayer).setCrashed(true);
                 System.out.println("XXXXXXX Nuova lista giocatori " + gameStatus.getPlayersList() + " XXXXXXX");
                 
                 /**
@@ -392,7 +387,9 @@ public class GameController implements DataReceiverListener {
         	/** ciclo che si occupa di inviare nuovo gameStatus a tutti i players attivi rimasti */
 	        for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
 	            // non lo rimanda a se stesso e ai nodi in crash
-	            if(i != currentId && !gameStatus.getPlayersList().get(i).isCrashed()) {
+
+                // HO MODIFICATO QUESTA RIGA (ALICE)
+	            if(i != currentId && gameStatus.getPlayerState(i)!= PLAYER_STATE.CRASH){
 	                try {
 	                    String remoteHost = gameStatus.getPlayersList().get(i).getHost().toString();
 	                    int remotePort = gameStatus.getPlayersList().get(i).getPort();

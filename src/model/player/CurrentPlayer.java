@@ -1,10 +1,6 @@
 package model.player;
 
 public class CurrentPlayer {
-
-	/**
-	 * 
-	 */
 	
 	private int id;
 	private String nickname;
@@ -18,30 +14,5 @@ public class CurrentPlayer {
     }
 	
 	protected CurrentPlayer() {}
-
-	public int getId() {
-		return id;
-	}
-
-	public String getNickname() {
-		return nickname;
-	}
-
-	public String getHost() {
-		return host;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-		
 
 }

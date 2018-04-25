@@ -1,3 +1,5 @@
+// todo eliminare file se non serve
+
 package server;
 
 import java.rmi.AccessException;
