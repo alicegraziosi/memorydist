@@ -66,6 +66,17 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 //			gameStatus.getNextPlayer();
 		gameController.setGameStatus(gameStatus); // setting the new updated gameStatus
 
+		/** controllo che io non sia diventato il giocatore successivo
+		 * 	in tal caso devo pingare il giocatore corrente */
+		if (!isCurrentPlayerCrashed) {
+			if ( gameStatus.getCurrentPlayer().getId() == gameController.getCurrentId()) {
+				System.out.println("***** Sono il nuovo successivo causa CRASH *****");
+				gameController.pingAPlayer( gameStatus.getIdSender(),
+						true);
+			}
+		}
+			
+		
 		/** se è crashato il giocatore corrente allora ricomincio il turno (sono giocatore non corrente)*/
 		if (isCurrentPlayerCrashed ) 
 			gameController.playGame(); // solo se è crashato il current player ho bisogno di chiamare playGame

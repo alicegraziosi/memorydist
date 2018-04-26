@@ -320,9 +320,11 @@ public class GameController implements DataReceiverListener {
                  * */
                 if( isCurrentPlayerCrashed ) { 
                 	/**
-                	 * setto nuovo giocatore successivo e mittente
+                	 * non ho bisogno di settare nuovo giocatore successivo (già stato settato in playGame
+                	 * dal giocatore corrente)
+                	 * e mittente
                 	 * */
-                	gameStatus.setNextPlayer();  
+                	//gameStatus.setNextPlayer();  
 	                gameStatus.setIdSender(currentId); 
 	                
                 	/** 
@@ -334,7 +336,7 @@ public class GameController implements DataReceiverListener {
                 else {
                 	/**
             	 	* gestione aggiornamento gameStatus dopo crash giocatore NON CORRENTE
-                	* in questo stato il successivo  è già stato settato
+                	* il giocatore successivo è già stato settato
                 	*/
                 	if ( idPlayer == gameStatus.getCurrentPlayer().getId()) {
                 		/** crash giocatore SUCCESSIVO */

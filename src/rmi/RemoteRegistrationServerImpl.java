@@ -26,7 +26,7 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 
 	/** constructor */
 	public RemoteRegistrationServerImpl() throws RemoteException {
-		this.maxPlayersNumber = 4;
+		this.maxPlayersNumber = 8;
 		this.players = new ArrayList();
 		this.isServiceOpen = true;
 		this.startGame = false;
