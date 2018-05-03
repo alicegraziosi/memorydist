@@ -181,6 +181,8 @@ public class BoardView extends Container implements GameGUIListener{
 
     // called by not current players in gamecontroller
     public void updateBoardAfterMove(Move move) {
+    	
+    	System.out.println("************************GIRO LE CARTE PER FARLE VEDERE");
         for (CardView cardView: cardViews) {
             if(cardView.getCard().getIndex() == move.getCard1().getIndex() &&
                     cardView.getCard().getValue() == move.getCard1().getValue()){
@@ -310,7 +312,7 @@ public class BoardView extends Container implements GameGUIListener{
              * dopo di che invio del gameStatus in BROADCAST
              * -----DA SISTEMARE -----
              * */
-                t = new javax.swing.Timer(4000, new ActionListener() {
+                t = new javax.swing.Timer(2000, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                     	System.out.println("[BoardView]: SELECTED CARDS" + selectedCard1 +
