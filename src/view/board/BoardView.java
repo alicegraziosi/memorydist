@@ -26,7 +26,7 @@ public class BoardView extends Container implements GameGUIListener{
 
     private GameStatus gameStatus;
     private ArrayList<CardView> cardViews;
-   	private ArrayList<CardView> cardViewsMatch;
+    private ArrayList<CardView> cardViewsMatch;
     private CardView selectedCard1;
     private CardView selectedCard2;
     private Move move;
@@ -87,7 +87,7 @@ public class BoardView extends Container implements GameGUIListener{
             cardViews.add(cardView);
             gridPanelCards.add(cardView);
         }
-      
+
         // when click a card
         setCardClickActionListener();
 
@@ -113,7 +113,7 @@ public class BoardView extends Container implements GameGUIListener{
     // make carks unclickable
     public void blockCards(){
         for (CardView cardView: cardViews) {
-        	cardView.setLogo();
+            cardView.setLogo();
             cardView.setEnabled(false);
         }
         for (CardView cardView: cardViewsMatch) {
@@ -125,16 +125,16 @@ public class BoardView extends Container implements GameGUIListener{
 
     // make cards clickable
     public void unblockCards(){
-    	// aggiornare da GameStatus
-    	
+        // aggiornare da GameStatus
+
         for (CardView cardView: cardViews) {
             cardView.setLogo();
             cardView.setEnabled(true);
         }
-	    for (CardView cardView: cardViewsMatch) {
-	        cardView.setImage();
-	        cardView.setEnabled(false);
-	    }
+        for (CardView cardView: cardViewsMatch) {
+            cardView.setImage();
+            cardView.setEnabled(false);
+        }
 
         showMatchedCards();
     }
@@ -153,7 +153,7 @@ public class BoardView extends Container implements GameGUIListener{
         }
     }
 
-    
+
     public void resetAndUpdateInfoView(GameStatus gameStatus, int currentId) {
         this.gameStatus = gameStatus;
         selectedCard1 = null;
@@ -188,11 +188,11 @@ public class BoardView extends Container implements GameGUIListener{
      * When it is the second card selected
      * */
     public void setCardClickActionListener(){
-    	for (final CardView cardView: cardViews) {
+        for (final CardView cardView: cardViews) {
             cardView.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                  
+
                     if(selectedCard1 == null && selectedCard2 == null){ // prima mossa eseguita
 
                         selectedCard1 = cardView;
@@ -201,95 +201,95 @@ public class BoardView extends Container implements GameGUIListener{
                         gameStatus.setMove(move);
 
                         System.out.println("[BoardView]: First selected card: " + move.getCard1().getValue());
-                        
+
                     } else if (selectedCard2==null) { // seconda mossa eseguita
-                    	
-                		selectedCard2 = cardView;
-                		int card1Index = selectedCard1.getCard().getIndex();
-                		int card2Index = selectedCard2.getCard().getIndex();
 
-                		/** controllo match delle carte solo se non ho selezionato due volte la stessa*/
-                        if ( (card1Index != card2Index) ) {                                 
-	                		cardView.setImage();
-	                        move = new Move(selectedCard1.getCard(), selectedCard2.getCard());
-	                        gameStatus.setMove(move);
-	                
-	                        if(move.isMatch()){
-	                        	
-	                        	JOptionPane.showMessageDialog(null, "Matched!");
-	                            //update score of current player
-	                            int score = gameStatus.getPlayersList().get(id).getScore() + 100;
-	                            gameStatus.getPlayersList().get(id).setScore(score);
-	                            //infoView.updateScores(gameStatus);
-	                            infoView.update(gameStatus, id);
-	
-	                            // add matched card to showingCard array
-	                            gameStatus.getShowingCards().add(move.getCard1());
-	                            gameStatus.getShowingCards().add(move.getCard2());
+                        selectedCard2 = cardView;
+                        int card1Index = selectedCard1.getCard().getIndex();
+                        int card2Index = selectedCard2.getCard().getIndex();
 
-	                            // add card matched
-	                            cardViewsMatch.add(selectedCard1);
-	                            cardViewsMatch.add(selectedCard2);
-	                            // remove card matched from cardViews
+                        /** controllo match delle carte solo se non ho selezionato due volte la stessa*/
+                        if ( (card1Index != card2Index) ) {
+                            cardView.setImage();
+                            move = new Move(selectedCard1.getCard(), selectedCard2.getCard());
+                            gameStatus.setMove(move);
+
+                            if(move.isMatch()){
+
+                                JOptionPane.showMessageDialog(null, "Matched!");
+                                //update score of current player
+                                int score = gameStatus.getPlayersList().get(id).getScore() + 100;
+                                gameStatus.getPlayersList().get(id).setScore(score);
+                                //infoView.updateScores(gameStatus);
+                                infoView.update(gameStatus, id);
+
+                                // add matched card to showingCard array
+                                gameStatus.getShowingCards().add(move.getCard1());
+                                gameStatus.getShowingCards().add(move.getCard2());
+
+                                // add card matched
+                                cardViewsMatch.add(selectedCard1);
+                                cardViewsMatch.add(selectedCard2);
+                                // remove card matched from cardViews
                                 cardViews.remove(selectedCard1);
-	                            cardViews.remove(selectedCard2);
-		                       
-	                            showMatchedCards();
-	
-	                            if(gameStatus.getShowingCards().size()==20){
-	                                gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
-	                                showGameWinnerMessage();
-	                            }
-	                        }
-	                        
-	                        
-	                        System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
-	                        System.out.println("[BoardView]: Match: " + move.isMatch());
-	                     
+                                cardViews.remove(selectedCard2);
+
+                                showMatchedCards();
+
+                                if(gameStatus.getShowingCards().size()==20){
+                                    gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
+                                    showGameWinnerMessage();
+                                }
+                            }
+
+
+                            System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
+                            System.out.println("[BoardView]: Match: " + move.isMatch());
+
                         } else {
-                        	/** Doppio click sulla stessa carta*/
-                        	selectedCard2 = null;
-                        	System.out.println("[BoardView]: Same card already selected.");
-                        	JOptionPane.showMessageDialog(null, "Same card already selected!");
-       
+                            /** Doppio click sulla stessa carta*/
+                            selectedCard2 = null;
+                            System.out.println("[BoardView]: Same card already selected.");
+                            JOptionPane.showMessageDialog(null, "Same card already selected!");
+
                         }
                     } else {
-                    	/** Due carte già selezionate*/
+                        /** Due carte già selezionate*/
                         System.out.println("[BoardView]: Two cards in this turn have been already selected.");
-                    } 
-        
-            /**
-             * inserito ritardo per mostrare la seconda carta al giocatore corrente giocata 
-             * da se stesso
-             * dopo di che invio del gameStatus in BROADCAST
-             * -----DA SISTEMARE -----
-             * */
-                t = new javax.swing.Timer(400, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                    	System.out.println("[BoardView]: SELECTED CARDS" + selectedCard1 +
-                    			" e " + selectedCard2);
-                    	System.out.println("[BoardView]: AL CLICK DI DUE CARTE ");
-                    	//System.out.println("[BoardView]: gameStatus: " + gameStatus);
-                    	
-                    	if ( gameStatus.getMove() != null )
-	                        broadcastMessageMove(gameStatus);
-                        
-                        t.stop();
                     }
-                });
 
-                t.setRepeats(false);
-                
-            	t.start();
-                	
+                    /**
+                     * inserito ritardo per mostrare la seconda carta al giocatore corrente giocata
+                     * da se stesso
+                     * dopo di che invio del gameStatus in BROADCAST
+                     * -----DA SISTEMARE -----
+                     * */
+                    t = new javax.swing.Timer(2000, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            System.out.println("[BoardView]: SELECTED CARDS" + selectedCard1 +
+                                    " e " + selectedCard2);
+                            System.out.println("[BoardView]: AL CLICK DI DUE CARTE ");
+                            //System.out.println("[BoardView]: gameStatus: " + gameStatus);
+
+                            if ( gameStatus.getMove() != null )
+                                broadcastMessageMove(gameStatus);
+
+                            t.stop();
+                        }
+                    });
+
+                    t.setRepeats(false);
+
+                    t.start();
+
                 }
             });
         }
     }
-    
+
     public void showMessage(String msg) {
-    	JOptionPane.showMessageDialog(null, msg);
+        JOptionPane.showMessageDialog(null, msg);
     }
     /**
      * @desc Called when a move is performed
@@ -352,10 +352,8 @@ public class BoardView extends Container implements GameGUIListener{
         return infoView;
     }
 
-	@Override
-	public void setGameController(GameController gameController) {
-		this.gameController = gameController;
-	}
+    @Override
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
 }
-
-

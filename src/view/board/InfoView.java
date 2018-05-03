@@ -56,8 +56,14 @@ public class InfoView extends JPanel {
 
         this.add(new JSeparator(SwingConstants.HORIZONTAL));
 
+        int input = JOptionPane.showConfirmDialog(null,
+                playerId + " " + currentPlayerId,
+                "You are the winner!",
+                JOptionPane.CLOSED_OPTION,
+                JOptionPane.INFORMATION_MESSAGE, null);
+
         if(playerId == currentPlayerId) {
-            JLabel labelTurnOf = new JLabel("It's your turn!");
+            JLabel labelTurnOf = new JLabel("It's your turn! " + playerId);
             labelTurnOf.setForeground(Color.red);
             labels.add(labelTurnOf);
             JLabel labelScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(playerId).getScore());

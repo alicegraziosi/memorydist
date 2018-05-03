@@ -4,8 +4,12 @@ import controller.GameController;
 import model.gameStatus.GameStatus;
 import model.player.Player;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+
+import javax.swing.Timer;
 
 /**
  * @desc implementation of remote message service interface
@@ -13,6 +17,8 @@ import java.rmi.server.UnicastRemoteObject;
 public class RemoteMessageServiceImpl extends UnicastRemoteObject implements RemoteMessageServiceInt {
 
 	private GameController gameController;
+	private Timer t;
+
 
 	public RemoteMessageServiceImpl(GameController gameController) throws RemoteException {
 		this.gameController = gameController;
@@ -35,9 +41,22 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 			gameController.updateBoardAfterMove(gameStatus.getMove());
 
 			if(gameStatus.getMove().getCard2() != null) {
+				/** minimo ritardo prima di riniziare il turno*/
+				t = new javax.swing.Timer(2000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                    	
+                    	gameController.playGame();
+                        
+                        t.stop();
+                    }
+                });
+
+                t.setRepeats(false);
+                
+            	t.start();
 				// due carte girate
 				// riparte play game
-				gameController.playGame();
 				return 2;
 			}
 		} else {
