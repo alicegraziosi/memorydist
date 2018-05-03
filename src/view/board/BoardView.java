@@ -61,7 +61,7 @@ public class BoardView extends Container implements GameGUIListener{
          * Il timer mi permette di avere un margine di secondi per vedere le carte,
          * di default e' settato a 750 ma si può variare
          */
-        t = new javax.swing.Timer(2000, new ActionListener() {
+        t = new javax.swing.Timer(4000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -310,7 +310,7 @@ public class BoardView extends Container implements GameGUIListener{
              * dopo di che invio del gameStatus in BROADCAST
              * -----DA SISTEMARE -----
              * */
-                t = new javax.swing.Timer(400, new ActionListener() {
+                t = new javax.swing.Timer(4000, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                     	System.out.println("[BoardView]: SELECTED CARDS" + selectedCard1 +
