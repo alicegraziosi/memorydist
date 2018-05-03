@@ -6,8 +6,6 @@ import model.player.Player;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @desc implementation of remote message service interface
@@ -69,7 +67,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		/** controllo che io non sia diventato il giocatore successivo
 		 * 	in tal caso devo pingare il giocatore corrente */
 		if (!isCurrentPlayerCrashed) {
-			if ( gameStatus.getCurrentPlayer().getId() == gameController.getCurrentId()) {
+			if ( gameStatus.getCurrentPlayer().getId() == gameController.getPlayerId()) {
 				System.out.println("***** Sono il nuovo successivo causa CRASH *****");
 				gameController.pingAPlayer( gameStatus.getIdSender(),
 						true);
