@@ -3,6 +3,7 @@ package rmi;
 import model.card.Card;
 import model.gameStatus.GameStatus;
 import model.player.Player;
+import utils.CircularArrayList;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -16,7 +17,7 @@ import java.util.Collections;
 public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements RemoteRegistrationServerInt {
 
 	private int maxPlayersNumber; // max number of players
-	private ArrayList<Player> players; //players list
+	private CircularArrayList<Player> players; //players list
 	private int playerIndex = -1; // index of each new player, incrementing each time
 	private boolean isServiceOpen;  // tells if service is opened
 	private boolean startGame; // tells if game can starts
@@ -27,7 +28,7 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 	/** constructor */
 	public RemoteRegistrationServerImpl() throws RemoteException {
 		this.maxPlayersNumber = 8;
-		this.players = new ArrayList();
+		this.players = new CircularArrayList();
 		this.isServiceOpen = true;
 		this.startGame = false;
 
@@ -105,7 +106,7 @@ public class RemoteRegistrationServerImpl extends UnicastRemoteObject implements
 	 * @desc get the arraylist of players
 	 * @return arraylist of players
 	 */
-	public synchronized ArrayList<Player> getPlayers() {
+	public synchronized CircularArrayList<Player> getPlayers() {
 		if (startGame == false)
 			try {
 				wait();

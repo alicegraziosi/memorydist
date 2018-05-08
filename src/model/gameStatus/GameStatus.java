@@ -2,6 +2,7 @@ package model.gameStatus;
 
 import model.card.Card;
 import model.player.*;
+import utils.CircularArrayList;
 import exception.NextPlayerNotFoundException;
 import model.move.Move;
 import java.io.Serializable;
@@ -16,7 +17,7 @@ import java.util.Random;
 public class GameStatus implements Serializable {
 
 	private int id;
-    private ArrayList<Player> playersList;
+    private CircularArrayList<Player> playersList;
     private int idSender; // ?
     private ArrayList<Card> showingCards;
  	private ArrayList<Card> notShowingCards;
@@ -27,7 +28,7 @@ public class GameStatus implements Serializable {
     /**
      * Starting game constructor
      * */
-    public GameStatus(ArrayList<Player> playersList,
+    public GameStatus(CircularArrayList<Player> playersList,
     				  int idSender,
 					  ArrayList<Card> showingCards,
 					  ArrayList<Card> notShowingCards,
@@ -52,37 +53,70 @@ public class GameStatus implements Serializable {
     
     
     /**
-     * setting the next turn managing players array list in gameStatus
+     * @descr setting the next turn managing players array list in gameStatus
+     * get the position of the curr player in the circular array list $this.playersList and add 1 to get the NEW curr player 
      * */
     public void setNextPlayer(){
-    	// 1
-    	int indexCurrentPlayer = currentPlayer.getId();
 
-		iterateNextPlayer(indexCurrentPlayer);
+    	System.out.println("[GameStatus.setNextPlayer] giocatori rimanenti: " + this.playersList.toString());
+    	System.out.println("[GameStatus.setNextPlayer] giocatori rimanenti size: " + this.playersList.size());
+    	System.out.println("[GameStatus.setNextPlayer] giocatore corrente: " + this.currentPlayer.toString());
+        System.out.println("[GameStatus.setNextPlayer] id giocatore corrente: " + this.currentPlayer.getId());
+    	
+        int currentPlayerIndex = -1;
+        for(int i=0; i < this.playersList.size(); i++) {
+        	if(this.currentPlayer.getId() == this.playersList.get(i).getId()) {
+        		currentPlayerIndex = i;
+        	}
+        }
+        
+    	//int currentPlayerIndex = this.playersList.indexOf(this.currentPlayer);
+    	
+        System.out.println("[GameStatus.setNextPlayer] pos giocatore corrente:" + currentPlayerIndex);
+
+        this.currentPlayer = this.playersList.get(currentPlayerIndex+1);
+        System.out.println("[GameStatus.setNextPlayer] giocatore successivo: " + this.currentPlayer.getId());
     }
-
-    private void iterateNextPlayer(int indexCurrentPlayer) {
-    	// 2 - > 3
-		int indexNextPlayer = indexCurrentPlayer + 1;
-
-		// se il giocatore corrente è l'ultimo, il prossimo è il primo
-		if(indexNextPlayer >= playersList.size()){
-			// 3 -> 0
-			indexNextPlayer = 0;
-		}
-
-		// is crashed = true
-		if(playersList.get(indexNextPlayer).isCrashed()){
-			// 3
-			iterateNextPlayer(indexNextPlayer);
-		} else {
-			Player nextPlayer = playersList.get(indexNextPlayer);
-			currentPlayer = nextPlayer;
-			System.out.println("[GameStatus]: Next player is " + nextPlayer);
-		}
-
-	}
-
+    
+    /**
+     * getting the next turn managing players array list in gameStatus
+     * */
+    public Player getNextPlayer(){
+    	
+    	// compute id next player
+        int indexNextPlayer = this.currentPlayer.getId() + 1;
+        
+        // se il giocatore corrente è l'ultimo, il prossimo è il primo
+        if(indexNextPlayer >= playersList.size()){
+            indexNextPlayer = 0;
+            return playersList.get(indexNextPlayer);
+        }
+        
+        System.out.println("players list size: " + playersList.size());
+        System.out.println("index next player: " + indexNextPlayer);
+        
+        // setto il turno al prossimo giocatore non in crash
+        for (int i = indexNextPlayer; i < playersList.size(); i++){
+        	
+        	Player iteratePlayer = playersList.get(i);
+        	
+            if(!iteratePlayer.isCrashed()) {
+               System.out.println("[GameStatus]: Il prossimo giocatore (settato) sarà : " + Integer.valueOf(i).toString());
+               return iteratePlayer;
+            } else {
+            	if ( indexNextPlayer == playersList.size() - 1) {
+              	   System.out.println("il giocatore successivo " + indexNextPlayer + " è crashato!");
+             	   indexNextPlayer = 0;
+            	}   
+                System.out.println(playersList.get(i).toString());
+            }
+        }
+        
+        return null;
+        
+//        throw new NextPlayerNotFoundException();
+    }
+    
     /**
      * @desc checking if some player has won
      * @return boolean, true if one player has won, otherwise false
@@ -101,10 +135,12 @@ public class GameStatus implements Serializable {
     	int playersActive = 0;
     	for(int i = 0; i < this.playersAvailability.size(); i++) {
     		PLAYER_STATE value = this.playersAvailability.get(i);
+    		//System.out.println("[GameStatus]: player: " + i + " " + value);
     		if ( value == PLAYER_STATE.ACTIVE)
     			playersActive ++;
     	}
-
+    	
+    	
     	return playersActive;
     }
     
@@ -153,7 +189,7 @@ public class GameStatus implements Serializable {
      *  @desc set the array list of players
      *  @param array list $playersList
      */
-    public void setPlayersList(ArrayList<Player> playersList) {
+    public void setPlayersList(CircularArrayList<Player> playersList) {
         this.playersList = playersList;
     }
     

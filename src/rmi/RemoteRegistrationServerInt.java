@@ -2,6 +2,7 @@ package rmi;
 
 import model.gameStatus.GameStatus;
 import model.player.Player;
+import utils.CircularArrayList;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -26,7 +27,7 @@ public interface RemoteRegistrationServerInt extends Remote {
 	 * @desc get players list
 	 * @return array list of players
 	 */
-	ArrayList<Player> getPlayers() throws RemoteException;
+	CircularArrayList<Player> getPlayers() throws RemoteException;
 
 	/**
 	 * @desc get current game status

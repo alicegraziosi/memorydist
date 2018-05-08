@@ -5,6 +5,7 @@ import model.gameStatus.GameStatus;
 import model.player.Player;
 import rmi.RemoteRegistrationServerInt;
 import server.PlayerServer;
+import utils.CircularArrayList;
 import view.board.BoardView;
 
 import java.io.BufferedReader;
@@ -31,7 +32,7 @@ public class PlayerClient {
     public static String regServerHost; // registration server host (localhost o per esempio Gisella: 130.136.4.121)
     public static int regServerPort; // default on 1099
 
-    public static ArrayList<Player> players; // array list of player
+    public static CircularArrayList<Player> players; // array list of player
     public static GameStatus gameStatus; // global status of the game
 
     public static BoardView board;
