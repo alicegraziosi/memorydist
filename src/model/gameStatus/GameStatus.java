@@ -55,61 +55,34 @@ public class GameStatus implements Serializable {
      * setting the next turn managing players array list in gameStatus
      * */
     public void setNextPlayer(){
-    	
-    	// compute id next player
-        int indexNextPlayer = this.currentPlayer.getId() + 1;
-        
-        // se il giocatore corrente è l'ultimo, il prossimo è il primo
-        if(indexNextPlayer >= playersList.size()){
-            indexNextPlayer = 0;
-        }
+    	// 1
+    	int indexCurrentPlayer = currentPlayer.getId();
 
-        // setto il turno al prossimo giocatore non in crash
-        for (int i = indexNextPlayer; i < playersList.size(); i++){
-        	Player iteratePlayer = playersList.get(i);
-        	
-            if(!playersList.get(i).isCrashed()) {
-                this.currentPlayer = iteratePlayer;
-            	System.out.println("[GameStatus]: Il prossimo giocatore (settato) sarà : " + Integer.valueOf(i).toString());
-            	break;
-            } else {
-                System.out.println(playersList.get(i).toString());
-            }
-        }
-        
-//        throw new NextPlayerNotFoundException();
+		iterateNextPlayer(indexCurrentPlayer);
     }
-    
-    /**
-     * getting the next turn managing players array list in gameStatus
-     * */
-    public Player getNextPlayer(){
-    	
-    	// compute id next player
-        int indexNextPlayer = this.currentPlayer.getId() + 1;
-        
-        // se il giocatore corrente è l'ultimo, il prossimo è il primo
-        if(indexNextPlayer >= playersList.size()){
-            indexNextPlayer = 0;
-        }
 
-        // setto il turno al prossimo giocatore non in crash
-        for (int i = indexNextPlayer; i < playersList.size(); i++){
-        	Player iteratePlayer = playersList.get(i);
-        	
-            if(!iteratePlayer.isCrashed()) {
-               System.out.println("[GameStatus]: Il prossimo giocatore (settato) sarà : " + Integer.valueOf(i).toString());
-            	return iteratePlayer;
-            } else {
-                System.out.println(playersList.get(i).toString());
-            }
-        }
-        
-        return null;
-        
-//        throw new NextPlayerNotFoundException();
-    }
-    
+    private void iterateNextPlayer(int indexCurrentPlayer) {
+    	// 2 - > 3
+		int indexNextPlayer = indexCurrentPlayer + 1;
+
+		// se il giocatore corrente è l'ultimo, il prossimo è il primo
+		if(indexNextPlayer >= playersList.size()){
+			// 3 -> 0
+			indexNextPlayer = 0;
+		}
+
+		// is crashed = true
+		if(playersList.get(indexNextPlayer).isCrashed()){
+			// 3
+			iterateNextPlayer(indexNextPlayer);
+		} else {
+			Player nextPlayer = playersList.get(indexNextPlayer);
+			currentPlayer = nextPlayer;
+			System.out.println("[GameStatus]: Next player is " + nextPlayer);
+		}
+
+	}
+
     /**
      * @desc checking if some player has won
      * @return boolean, true if one player has won, otherwise false
@@ -128,12 +101,10 @@ public class GameStatus implements Serializable {
     	int playersActive = 0;
     	for(int i = 0; i < this.playersAvailability.size(); i++) {
     		PLAYER_STATE value = this.playersAvailability.get(i);
-    		System.out.println("[GameStatus]: player: " + i + " " + value);
     		if ( value == PLAYER_STATE.ACTIVE)
     			playersActive ++;
     	}
-    	
-    	
+
     	return playersActive;
     }
     
