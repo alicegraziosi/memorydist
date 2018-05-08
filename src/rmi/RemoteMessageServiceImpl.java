@@ -34,13 +34,33 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 	
 		gameController.setGameStatus(gameStatus); // setting the new updated gameStatus
 
-		if(gameStatus.getMove() != null){
+		if( gameStatus.isPenalized() != false) {
+			/** minimo ritardo prima di riniziare il turno*/
+			t = new javax.swing.Timer(2000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                	
+                	gameController.playGame();
+                    
+                    t.stop();
+                }
+            });
+
+            t.setRepeats(false);
+            
+        	t.start();
+			// due carte girate
+			// riparte play game
+			return 2;
+
+		}
+		else if(gameStatus.getMove() != null){
 			System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " contains a move");
 
 
 			gameController.updateBoardAfterMove(gameStatus.getMove());
 
-			if(gameStatus.getMove().getCard2() != null) {
+			 if(gameStatus.getMove().getCard2() != null) {
 				/** minimo ritardo prima di riniziare il turno*/
 				t = new javax.swing.Timer(2000, new ActionListener() {
                     @Override
@@ -59,7 +79,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 				// riparte play game
 				return 2;
 			}
-		} else {
+		} else { // gamestatu appena ricevuto senza mossa, cioè inizio nuovo turno
 			System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());
 		}
 

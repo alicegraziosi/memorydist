@@ -209,7 +209,7 @@ public class BoardView extends Container implements GameGUIListener{
 
                                         if (gameStatus.getShowingCards().size() == 20) {
                                             gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
-                                            showGameWinnerMessage();
+                                            showGameWinnerMessage("winner");
                                         }
                                     }
                                     System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
@@ -289,10 +289,10 @@ public class BoardView extends Container implements GameGUIListener{
     /**
      * Show dialog box to notify the winner
      * */
-    public void showGameWinnerMessage(){
+    public void showGameWinnerMessage(String msg){
         int input = JOptionPane.showConfirmDialog(null,
-                "You are the winner!\n\nDo you want to exit the game?",
-                "You are the winner!",
+                msg,
+                "Winner info \n\nDo you want to exit the game?",
                 JOptionPane.CLOSED_OPTION,
                 JOptionPane.INFORMATION_MESSAGE, null);
         if (input == JOptionPane.YES_OPTION) {
