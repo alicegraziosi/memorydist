@@ -24,7 +24,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		this.gameController = gameController;
 	}
 	
-	public int sendMessage(GameStatus gameStatus) throws RemoteException {
+	public int sendMessage(final GameStatus gameStatus) throws RemoteException {
 
 		// un processo invoca sendMessage su un altro processo
 		// il processo su cui è invocato sendMessage riceve il messaggio in questo punto
@@ -34,12 +34,13 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 	
 		gameController.setGameStatus(gameStatus); // setting the new updated gameStatus
 
-		if( gameStatus.isPenalized() != false) {
+		if( gameStatus.isPenalized()) {
 			/** minimo ritardo prima di riniziare il turno*/
 			t = new javax.swing.Timer(2000, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                 	
+                	gameStatus.setPenalized(false);
                 	gameController.playGame();
                     
                     t.stop();
@@ -49,8 +50,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
             t.setRepeats(false);
             
         	t.start();
-			// due carte girate
-			// riparte play game
+		
 			return 2;
 
 		}

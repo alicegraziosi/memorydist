@@ -103,7 +103,7 @@ public class GameController implements DataReceiverListener {
                         System.out.println("(I'm player " + playerId + ").");
                         System.out.println("I'm listening for messages...");
 
-                        //handleLazyCurrentPlayer(this.gameStatus);
+                        handleLazyCurrentPlayer(this.gameStatus);
                     
                     }
                 } else { // ultimo giocatore rimasto in gioco
@@ -227,11 +227,9 @@ public class GameController implements DataReceiverListener {
                     if( i ==  gameStatus.getCurrentPlayer().getId()) {
                     	System.out.println("crashato successivo");
                     	gameStatus.setNextPlayer();
-                    	System.out.println("[gameCtrl] rimuovo giocatore con id " + i );
-//	                	 players.remove(i); // rimuovo il giocatore crashato dalla lista (in questo modo più semplice la gestione del successivo)
-//	                     gameStatus.setPlayersList(players);
                     }
                     
+                	System.out.println("[gameCtrl] rimuovo giocatore con id " + i );
                     players.remove(i); // rimuovo il giocatore crashato dalla lista (in questo modo più semplice la gestione del successivo)
                     gameStatus.setPlayersList(players);
           
@@ -657,6 +655,7 @@ public class GameController implements DataReceiverListener {
                         	
                     		gameStatus.setPenalized(true);
                     		broadcastMessage(gameStatus);
+                    		gameStatus.setPenalized(false);
                     	}
                     }
                 }, 
