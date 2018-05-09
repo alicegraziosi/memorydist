@@ -60,7 +60,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 
 			System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " contains a move");
 			gameController.updateBoardAfterMove(gameStatus.getMove());
-			gameController.handleLazyCurrentPlayer();
+//			gameController.handleLazyCurrentPlayer();
 			
 			 if(gameStatus.getMove().getCard2() != null) { // seconda mossa eseguita
 				/** minimo ritardo prima di riniziare il turno*/
@@ -76,7 +76,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
                 t.setRepeats(false);
             	t.start();
 
-            	return 2;
+//            	return 2;
 			}
 		} else { // gamestatus appena ricevuto senza mossa, cioè inizio nuovo turno
 			System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());

@@ -7,6 +7,8 @@ import model.player.Player;
 import rmi.RemoteMessageServiceInt;
 import utils.CircularArrayList;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -40,6 +42,7 @@ public class GameController {
     private int turnNumber;
     private BoardView boardView;
     private Future f; 
+    private javax.swing.Timer t;
 
     /**
      * @descr GameController constructor
@@ -68,37 +71,30 @@ public class GameController {
         System.out.println("[GameCtrl] giocatori rimanenti: " + gameStatus.getPlayersList().toString());
         try {
             turnNumber++;
-            System.out.println("\n\n******** Turn number " + turnNumber + " ********");
-            
+            System.out.println("\n\n******** Turn number " + turnNumber + " * Turn of player " + gameStatus.getCurrentPlayer().getId() + " ********");
+            System.out.println("[I am player " + playerId +"]");
             if (gameStatus.getShowingCards().size() < 20){
 
             	if(gameStatus.getPlayersList().size() > 1) {
 
                     if (isMyTurn()) { 
-
-                    	System.out.println("[GameController]: It is my turn (Player " + playerId + ").");
-
-                        /**
-                         * setto prossimo giocatore e mittente
-                         * aggiorno view e sblocco carte
-                         * */
+                    	
+                    	System.out.println("******* My turn ********");
+                        /** setto prossimo giocatore e mittente, aggiorno view e sblocco carte */
                         gameStatus.setNextPlayer();
                         gameStatus.setIdSender(playerId);
                         boardView.resetAndUpdateInfoView(gameStatus, playerId);
                         boardView.unblockCards();
 
                     } else { // Se non è il suo turno
-                    	
+
+                    	System.out.println("******* Not my turn ********");
                     	int currentPlayerId = gameStatus.getCurrentPlayer().getId();
 
-                    	/**
-                         * aggiorno view e blocco carte
-                         * */
+                    	/** aggiorno view e blocco carte */
                         boardView.resetAndUpdateInfoView(gameStatus, currentPlayerId);
                         boardView.blockCards();
 
-                        System.out.println("NOT my turn, it is turn of player " + currentPlayerId);
-                        System.out.println("(I'm player " + playerId + ").");
                         System.out.println("I'm listening for messages...");
 
                         handleLazyCurrentPlayer();
@@ -266,29 +262,30 @@ public class GameController {
     public void handleLazyCurrentPlayer() {
         /** 1) */
     	System.out.println("***** START TIMER PENALIZZAZIONE *****");
-        new java.util.Timer().schedule( 
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                    	
-                    	/** 2)*/
-                    	if(gameStatus.getNextPlayer().getId() == playerId) {
-                    		System.out.println("***** PROCEDURA DI PENALIZZAZIONE *****");
-                            System.out.println("SONO IL SUCCESSIVO E IL CORRENTE NON HA GIOCATO");
-                        	
-                    		gameStatus.setNextPlayer();
-                    		System.out.println("nuovo corrente: " + gameStatus.getCurrentPlayer());
-                        	
-                    		gameStatus.setPenalized(true);
-                    		gameStatus.setMove(null);
-                    		broadcastMessage(gameStatus);
-                    		//gameStatus.setPenalized(false);
-                    		
-                    	}
-                    }
-                }, 
-                35000 
-        );
+    	t = new javax.swing.Timer(35000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            	/** 2)*/
+            	if(gameStatus.getNextPlayer().getId() == playerId) {
+            		System.out.println("***** PROCEDURA DI PENALIZZAZIONE *****");
+                    System.out.println("SONO IL SUCCESSIVO E IL CORRENTE NON HA GIOCATO");
+                	
+            		gameStatus.setNextPlayer();
+            		System.out.println("nuovo corrente: " + gameStatus.getCurrentPlayer());
+                	
+            		gameStatus.setPenalized(true);
+            		gameStatus.setMove(null);
+            		broadcastMessage(gameStatus);
+            		//gameStatus.setPenalized(false);
+            		
+            	}
+                t.stop();
+            }
+        });
+
+        t.setRepeats(false);
+        t.start();
     }
     
     /**
