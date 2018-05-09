@@ -154,28 +154,17 @@ public class GameController {
         
         /**a) scorro tutti i giocatori rimasti*/
         for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
-        	// non lo rimanda a se stesso e (i nodi in crash sono esclusi dai players)
-            if( gameStatus.getPlayersList().get(i).getId() != playerId ) {
-                try {
-
+        
+        	if(isNotMe(i)) {
+                
+            	try {
+                	
                 	String remoteHost = gameStatus.getPlayersList().get(i).getHost().toString();
                     int remotePort = gameStatus.getPlayersList().get(i).getPort();
                     int playerId = gameStatus.getPlayersList().get(i).getId();
-
-                    //***************************************************************
-                    // mi sa che nel client non serve ma non ne sono sicura
-                    // in lab funziona con la riga seguente commentata (NON MODIFICARE)
-                    // System.setProperty("java.rmi.server.hostname", remoteHost);
-                    //***************************************************************
-
-                    Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
-                    String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
-                    RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
-
-                    System.out.println("[GameCtrl]: Sending gameStatus to player " + playerId);
-                    gamestatus.setId(gamestatus.getId());
-                    int response = stub.sendMessage(gamestatus);
-
+                    
+                    getRegistryAndSendMessage(remoteHost, remotePort, playerId);
+                	
                 } catch (RemoteException  | NotBoundException e2) {
                 	/**b)*/
                     //e.printStackTrace();
@@ -202,40 +191,23 @@ public class GameController {
                     /**d) reinvio gamestatus a tutti i giocatori */
                     for (int j = 0; j < gameStatus.getPlayersList().size(); j++) {
                         // non lo rimanda a se stesso e ai nodi in crash
-                        if(gameStatus.getPlayersList().get(j).getId() != playerId ) {
+                        if(isNotMe(j)) {
                         	
+                        	try {
+                        		
                         	String remoteHost = gameStatus.getPlayersList().get(j).getHost().toString();
                             int remotePort = gameStatus.getPlayersList().get(j).getPort();
                             int playerId = gameStatus.getPlayersList().get(j).getId();
                             
-                            //***************************************************************
-                            // mi sa che nel client non serve ma non ne sono sicura
-                            // in lab funziona con la riga seguente commentata (NON MODIFICARE)
-                            // System.setProperty("java.rmi.server.hostname", remoteHost);
-                            //***************************************************************
+                            getRegistryAndSendMessage(remoteHost, remotePort, playerId);
                             
-                            Registry registry;
-							try {
-								registry = LocateRegistry.getRegistry(remoteHost, remotePort);
-								String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
-	                            RemoteMessageServiceInt stub;
-								stub = (RemoteMessageServiceInt) registry.lookup(location);
-								System.out.println("[GameCtrl]: Sending gameStatus to player " + playerId);
-	                            gamestatus.setId(gamestatus.getId());
-	                            int response;
-	                            response = stub.sendMessage(gamestatus);
-	                            
-//	                            if (response == 1)
-//	                                System.out.println("[GameCtrl]: Response from player " + i + ": ALIVE");
-	                            
 							} catch (RemoteException | NotBoundException e3) {
 								// TODO Auto-generated catch block
-								System.out.println("EXCEPTION HERE");
+								System.out.println("MULTIPLE CRASHES EXCEPTION HERE");
 								e2.printStackTrace();
 							}
                         }
                      }
-                    // todo notificare l' informazione a tutti
                 }
             }
         }
@@ -287,6 +259,28 @@ public class GameController {
         t.setRepeats(false);
         t.start();
     }
+    
+    public void	getRegistryAndSendMessage(String remoteHost, int remotePort, int playerId) throws RemoteException, NotBoundException {
+    	
+    	//***************************************************************
+        // mi sa che nel client non serve ma non ne sono sicura
+        // in lab funziona con la riga seguente commentata (NON MODIFICARE)
+        // System.setProperty("java.rmi.server.hostname", remoteHost);
+        //***************************************************************
+
+        Registry registry = LocateRegistry.getRegistry(remoteHost, remotePort);
+        String location = "rmi://" + remoteHost + ":" + remotePort + "/messageService";
+        RemoteMessageServiceInt stub = (RemoteMessageServiceInt) registry.lookup(location);
+
+        System.out.println("[GameCtrl]: Sending gameStatus to player " + playerId);
+        gameStatus.setId(gameStatus.getId());
+        int response = stub.sendMessage(gameStatus);
+    }
+   
+    public boolean isNotMe(int index) {
+    	return gameStatus.getPlayersList().get(index).getId() != playerId;
+    }
+    
     
     /**
      * @descr checking if it is my turn
