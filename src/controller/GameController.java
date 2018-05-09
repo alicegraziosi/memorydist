@@ -237,22 +237,30 @@ public class GameController {
     	t = new javax.swing.Timer(35000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+            	int nextPlayerId = -1;
+            	
+            	if(gameStatus.getMove() == null) { 
+            		//significa che non è ancora stato inviato gameStatus che dice chi è il prossimo
+            		nextPlayerId = gameStatus.getNextPlayer().getId();
+            	}else {
+            		//significa che è già stato inviato gameStatus che dice chi è il prossimo
+            		nextPlayerId = gameStatus.getCurrentPlayer().getId();
+            	}
+            	
             	/** 2)*/
-            	if(gameStatus.getNextPlayer().getId() == playerId) {
-            		System.out.println("***** PROCEDURA DI PENALIZZAZIONE *****");
+            	if(nextPlayerId == playerId) {
+        			System.out.println("***** PROCEDURA DI PENALIZZAZIONE *****");
                     System.out.println("SONO IL SUCCESSIVO E IL CORRENTE NON HA GIOCATO");
                 	
-            		gameStatus.setNextPlayer();
-            		System.out.println("nuovo corrente: " + gameStatus.getCurrentPlayer());
+                    if(gameStatus.getMove() == null)
+                    	gameStatus.setNextPlayer();
+                	System.out.println("nuovo corrente: " + gameStatus.getCurrentPlayer());
                 	
             		gameStatus.setPenalized(true);
             		gameStatus.setMove(null);
             		broadcastMessage(gameStatus);
-            		//gameStatus.setPenalized(false);
-            		
-            	}
-                t.stop();
+        		}
+            	t.stop();
             }
         });
 
