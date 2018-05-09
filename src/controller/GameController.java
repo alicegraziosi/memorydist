@@ -248,7 +248,7 @@ public class GameController {
             	}
             	
             	/** 2)*/
-            	if(nextPlayerId == playerId) {
+            	if(nextPlayerId == playerId && gameStatus.isPenalized() == false) {
         			System.out.println("***** PROCEDURA DI PENALIZZAZIONE *****");
                     System.out.println("SONO IL SUCCESSIVO E IL CORRENTE NON HA GIOCATO");
                 	
@@ -258,7 +258,8 @@ public class GameController {
                 	
             		gameStatus.setPenalized(true);
             		gameStatus.setMove(null);
-            		broadcastMessage(gameStatus);
+            		gameStatus.setIdSender(playerId);
+                    broadcastMessage(gameStatus);
         		}
             	t.stop();
             }
