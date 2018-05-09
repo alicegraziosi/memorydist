@@ -26,18 +26,6 @@ public class GameStatus implements Serializable {
     private HashMap<Integer,PLAYER_STATE> playersAvailability = new HashMap<Integer,PLAYER_STATE>();
     private boolean isPenalized = false;
     
-    public boolean isPenalized() {
-		return isPenalized;
-	}
-
-
-
-	public void setPenalized(boolean isPenalized) {
-		this.isPenalized = isPenalized;
-	}
-
-
-
 	/**
      * Starting game constructor
      * */
@@ -185,6 +173,7 @@ public class GameStatus implements Serializable {
 				"', notShowingCards=" + notShowingCards + newLine +	
 				", move=" + move + newLine +
 				", currentPlayer=" + currentPlayer + newLine +
+				", penalized =" + isPenalized + newLine +
 				" }";
 	}
 
@@ -267,5 +256,14 @@ public class GameStatus implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+    public boolean isPenalized() {
+		return isPenalized;
+	}
+
+	public void setPenalized(boolean isPenalized) {
+		this.isPenalized = isPenalized;
+	}
+
 
 }
