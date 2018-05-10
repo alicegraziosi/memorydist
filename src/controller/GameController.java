@@ -72,7 +72,7 @@ public class GameController {
             turnNumber++;
             System.out.println("\n\n******** Turn number " + turnNumber + " * Turn of player " + gameStatus.getCurrentPlayer().getId() + " ********");
             System.out.println("[I am player " + playerId +"]");
-            if (gameStatus.getShowingCards().size() < 20){
+            if (gameStatus.getShowingCards().size() < 4){
 
             	if(gameStatus.getPlayersList().size() > 1) {
 
@@ -111,10 +111,12 @@ public class GameController {
                 
             	if (gameStatus.getWinner().getId() == playerId) {
                     // todo this is the winner
+            		boardView.blockCards();
                     System.out.println("You are the winner!");
                     boardView.showGameWinnerMessage("You are the winner!");
                 } else {
                     // todo all other players need to know that the game ended
+                	boardView.blockCards();
                     System.out.println("The winner is player " + gameStatus.getWinner().getId());
                     boardView.showGameWinnerMessage("The winner is player " + gameStatus.getWinner().getId());
                 }

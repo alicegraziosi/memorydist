@@ -199,7 +199,9 @@ public class BoardView extends Container implements GameGUIListener{
                                         JOptionPane.showMessageDialog(null, "Matched!");
 
                                         //update score of current player
-                                        int playerIndex = gameStatus.getPlayersList().indexOf(id);
+                                        System.out.println("[BoardView] aggiorno score di " + id);
+                                        Player playerToUpd = gameStatus.findPlayerById(id);
+                                        int playerIndex = gameStatus.getPlayersList().indexOf(playerToUpd);
                                         int score = gameStatus.getPlayersList().get(playerIndex).getScore() + 100;
                                         gameStatus.getPlayersList().get(playerIndex).setScore(score);
                                         infoView.update(gameStatus, id);
@@ -210,7 +212,7 @@ public class BoardView extends Container implements GameGUIListener{
 
                                         if (gameStatus.getShowingCards().size() == 20) {
                                             gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
-                                            showGameWinnerMessage("winner");
+                                            showGameWinnerMessage("Game Ended, wait for the winner");
                                         }
                                     }
                                     System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());

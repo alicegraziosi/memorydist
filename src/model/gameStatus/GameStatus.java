@@ -25,7 +25,7 @@ public class GameStatus implements Serializable {
     Player currentPlayer;
     private HashMap<Integer,PLAYER_STATE> playersAvailability = new HashMap<Integer,PLAYER_STATE>();
     private boolean isPenalized = false;
-    
+   
 	/**
      * Starting game constructor
      * */
@@ -50,6 +50,15 @@ public class GameStatus implements Serializable {
 
 		this.move = move;
 	}
+    
+    public Player findPlayerById(int id) {
+    	for (Player p : playersList){
+    		if (p.getId() == id ) {
+    			return p;
+    		}
+		}
+    	return null;
+    }
    
     
     public Player getWinner() {
@@ -264,6 +273,5 @@ public class GameStatus implements Serializable {
 	public void setPenalized(boolean isPenalized) {
 		this.isPenalized = isPenalized;
 	}
-
 
 }

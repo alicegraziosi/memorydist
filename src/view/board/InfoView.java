@@ -2,6 +2,7 @@ package view.board;
 
 import model.gameStatus.GameStatus;
 import model.player.PLAYER_STATE;
+import model.player.Player;
 import utils.CircularArrayList;
 
 import javax.swing.*;
@@ -63,12 +64,19 @@ public class InfoView extends JPanel {
             JLabel labelTurnOf = new JLabel("It's your turn! " + playerId);
             labelTurnOf.setForeground(Color.red);
             labels.add(labelTurnOf);
-            int playerIndex = localGameStatus.getPlayersList().indexOf(playerId);
-            JLabel labelScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(playerIndex).getScore());
-            labelScore.setForeground(Color.red);
-            labels.add(labelScore);
+            // CORREGGERE
+            Player playerToUpd = localGameStatus.findPlayerById(playerId);
+            int playerIndex = -1;
+            if(playerToUpd != null) {
+            	playerIndex = localGameStatus.getPlayersList().indexOf(playerToUpd);
+	            System.out.println("playerId: " + playerId + " player index: " + playerIndex);
+	            JLabel labelScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(playerIndex).getScore());
+	            labelScore.setForeground(Color.red);
+	            labels.add(labelScore);
+	            }
         } else {
-        	int currentPlayerIndex = localGameStatus.getPlayersList().indexOf(currentPlayerId);
+        	Player playerToUpd = localGameStatus.findPlayerById(playerId);
+        	int currentPlayerIndex = localGameStatus.getPlayersList().indexOf(playerToUpd);
             JLabel labelTurnOf = new JLabel("It's turn of: " + currentPlayerId + " " + 
         	localGameStatus.getPlayersList().get(currentPlayerIndex).getNickName());
             labelTurnOf.setForeground(Color.red);
