@@ -65,8 +65,7 @@ public class GameController {
     public void playGame() {
 
         gameStatus.setMove(null);
-        if( f != null)
-            this.f.cancel(true);
+        gameStatus.setPenalized(false);
 
         System.out.println("[GameCtrl] giocatori rimanenti: " + gameStatus.getPlayersList().toString());
         try {

@@ -2,6 +2,7 @@ package view.board;
 
 import model.gameStatus.GameStatus;
 import model.player.PLAYER_STATE;
+import utils.CircularArrayList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,10 +12,10 @@ public class InfoView extends JPanel {
 
     private GameStatus localGameStatus;
     private int playerId;
-    private ArrayList<JLabel> labels;
+    private CircularArrayList<JLabel> labels;
 
     public InfoView(GameStatus gameStatus, int playerId) {
-        this.labels = new ArrayList<>();
+        this.labels = new CircularArrayList<>();
         this.localGameStatus = gameStatus;
         this.playerId = playerId;
 
@@ -30,13 +31,15 @@ public class InfoView extends JPanel {
 
         setLocalGameStatus(gameStatus);
         this.removeAll();
-        labels = new ArrayList<>();
+        labels = new CircularArrayList<>();
 
         // players info
         for(int i=0; i<localGameStatus.getPlayersList().size(); i++){
             if(localGameStatus.getPlayerState(i).equals(PLAYER_STATE.CRASH)) {
-                JLabel labelPlayerId = new JLabel("Player id: " + localGameStatus.getPlayersList().get(i).getId()
-                        + "nickname " + localGameStatus.getPlayersList().get(i).getNickName() + " left the game :(");
+                JLabel labelPlayerId = new JLabel("Player id: " + 
+                		localGameStatus.getPlayersList().get(i).getId() +
+                        "nickname " + localGameStatus.getPlayersList().get(i).getNickName() + 
+                        " left the game :(");
                 labels.add(labelPlayerId);
             } else {
                 JLabel labelPlayerId = new JLabel("Player id: " + localGameStatus.getPlayersList().get(i).getId());
@@ -52,7 +55,7 @@ public class InfoView extends JPanel {
             this.add(labels.get(i));
         }
 
-        labels = new ArrayList<>();
+        labels = new CircularArrayList<>();
 
         this.add(new JSeparator(SwingConstants.HORIZONTAL));
 
@@ -60,11 +63,14 @@ public class InfoView extends JPanel {
             JLabel labelTurnOf = new JLabel("It's your turn! " + playerId);
             labelTurnOf.setForeground(Color.red);
             labels.add(labelTurnOf);
-            JLabel labelScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(playerId).getScore());
+            int playerIndex = localGameStatus.getPlayersList().indexOf(playerId);
+            JLabel labelScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(playerIndex).getScore());
             labelScore.setForeground(Color.red);
             labels.add(labelScore);
         } else {
-            JLabel labelTurnOf = new JLabel("It's turn of: " + currentPlayerId + " " + localGameStatus.getPlayersList().get(currentPlayerId).getNickName());
+        	int currentPlayerIndex = localGameStatus.getPlayersList().indexOf(currentPlayerId);
+            JLabel labelTurnOf = new JLabel("It's turn of: " + currentPlayerId + " " + 
+        	localGameStatus.getPlayersList().get(currentPlayerIndex).getNickName());
             labelTurnOf.setForeground(Color.red);
             labels.add(labelTurnOf);
         }

@@ -199,8 +199,9 @@ public class BoardView extends Container implements GameGUIListener{
                                         JOptionPane.showMessageDialog(null, "Matched!");
 
                                         //update score of current player
-                                        int score = gameStatus.getPlayersList().get(id).getScore() + 100;
-                                        gameStatus.getPlayersList().get(id).setScore(score);
+                                        int playerIndex = gameStatus.getPlayersList().indexOf(id);
+                                        int score = gameStatus.getPlayersList().get(playerIndex).getScore() + 100;
+                                        gameStatus.getPlayersList().get(playerIndex).setScore(score);
                                         infoView.update(gameStatus, id);
 
                                         // add matched card to showingCard array
