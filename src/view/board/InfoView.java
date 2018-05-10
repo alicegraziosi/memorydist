@@ -61,26 +61,29 @@ public class InfoView extends JPanel {
         this.add(new JSeparator(SwingConstants.HORIZONTAL));
 
         if(playerId == currentPlayerId) {
-            JLabel labelTurnOf = new JLabel("It's your turn! " + playerId);
+            JLabel labelTurnOf = new JLabel("It's your turn!");
             labelTurnOf.setForeground(Color.red);
             labels.add(labelTurnOf);
-            // CORREGGERE
             Player playerToUpd = localGameStatus.findPlayerById(playerId);
             int playerIndex = -1;
             if(playerToUpd != null) {
             	playerIndex = localGameStatus.getPlayersList().indexOf(playerToUpd);
 	            System.out.println("playerId: " + playerId + " player index: " + playerIndex);
-	            JLabel labelScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(playerIndex).getScore());
+	            JLabel labelScore = new JLabel("Your score: " + localGameStatus.getPlayersList().get(playerIndex).getScore());
 	            labelScore.setForeground(Color.red);
 	            labels.add(labelScore);
 	            }
         } else {
         	Player playerToUpd = localGameStatus.findPlayerById(playerId);
-        	int currentPlayerIndex = localGameStatus.getPlayersList().indexOf(playerToUpd);
-            JLabel labelTurnOf = new JLabel("It's turn of: " + currentPlayerId + " " + 
-        	localGameStatus.getPlayersList().get(currentPlayerIndex).getNickName());
+        	int myPlayerIndex = localGameStatus.getPlayersList().indexOf(playerToUpd);
+            JLabel labelTurnOf = new JLabel("It's turn of: " + currentPlayerId);
+//            		+ " " + 
+//        	localGameStatus.getPlayersList().get(currentPlayerIndex).getNickName());
             labelTurnOf.setForeground(Color.red);
             labels.add(labelTurnOf);
+            JLabel labelScore = new JLabel("Your score: " + localGameStatus.getPlayersList().get(myPlayerIndex).getScore());
+            labelScore.setForeground(Color.red);
+            labels.add(labelScore);
         }
 
         for(int i = 0; i< labels.size(); i++){
