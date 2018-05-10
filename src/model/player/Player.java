@@ -114,7 +114,4 @@ public class Player extends Node implements Serializable{
 				" }";
 	}
 
-	public void updateScore(){
-		this.setScore(this.getScore()+2);
-	}
 }

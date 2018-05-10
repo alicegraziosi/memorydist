@@ -12,7 +12,7 @@ public class Card implements Serializable{
     
     /**
      * @desc card constructor
-     * @param int $index, int $value
+     * @paramint int $index, int $value
      * @return void
    */
 	public Card(int index, int value){

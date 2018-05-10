@@ -13,26 +13,10 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import client.PlayerClient;
-import listener.DataReceiverListener;
 import view.board.BoardView;
 
 /**
- * Controller of the game, contains the following attributes
- * 1) current player id
- * 2) players list
- * 3) game status (global)
- * 4) player Client
- * 5) player Server
- * 6) timer
- * 7) timer task
+ * Controller of the game
  * */
 public class GameController {
 
@@ -41,8 +25,7 @@ public class GameController {
     public GameStatus gameStatus; // global status of the game, with info of current player
     private int turnNumber;
     private BoardView boardView;
-    private Future f; 
-    private javax.swing.Timer t;
+    private javax.swing.Timer timer;
 
     /**
      * @descr GameController constructor
@@ -64,82 +47,79 @@ public class GameController {
      * */
     public void playGame() {
 
+        if(timer!=null)
+            timer.stop();
+
+        gameStatus.setPenalized(false);
         gameStatus.setMove(null);
-        if( f != null)
-            this.f.cancel(true);
 
-        System.out.println("[GameCtrl] giocatori rimanenti: " + gameStatus.getPlayersList().toString());
-        try {
-            turnNumber++;
-            System.out.println("\n\n******** Turn number " + turnNumber + " * Turn of player " + gameStatus.getCurrentPlayer().getId() + " ********");
-            System.out.println("[I am player " + playerId +"]");
-            if (gameStatus.getShowingCards().size() < 20){
+        System.out.println("[GameCtrl.playGame] giocatori rimanenti: " + gameStatus.getPlayersList().toString());
 
-            	if(gameStatus.getPlayersList().size() > 1) {
+        turnNumber++;
+        System.out.println("\n\n[GameCtrl.playGame] ******** Turn " + turnNumber + " * Turn of " + gameStatus.getCurrentPlayer().getId() + " ********");
+        System.out.println("[GameCtrl.playGame] [I am player " + playerId +"]");
 
-                    if (isMyTurn()) { 
-                    	
-                    	System.out.println("******* My turn ********");
-                        /** setto prossimo giocatore e mittente, aggiorno view e sblocco carte */
-                        gameStatus.setNextPlayer();
-                        gameStatus.setIdSender(playerId);
-                        boardView.resetAndUpdateInfoView(gameStatus, playerId);
-                        boardView.unblockCards();
+        if (gameStatus.getShowingCards().size() < 20){
 
-                    } else { // Se non è il suo turno
+            if(gameStatus.getPlayersList().size() > 1) {
 
-                    	System.out.println("******* Not my turn ********");
-                    	int currentPlayerId = gameStatus.getCurrentPlayer().getId();
+                // current player
+                if (isMyTurn()) {
 
-                    	/** aggiorno view e blocco carte */
-                        boardView.resetAndUpdateInfoView(gameStatus, currentPlayerId);
-                        boardView.blockCards();
-
-                        System.out.println("I'm listening for messages...");
-
-                        handleLazyCurrentPlayer();
-                    
-                    }
-                } else { // ultimo giocatore rimasto in gioco
-
-                	System.out.println("Sei l'ultimo giocatore rimasto in gioco!");
-                    
-                	boardView.showMessage("Sei l'ultimo giocatore rimasto in gioco!");
+                    System.out.println("[GameCtrl.playGame] ******* My turn ********");
+                    /** setto prossimo giocatore e mittente, aggiorno view e sblocco carte */
+                    gameStatus.setNextPlayer();
+                    gameStatus.setIdSender(playerId);
                     boardView.resetAndUpdateInfoView(gameStatus, playerId);
                     boardView.unblockCards();
+
+                } else { // all other player
+
+                    System.out.println("[GameCtrl.playGame] ******* Not my turn ********");
+                    int currentPlayerId = gameStatus.getCurrentPlayer().getId();
+
+                    /** aggiorno view e blocco carte */
+                    boardView.resetAndUpdateInfoView(gameStatus, currentPlayerId);
+                    boardView.blockCards();
+
+                    System.out.println("[GameCtrl.playGame] I'm listening for messages...");
+
+                    handleLazyCurrentPlayer();
+
                 }
-            } else { // tutte le carte matchate
-                
-            	if (gameStatus.getWinner().getId() == playerId) {
-                    // todo this is the winner
-                    System.out.println("You are the winner!");
-                    boardView.showGameWinnerMessage("You are the winner!");
-                } else {
-                    // todo all other players need to know that the game ended
-                    System.out.println("The winner is player " + gameStatus.getWinner().getId());
-                    boardView.showGameWinnerMessage("The winner is player " + gameStatus.getWinner().getId());
-                }
+            } else { // ultimo giocatore rimasto in gioco
+
+                System.out.println("[GameCtrl.playGame] You are the last player in the game.");
+
+                boardView.showMessage("You are the last player in the game!");
+                boardView.resetAndUpdateInfoView(gameStatus, playerId);
+                boardView.unblockCards();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else { // tutte le carte matchate, c'è un vincitore, quello con lo score più alto
+
+            if (gameStatus.getWinner().getId() == playerId) {
+                // this is the winner
+                System.out.println("[GameCtrl.playGame] You are the winner!" +
+                        "\n Score : " + gameStatus.getWinner().getScore());
+                boardView.showGameWinnerMessage("You are the winner! " +
+                        "\n Score : " + gameStatus.getWinner().getScore());
+            } else {
+                // all other players need to know that the game ended
+                System.out.println("[GameCtrl.playGame] The winner is player " + gameStatus.getWinner().getId() +
+                        "\n Score : " + gameStatus.getWinner().getScore());
+                boardView.showGameWinnerMessage("The winner is player " + gameStatus.getWinner().getId() +
+                        "\n Score : " + gameStatus.getWinner().getScore());
+            }
         }
-    }
-    
-    /**
-     * function which manages the timers of the round
-     * @param int $delay, int $period
-     * */
-    public void startTimeout(int delay, int period){
-        playGame();
     }
 
     /**
-     * function which broadcasts the global game status to the other players
+     * function which broadcasts the global game status from the current player to the other players
      * @param GameStatus $message
      * @descr
      * GESTIONE CRASH NODO GENERICO
-     * a) detentore token invia oggeto GameStatus
-     * b) RMI riconosce impossibilità di raggiungere un nodo
+     * a) detentore token (= current player) invia oggetto GameStatus
+     * b) tramite RMI riconosce impossibilità di raggiungere un nodo
      * c) detentore del token aggiorna l'oggetto
      * d) detentore del token rinvia l'oggetto a tutti i nodi attivi
      * */
@@ -152,7 +132,7 @@ public class GameController {
             System.setSecurityManager(new SecurityManager());
         }
         
-        /**a) scorro tutti i giocatori rimasti*/
+        /**a) scorro tutti i giocatori rimasti */
         for (int i = 0; i < gameStatus.getPlayersList().size(); i++) {
         
         	if(isNotMe(i)) {
@@ -165,10 +145,11 @@ public class GameController {
                     
                     getRegistryAndSendMessage(remoteHost, remotePort, playerId);
                 	
-                } catch (RemoteException  | NotBoundException e2) {
+                } catch (RemoteException  | NotBoundException e) {
                 	/**b)*/
+                	// Se c'è eccezione nella chiamata RMI allora la macchina è un crash
                     //e.printStackTrace();
-                    System.out.println("[GameCtrl]: Player " + i + " crashed.");
+                    System.out.println("[GameCtrl.broadcastMessage]: Player " + i + " crashed.");
                     
                     /**c) setto nel gameStatus giocatore crashato 
                      * 	1) se occorre devo settare il nuovo giocatore successivo*/
@@ -177,16 +158,16 @@ public class GameController {
                     
                     /**1) Crashato successivo */
                     if( i ==  gameStatus.getCurrentPlayer().getId()) {
-                    	System.out.println("crashato successivo");
+                        System.out.println("[GameCtrl.broadcastMessage]: Next player " + i + " crashed.");
                     	gameStatus.setNextPlayer();
                     }
                     
-                	System.out.println("[gameCtrl] rimuovo giocatore con id " + i );
+                	System.out.println("[GameCtrl.broadcastMessage]: rimuovo giocatore con id " + i );
                     players.remove(i); // rimuovo il giocatore crashato dalla lista (in questo modo più semplice la gestione del successivo)
                     gameStatus.setPlayersList(players);
           
-                    System.out.println("[GameCtrl] giocatore successivo: " + gameStatus.getCurrentPlayer().getId());
-                    System.out.println("[GameCtrl]: Nuova lista giocatori " + gameStatus.getPlayersList());
+                    System.out.println("[GameCtrl.broadcastMessage]: giocatore successivo: " + gameStatus.getCurrentPlayer().getId());
+                    System.out.println("[GameCtrl.broadcastMessage]: Nuova lista giocatori " + gameStatus.getPlayersList());
 
                     /**d) reinvio gamestatus a tutti i giocatori */
                     for (int j = 0; j < gameStatus.getPlayersList().size(); j++) {
@@ -203,22 +184,23 @@ public class GameController {
                             
 							} catch (RemoteException | NotBoundException e3) {
 								// TODO Auto-generated catch block
-								System.out.println("MULTIPLE CRASHES EXCEPTION HERE");
-								e2.printStackTrace();
+								System.out.println("[GameCtrl.broadcastMessage]: MULTIPLE CRASHES EXCEPTION HERE");
+								e.printStackTrace();
 							}
                         }
                      }
                 }
             }
         }
-        
-        System.out.println("nuovo gamestatus: " + gameStatus.toString());
+
         if( gameStatus.isPenalized()) {
         	gameStatus.setPenalized(false);
         	gameStatus.setMove(null);
         	playGame();
         }
         else if( gameStatus.getMove().getCard2() != null ){
+            gameStatus.setPenalized(false);
+            gameStatus.setMove(null);
             playGame();
         }
         
@@ -233,40 +215,50 @@ public class GameController {
      * **/
     public void handleLazyCurrentPlayer() {
         /** 1) */
-    	System.out.println("***** START TIMER PENALIZZAZIONE *****");
-    	t = new javax.swing.Timer(35000, new ActionListener() {
+    	System.out.println("[GameCtrl.handleLazyCurrentPlayer]: ***** START TIMER PENALIZZAZIONE *****");
+    	timer = new javax.swing.Timer(20*1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	int nextPlayerId = -1;
             	
             	if(gameStatus.getMove() == null) { 
             		//significa che non è ancora stato inviato gameStatus che dice chi è il prossimo
-            		nextPlayerId = gameStatus.getNextPlayer().getId();
+                    System.out.println("***** [GameCtrl.handleLazyCurrentPlayer]: non è ancora stato inviato gameStatus che dice chi è il prossimo");
+
+                    nextPlayerId = gameStatus.getNextPlayer().getId();
+                    System.out.println("***** [GameCtrl.handleLazyCurrentPlayer]: nextPlayerId: " + nextPlayerId);
+
             	}else {
             		//significa che è già stato inviato gameStatus che dice chi è il prossimo
-            		nextPlayerId = gameStatus.getCurrentPlayer().getId();
-            	}
+                    System.out.println("***** [GameCtrl.handleLazyCurrentPlayer]: significa che è già stato inviato gameStatus che dice chi è il prossimo");
+
+                    nextPlayerId = gameStatus.getCurrentPlayer().getId();
+                    System.out.println("***** [GameCtrl.handleLazyCurrentPlayer]: nextPlayerId: " + nextPlayerId);
+
+                }
             	
             	/** 2)*/
             	if(nextPlayerId == playerId && gameStatus.isPenalized() == false) {
-        			System.out.println("***** PROCEDURA DI PENALIZZAZIONE *****");
-                    System.out.println("SONO IL SUCCESSIVO E IL CORRENTE NON HA GIOCATO");
+        			System.out.println("***** [GameCtrl.handleLazyCurrentPlayer]: PROCEDURA DI PENALIZZAZIONE *****");
+                    System.out.println("[GameCtrl.handleLazyCurrentPlayer]: SONO IL SUCCESSIVO E IL CORRENTE NON HA GIOCATO");
                 	
                     if(gameStatus.getMove() == null)
                     	gameStatus.setNextPlayer();
-                	System.out.println("nuovo corrente: " + gameStatus.getCurrentPlayer());
+                	System.out.println("[GameCtrl.handleLazyCurrentPlayer]: nuovo corrente: " + gameStatus.getCurrentPlayer());
                 	
             		gameStatus.setPenalized(true);
             		gameStatus.setMove(null);
             		gameStatus.setIdSender(playerId);
                     broadcastMessage(gameStatus);
-        		}
-            	t.stop();
+        		} else {
+                    System.out.println("[GameCtrl.handleLazyCurrentPlayer]: else (nextPlayerId == playerId && gameStatus.isPenalized() == false");
+                }
+            	timer.stop();
             }
         });
 
-        t.setRepeats(false);
-        t.start();
+        timer.setRepeats(false);
+        timer.start();
     }
     
     public void	getRegistryAndSendMessage(String remoteHost, int remotePort, int playerId) throws RemoteException, NotBoundException {
@@ -322,29 +314,5 @@ public class GameController {
      * */
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
-    }
-
-    /**
-     * @desc getting id of current player
-     * @return int $currentId
-     * */
-    public int getPlayerId() {
-        return playerId;
-    }
-
-    /**
-     * @desc setting id of current player
-     * @param int $currentId
-     * */
-    public void setCurrentId(int currentId) {
-        this.playerId = currentId;
-    }
-
-    public int getTurnNumber() {
-        return turnNumber;
-    }
-
-    public void setTurnNumber(int turnNumber) {
-        this.turnNumber = turnNumber;
     }
 }

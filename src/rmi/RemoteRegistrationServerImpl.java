@@ -4,11 +4,9 @@ import model.card.Card;
 import model.gameStatus.GameStatus;
 import model.player.Player;
 import utils.CircularArrayList;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * @desc implementation class of remote registration server

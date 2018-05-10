@@ -1,30 +1,17 @@
 package server;
 
 import controller.GameController;
-import model.gameStatus.GameStatus;
-import listener.DataReceiverListener;
-
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.ExportException;
-import java.util.concurrent.BlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import rmi.RemoteGameInterface;
 import rmi.RemoteMessageServiceImpl;
 import rmi.RemoteMessageServiceInt;
-
 
 /**
  * the server of the player, responsible of creating RMI registry
  * */
-public class PlayerServer implements RemoteGameInterface{
-	
-	private final static Logger logger = Logger.getLogger(PlayerServer.class.getName());
-	private DataReceiverListener mListener;
+public class PlayerServer{
 
     public static void setupRMIregistryAndServer(String host, int port,
                                                  GameController gameController){
@@ -64,21 +51,4 @@ public class PlayerServer implements RemoteGameInterface{
         }
     }
 
-	@Override
-	public void setupGame(GameStatus gameStatus) throws RemoteException, NotBoundException {
-		// TODO Auto-generated method stub
-		logger.log(Level.INFO, "Received game: "+ gameStatus.toString());
-		mListener.setupRemoteClient(gameStatus);
-	}
-
-	@Override
-	public void sendGame(GameStatus gameStatus) throws RemoteException, NotBoundException {
-		// TODO Auto-generated method stub
-		mListener.setGame(gameStatus);
-	}
-
-	@Override
-	public void helloThere() throws RemoteException, NotBoundException{
-		// TODO Auto-generated method stub
-	}
 }

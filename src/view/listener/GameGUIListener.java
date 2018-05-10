@@ -4,5 +4,5 @@ import controller.GameController;
 
 public interface GameGUIListener {
 
-	public void setGameController(GameController gameController);
+	void setGameController(GameController gameController);
 }

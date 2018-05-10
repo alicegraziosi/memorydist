@@ -31,7 +31,7 @@ public class RegistrationServiceServer {
         BufferedReader br = null;
         FileReader fr = null;
         try {
-            fr = new FileReader("util.txt");
+            fr = new FileReader("serverHost.txt");
             br = new BufferedReader(fr);
             String sCurrentLine;
             while ((sCurrentLine = br.readLine()) != null) {

@@ -34,18 +34,12 @@ public class InfoView extends JPanel {
 
         // players info
         for(int i=0; i<localGameStatus.getPlayersList().size(); i++){
-            if(localGameStatus.getPlayerState(i).equals(PLAYER_STATE.CRASH)) {
-                JLabel labelPlayerId = new JLabel("Player id: " + localGameStatus.getPlayersList().get(i).getId()
-                        + "nickname " + localGameStatus.getPlayersList().get(i).getNickName() + " left the game :(");
-                labels.add(labelPlayerId);
-            } else {
-                JLabel labelPlayerId = new JLabel("Player id: " + localGameStatus.getPlayersList().get(i).getId());
-                labels.add(labelPlayerId);
-                JLabel labelPlayerNickname = new JLabel("Nickname: " + localGameStatus.getPlayersList().get(i).getNickName());
-                labels.add(labelPlayerNickname);
-                JLabel labelPlayerScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(i).getScore());
-                labels.add(labelPlayerScore);
-            }
+            JLabel labelPlayerId = new JLabel("Player: " + localGameStatus.getPlayersList().get(i).getId());
+            labels.add(labelPlayerId);
+            JLabel labelPlayerNickname = new JLabel("Nickname: " + localGameStatus.getPlayersList().get(i).getNickName());
+            labels.add(labelPlayerNickname);
+            JLabel labelPlayerScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(i).getScore());
+            labels.add(labelPlayerScore);
         }
 
         for(int i = 0; i< labels.size(); i++){
@@ -58,10 +52,10 @@ public class InfoView extends JPanel {
 
         if(playerId == currentPlayerId) {
             JLabel labelTurnOf = new JLabel("It's your turn! " + playerId);
-            labelTurnOf.setForeground(Color.red);
+            labelTurnOf.setForeground(Color.green);
             labels.add(labelTurnOf);
             JLabel labelScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(playerId).getScore());
-            labelScore.setForeground(Color.red);
+            labelScore.setForeground(Color.green);
             labels.add(labelScore);
         } else {
             JLabel labelTurnOf = new JLabel("It's turn of: " + currentPlayerId + " " + localGameStatus.getPlayersList().get(currentPlayerId).getNickName());

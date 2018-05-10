@@ -2,7 +2,6 @@ package rmi;
 
 import controller.GameController;
 import model.gameStatus.GameStatus;
-import model.player.Player;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +16,7 @@ import javax.swing.Timer;
 public class RemoteMessageServiceImpl extends UnicastRemoteObject implements RemoteMessageServiceInt {
 
 	private GameController gameController;
-	private Timer t;
+	private Timer timer;
 
 	/**
 	 * @descr constructor
@@ -40,18 +39,20 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		if( gameStatus.isPenalized() ) { // procedura di penalizzazione attiva
 			
 			/** minimo ritardo prima di riniziare il turno*/
-			t = new javax.swing.Timer(2000, new ActionListener() {
+			timer = new javax.swing.Timer(2000, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                 	
                 	gameStatus.setPenalized(false);
+                    gameStatus.setMove(null);
+                    gameController.setGameStatus(gameStatus);
                 	gameController.playGame();
-                    t.stop();
+                    timer.stop();
                 }
             });
 
-            t.setRepeats(false);
-         	t.start();
+            timer.setRepeats(false);
+         	timer.start();
 		
 			return 2;
 
@@ -64,17 +65,17 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 			
 			 if(gameStatus.getMove().getCard2() != null) { // seconda mossa eseguita
 				/** minimo ritardo prima di riniziare il turno*/
-				t = new javax.swing.Timer(2000, new ActionListener() {
+				timer = new javax.swing.Timer(2000, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                     	
                     	gameController.playGame();
-                        t.stop();
+                        timer.stop();
                     }
                 });
 
-                t.setRepeats(false);
-            	t.start();
+                timer.setRepeats(false);
+            	timer.start();
 
 //            	return 2;
 			}

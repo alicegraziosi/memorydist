@@ -53,11 +53,12 @@ public class BoardView extends Container implements GameGUIListener{
         borderPanelBoard.setLayout(new BorderLayout());
 
         // pannello laterale con infoView di gioco
-        JPanel panel1 = new JPanel();
-        panel1.setLayout(new BorderLayout());
-        panel1.setSize(200, 500);
-        panel1.add(infoView, BorderLayout.NORTH);
-        borderPanelBoard.add(panel1, BorderLayout.WEST);
+        JPanel panelInfoView = new JPanel();
+        panelInfoView.setLayout(new BorderLayout());
+        panelInfoView.setSize(200, 500);
+        panelInfoView.add(infoView, BorderLayout.NORTH);
+        //panelInfoView.setBackground(Color.getHSBColor(120, 100, 50));
+        borderPanelBoard.add(panelInfoView, BorderLayout.WEST);
 
         // riempio il tavolo con tutte le carte ancora non girate
         for(int i=0; i<gameStatus.getNotShowingCards().size(); i++){
@@ -69,9 +70,12 @@ public class BoardView extends Container implements GameGUIListener{
         // when click a card
         setCardClickActionListener();
 
+
+        //gridPanelCards.setBackground(Color.getHSBColor(120, 100, 50));
         borderPanelBoard.add(gridPanelCards,BorderLayout.EAST);
+        //borderPanelBoard.setBackground(Color.getHSBColor(120, 100, 50));
         frame.add(borderPanelBoard);
-        frame.setSize(800, 650);
+        frame.setSize(675, 550);
         //frame.pack(); // o setSize o pack
 
         ImageIcon img = new ImageIcon("./images/frameIcon.jpg");
@@ -92,6 +96,7 @@ public class BoardView extends Container implements GameGUIListener{
     public void blockCards(){
         for (CardView cardView: cardViews) {
             cardView.setLogo();
+            cardView.setDisabledIconLogo();
             cardView.setEnabled(false);
         }
         showMatchedCards();
@@ -115,6 +120,8 @@ public class BoardView extends Container implements GameGUIListener{
                 if(gameStatus.getShowingCards().get(i).getIndex() == cardView.getCard().getIndex() &&
                         gameStatus.getShowingCards().get(i).getValue() == cardView.getCard().getValue()){
                     cardView.setImage();
+                    cardView.setDisabledIconImage();
+                    cardView.setEnabled(false);
                     break;
                 }
             }
@@ -137,6 +144,8 @@ public class BoardView extends Container implements GameGUIListener{
             if(cardView.getCard().getIndex() == move.getCard1().getIndex() &&
                     cardView.getCard().getValue() == move.getCard1().getValue()){
                 cardView.setImage();
+                cardView.setDisabledIconImage();
+                cardView.setEnabled(false);
                 break;
             }
         }
@@ -145,6 +154,8 @@ public class BoardView extends Container implements GameGUIListener{
                 if(cardView.getCard().getIndex() == move.getCard2().getIndex() &&
                         cardView.getCard().getValue() == move.getCard2().getValue()){
                     cardView.setImage();
+                    cardView.setDisabledIconImage();
+                    cardView.setEnabled(false);
                     break;
                 }
             }
@@ -195,8 +206,6 @@ public class BoardView extends Container implements GameGUIListener{
                                     gameStatus.setMove(move);
 
                                     if (move.isMatch()) {
-
-                                        JOptionPane.showMessageDialog(null, "Matched!");
 
                                         //update score of current player
                                         int score = gameStatus.getPlayersList().get(id).getScore() + 100;

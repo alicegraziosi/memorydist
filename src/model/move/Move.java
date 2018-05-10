@@ -13,7 +13,6 @@ public class Move implements Serializable{
 	private Card card2; /** second card of the move */
 	private boolean match = false; /** match between the previous two cards */
 
-	
 	/**
      * @desc move constructor, move null
    */

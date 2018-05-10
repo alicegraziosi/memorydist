@@ -1,9 +1,6 @@
 package model.player;
 
 import java.io.Serializable;
-import java.net.UnknownHostException;
-
-import rmi.RemoteGameInterface;
 
 /**
  * @desc Class representing the network node
@@ -13,8 +10,6 @@ public class Node implements Serializable{
 
     protected String host; /** the host of the node*/
     protected int port; /** the port of the node*/
-
-    private	RemoteGameInterface server;
 
 	/**
      * @desc build object by passing host and port
@@ -40,22 +35,5 @@ public class Node implements Serializable{
     public int getPort() {
         return port;
     }
-    
-    /**
-     * @desc get server of the node
-     * @param 
-     * @return RemoteGameInterface $server
-     */
-    public RemoteGameInterface getServer() {
-		return server;
-	}
-    
-    /**
-     * @desc set server of the node
-     * @param RemoteGameInterface $server
-     * @return void
-     */
-	public void setServer(RemoteGameInterface server) {
-		this.server = server;
-	}
+
 }

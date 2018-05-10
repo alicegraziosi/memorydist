@@ -16,27 +16,21 @@ import java.net.UnknownHostException;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * the client used by player
  * */
 public class PlayerClient {
 
-    public static int id;
-    public static String host; // player host
-    public static int port; // player port
+    private static int id; // player id
+    private static String host; // player host
+    private static int port; // player port
 
-    public static String regServerHost; // registration server host (localhost o per esempio Gisella: 130.136.4.121)
-    public static int regServerPort; // default on 1099
+    private static CircularArrayList<Player> players; // array list of player
+    private static GameStatus gameStatus; // global status of the game
 
-    public static CircularArrayList<Player> players; // array list of player
-    public static GameStatus gameStatus; // global status of the game
-
-    public static BoardView board;
-    public static GameController gameController;
+    private static BoardView board;
+    private static GameController gameController;
 
     public PlayerClient() {
 
@@ -44,24 +38,28 @@ public class PlayerClient {
 
     public static void main(final String[] args) {
         try {
-            // the registration server ip is read from util.txt
-            BufferedReader br = null;
-            FileReader fr = null;
+            // the registration server host ip is read from serverHost.txt
+            BufferedReader br;
+            FileReader fr;
+
+            // registration server host ip (contenuto nel file serverHost.txt)
+            // default localhost
+            String regServerHost = "localhost";
+
+            // the registration server port
+            // default registration server port: 1099
+            int regServerPort = 1099;
+
             try {
-                fr = new FileReader("util.txt");
+                fr = new FileReader("serverHost.txt");
                 br = new BufferedReader(fr);
                 String sCurrentLine;
                 while ((sCurrentLine = br.readLine()) != null) {
                     regServerHost = sCurrentLine;
                 }
             } catch (IOException e) {
-                // if the registration server ip is not an argument, so it is localhost
-                regServerHost = (args.length < 1) ? "localhost" : args[0];
-                e.printStackTrace();
+                //e.printStackTrace();
             }
-
-            // the registration server port
-            regServerPort = 1099;
 
             // in lab funziona con la riga seguente non commentata
             System.setProperty("java.rmi.server.hostname", regServerHost);
@@ -72,6 +70,13 @@ public class PlayerClient {
                 System.setSecurityManager(new SecurityManager());
             }
 
+            System.out.println("[Client]: Request to registration server on " + regServerHost + ":" + regServerPort);
+
+            Registry registry = LocateRegistry.getRegistry(regServerHost, regServerPort);
+
+            String location = "rmi://" + regServerHost + ":" + regServerPort + "/registrazione";
+            RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) registry.lookup(location);
+
             // player host
             host = null;
             try{
@@ -80,19 +85,9 @@ public class PlayerClient {
                 ex.printStackTrace();
             }
 
-            System.out.println("[Client]: Request to registration server on " + regServerHost + ":" + regServerPort);
-
-            Registry registry = LocateRegistry.getRegistry(regServerHost, regServerPort);
-
-            String name = "rmi://" + regServerHost + ":" + regServerPort + "/registrazione";
-            RemoteRegistrationServerInt stub = (RemoteRegistrationServerInt) registry.lookup(name);
-
-            // todo prenderlo da terminale
-            String nomeGiocatore = "default name";
-
             // registration server returns id of the player
             // it returns -1 if it is reached maximum number of registered players
-            int response = stub.registerPlayer(nomeGiocatore, host);
+            int response = stub.registerPlayer("default name", host);
 
             if(response == -1) {
                 System.out.println("[Client]: Response from registration server: " +
@@ -117,7 +112,7 @@ public class PlayerClient {
 
                 // get the global game status
                 gameStatus = stub.getGameStatus();
-                System.out.println("[Client]: GameStatus: " + gameStatus.toString());
+                System.out.println("[Client]: Initial GameStatus: " + gameStatus.toString());
 
                 // create a board and a controller
                 PlayerClient playerClient = new PlayerClient();
@@ -130,23 +125,22 @@ public class PlayerClient {
                 port = players.get(id).getPort();
                 setupRMIregistryAndServer(gameController);
 
-                int delay = 0;
-                int period = 15;
                 System.out.println("[Client]: Game started.");
-                gameController.startTimeout(delay, period);
+
+                gameController.playGame();
             }
 
         } catch (AccessException e) {
             System.err.println("[Client]: time expired to register.");
-            e.printStackTrace();
+            //e.printStackTrace();
             System.exit(-1);
         } catch (RemoteException e) {
             System.err.println("[Client]: time expired to register.");
-            e.printStackTrace();
+            //e.printStackTrace();
             System.exit(-1);
         } catch (NotBoundException e) {
             System.err.println("[Client]: time expired to register.");
-            e.printStackTrace();
+            //e.printStackTrace();
             System.exit(-1);
         }
     }

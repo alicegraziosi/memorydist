@@ -72,3 +72,29 @@ startServerBuild.sh (./startServerBuild.sh)
 Note
 Java version: 9
 SDK: 1.8 (ok per macchine del laboratorio)
+
+
+****************
+Nel file serverHost.txt ci va scritto l'indirizzo IP dove gira il server di registrazione al gioco.
+Di default è localhost.
+
+Indirizzi IP macchine del laboratorio:
+IP gisella.cs.unibo.it: 130.136.4.121
+
+****************
+Il file security.policy contiene il seguente testo:
+
+grant {
+ 	permission java.security.AllPermission;
+};
+System.setProperty("java.security.policy", "file:./security.policy");
+Serve a
+
+java.rmi.server.hostname
+
+*********
+java version:
+skd
+jdk
+language version
+compiler: javac 9.0.4

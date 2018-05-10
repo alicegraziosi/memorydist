@@ -5,22 +5,11 @@ import model.card.Card;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 public class CardView extends JButton {
-
-    @Override
-    public String toString() {
-        return "CardView{" +
-                "card value=" + card.getValue() +
-                ", card index=" + card.getIndex() +
-                ", matched=" + matched +
-                '}';
-    }
 
     private Card card;
 
@@ -29,7 +18,7 @@ public class CardView extends JButton {
     public CardView(Card card) {
         this.card = card;
         this.matched = false;
-        this.setPreferredSize(new Dimension(120, 140));
+        this.setPreferredSize(new Dimension(100, 130));
         this.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.WHITE, 2),
                 BorderFactory.createEmptyBorder(3, 3, 5, 5)));
@@ -60,7 +49,38 @@ public class CardView extends JButton {
         }
     }
 
+    public void setDisabledIconImage(){
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(
+                    new File("./images/" + card.getValue() + ".jpg"));
+            this.setDisabledIcon(new ImageIcon(img));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setDisabledIconLogo(){
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File("./images/backDisabled.jpg"));
+            this.setDisabledIcon(new ImageIcon(img));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Card getCard() {
         return card;
     }
+
+    @Override
+    public String toString() {
+        return "CardView{" +
+                "card value=" + card.getValue() +
+                ", card index=" + card.getIndex() +
+                ", matched=" + matched +
+                '}';
+    }
+
 }

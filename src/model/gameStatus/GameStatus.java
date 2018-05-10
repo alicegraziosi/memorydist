@@ -3,13 +3,10 @@ package model.gameStatus;
 import model.card.Card;
 import model.player.*;
 import utils.CircularArrayList;
-import exception.NextPlayerNotFoundException;
 import model.move.Move;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 
 /**
  *  @desc class representing the global state of the game, gameStatus is the msg updated each turn
@@ -22,7 +19,7 @@ public class GameStatus implements Serializable {
     private ArrayList<Card> showingCards;
  	private ArrayList<Card> notShowingCards;
     private Move move;
-    Player currentPlayer;
+	private Player currentPlayer;
     private HashMap<Integer,PLAYER_STATE> playersAvailability = new HashMap<Integer,PLAYER_STATE>();
     private boolean isPenalized = false;
     
@@ -264,6 +261,4 @@ public class GameStatus implements Serializable {
 	public void setPenalized(boolean isPenalized) {
 		this.isPenalized = isPenalized;
 	}
-
-
 }
