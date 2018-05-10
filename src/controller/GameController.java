@@ -53,13 +53,13 @@ public class GameController {
         gameStatus.setPenalized(false);
         gameStatus.setMove(null);
 
-        System.out.println("[GameCtrl.playGame] giocatori rimanenti: " + gameStatus.getPlayersList().toString());
-
+        System.out.println("[GameCtrl] giocatori rimanenti: " + gameStatus.getPlayersList().toString());
         turnNumber++;
-        System.out.println("\n\n[GameCtrl.playGame] ******** Turn " + turnNumber + " * Turn of " + gameStatus.getCurrentPlayer().getId() + " ********");
-        System.out.println("[GameCtrl.playGame] [I am player " + playerId +"]");
+        System.out.println("\n\n******** Turn number " + turnNumber + " * Turn of player " + gameStatus.getCurrentPlayer().getId() + " ********");
+        System.out.println("[I am player " + playerId +"]");
 
-        if (gameStatus.getShowingCards().size() < 20){
+        // woz?
+        if (gameStatus.getShowingCards().size() < 4){
 
             if(gameStatus.getPlayersList().size() > 1) {
 
@@ -85,9 +85,8 @@ public class GameController {
                     System.out.println("[GameCtrl.playGame] I'm listening for messages...");
 
                     handleLazyCurrentPlayer();
-
                 }
-            } else { // ultimo giocatore rimasto in gioco
+            } else { // ultimo giocatore rimasto
 
                 System.out.println("[GameCtrl.playGame] You are the last player in the game.");
 

@@ -208,8 +208,11 @@ public class BoardView extends Container implements GameGUIListener{
                                     if (move.isMatch()) {
 
                                         //update score of current player
-                                        int score = gameStatus.getPlayersList().get(id).getScore() + 100;
-                                        gameStatus.getPlayersList().get(id).setScore(score);
+                                        System.out.println("[BoardView] aggiorno score di " + id);
+                                        Player playerToUpd = gameStatus.findPlayerById(id);
+                                        int playerIndex = gameStatus.getPlayersList().indexOf(playerToUpd);
+                                        int score = gameStatus.getPlayersList().get(playerIndex).getScore() + 100;
+                                        gameStatus.getPlayersList().get(playerIndex).setScore(score);
                                         infoView.update(gameStatus, id);
 
                                         // add matched card to showingCard array
@@ -218,7 +221,7 @@ public class BoardView extends Container implements GameGUIListener{
 
                                         if (gameStatus.getShowingCards().size() == 20) {
                                             gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
-                                            showGameWinnerMessage("winner");
+                                            showGameWinnerMessage("Game Ended, wait for the winner");
                                         }
                                     }
                                     System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
