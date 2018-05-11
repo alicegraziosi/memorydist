@@ -21,7 +21,7 @@ public class GameStatus implements Serializable {
     private Move move;
 	private Player currentPlayer;
     private HashMap<Integer,PLAYER_STATE> playersAvailability = new HashMap<Integer,PLAYER_STATE>(); // secondo me si può togliere, controllando bene in giro
-    private boolean isPenalized = false;
+  	private boolean isPenalized = false;
     private Player winnerPlayer = null;
 	/**
      * Starting game constructor
@@ -277,5 +277,15 @@ public class GameStatus implements Serializable {
 	public void setPenalized(boolean isPenalized) {
 		this.isPenalized = isPenalized;
 	}
+
+	public HashMap<Integer, PLAYER_STATE> getPlayersAvailability() {
+		return playersAvailability;
+	}
+
+	public void setPlayersAvailability(HashMap<Integer, PLAYER_STATE> playersAvailability) {
+		this.playersAvailability = playersAvailability;
+	}
+
+
 
 }

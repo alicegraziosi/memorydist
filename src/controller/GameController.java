@@ -142,27 +142,27 @@ public class GameController {
         
         	if(isNotMe(i)) {
                 
-            	try {
-                	
-                	String remoteHost = gameStatus.getPlayersList().get(i).getHost().toString();
-                    int remotePort = gameStatus.getPlayersList().get(i).getPort();
-                    int playerId = gameStatus.getPlayersList().get(i).getId();
-                    
+        		String remoteHost = gameStatus.getPlayersList().get(i).getHost().toString();
+                int remotePort = gameStatus.getPlayersList().get(i).getPort();
+                int playerId = gameStatus.getPlayersList().get(i).getId();
+            	
+                try {
                     getRegistryAndSendMessage(remoteHost, remotePort, playerId);
                 	
                 } catch (RemoteException  | NotBoundException e) {
                 	/**b)*/
                 	// Se c'è eccezione nella chiamata RMI allora la macchina è un crash
                     //e.printStackTrace();
-                    System.out.println("[GameCtrl.broadcastMessage]: Player " + i + " crashed.");
+                    System.out.println("[GameCtrl.broadcastMessage]: Player " + playerId + " crashed.");
                     
                     /**c) setto nel gameStatus giocatore crashato 
                      * 	1) se occorre devo settare il nuovo giocatore successivo*/
-                    players.get(i).setCrashed(true); //utilizzare ancora??
-                    gameStatus.setPlayerState(i, PLAYER_STATE.CRASH); //utilizzare ancora??
+                    //players.get(i).setCrashed(true); //utilizzare ancora??
+                    gameStatus.setPlayerState(playerId, PLAYER_STATE.CRASH); //utilizzare ancora??
                     
                     /**1) Crashato successivo */
-                    if( i ==  gameStatus.getCurrentPlayer().getId()) {
+                    Player curr = gameStatus.getCurrentPlayer();
+                    if( i ==  gameStatus.getPlayersList().indexOf(curr)) {
                         System.out.println("[GameCtrl.broadcastMessage]: Next player " + i + " crashed.");
                     	gameStatus.setNextPlayer();
                     }
@@ -178,14 +178,14 @@ public class GameController {
                     for (int j = 0; j < gameStatus.getPlayersList().size(); j++) {
                         // non lo rimanda a se stesso e ai nodi in crash
                         if(isNotMe(j)) {
-                        	
+                      
+                        	String remoteHost2 = gameStatus.getPlayersList().get(j).getHost().toString();
+                            int remotePort2 = gameStatus.getPlayersList().get(j).getPort();
+                            int playerId2 = gameStatus.getPlayersList().get(j).getId();
+                      
                         	try {
-                        		
-                        	String remoteHost = gameStatus.getPlayersList().get(j).getHost().toString();
-                            int remotePort = gameStatus.getPlayersList().get(j).getPort();
-                            int playerId = gameStatus.getPlayersList().get(j).getId();
-                            
-                            getRegistryAndSendMessage(remoteHost, remotePort, playerId);
+	                        	  
+	                            getRegistryAndSendMessage(remoteHost2, remotePort2, playerId2);
                             
 							} catch (RemoteException | NotBoundException e3) {
 								// TODO Auto-generated catch block

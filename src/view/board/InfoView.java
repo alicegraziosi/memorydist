@@ -8,6 +8,8 @@ import utils.CircularArrayList;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class InfoView extends JPanel {
 
@@ -46,30 +48,49 @@ public class InfoView extends JPanel {
         this.removeAll();
         labels = new CircularArrayList<>();
 
-        // players info
-        for(int i=0; i<localGameStatus.getPlayersList().size(); i++){
-            if(localGameStatus.getPlayerState(i).equals(PLAYER_STATE.CRASH)) {
-                JLabel labelPlayerId = new JLabel("Player id: " +
-                        localGameStatus.getPlayersList().get(i).getId() +
-                        "nickname " + localGameStatus.getPlayersList().get(i).getNickName() +
-                        " left the game :(");
+        //iterare su hashmap playersAvailibility
+        HashMap<Integer,PLAYER_STATE> playersAvailability = localGameStatus.getPlayersAvailability();
+        for (Entry<Integer, PLAYER_STATE>  entry : playersAvailability.entrySet())
+        {
+        	System.out.println("OOOOOOO playersA: " + entry.getKey() + " - " + entry.getValue());
+        	if (entry.getValue().equals(PLAYER_STATE.CRASH)) {
+        		JLabel labelPlayerId = new JLabel("Player id: " +
+                		entry.getKey() );
+        		ImageIcon image = new ImageIcon("./images/crash.jpg");
+        		labelPlayerId.setIcon(image);
                 labels.add(labelPlayerId);
-            } else {
-            	JLabel labelPlayerId = new JLabel("Player id: " + localGameStatus.getPlayersList().get(i).getId());
+        	}
+        	else {
+        		JLabel labelPlayerId = new JLabel("Player id: " + entry.getKey());
                 labels.add(labelPlayerId);
-                JLabel labelPlayerNickname = new JLabel("Nickname: " + localGameStatus.getPlayersList().get(i).getNickName());
-                labels.add(labelPlayerNickname);
-                JLabel labelPlayerScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(i).getScore());
-                labels.add(labelPlayerScore);
-                if ( localGameStatus.getWinner() != null) {
-	                if ( localGameStatus.getWinner().getId() == localGameStatus.getPlayersList().get(i).getId()) {
-	                	JLabel labelWinnerPlayer = new JLabel("WINNER");
-	                	labelWinnerPlayer.setForeground(Color.red);
-	                    labels.add(labelWinnerPlayer);
-	                }
-                }     
+        	}
             }
-        }
+        
+        // players info
+//        for(int i=0; i<localGameStatus.getPlayersList().size(); i++){
+//        	int playerId = localGameStatus.getPlayersList().get(i).getId();
+//            if(localGameStatus.getPlayerState(playerId).equals(PLAYER_STATE.CRASH)) {
+//                JLabel labelPlayerId = new JLabel("Player id: " +
+//                		playerId +
+//                        " CRASH" );
+//                      //  " left the game :(");
+//                labels.add(labelPlayerId);
+//            } else {
+//            	JLabel labelPlayerId = new JLabel("Player id: " + playerId);
+//                labels.add(labelPlayerId);
+//                JLabel labelPlayerNickname = new JLabel("Nickname: " + localGameStatus.getPlayersList().get(i).getNickName());
+//                labels.add(labelPlayerNickname);
+//                JLabel labelPlayerScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(i).getScore());
+//                labels.add(labelPlayerScore);
+//                if ( localGameStatus.getWinner() != null) {
+//	                if ( localGameStatus.getWinner().getId() == localGameStatus.getPlayersList().get(i).getId()) {
+//	                	JLabel labelWinnerPlayer = new JLabel("WINNER");
+//	                	labelWinnerPlayer.setForeground(Color.red);
+//	                    labels.add(labelWinnerPlayer);
+//	                }
+//                }     
+//            }
+//        }
 
         for(int i = 0; i< labels.size(); i++){
             this.add(labels.get(i));
