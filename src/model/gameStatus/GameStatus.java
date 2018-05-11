@@ -20,9 +20,9 @@ public class GameStatus implements Serializable {
  	private ArrayList<Card> notShowingCards;
     private Move move;
 	private Player currentPlayer;
-    private HashMap<Integer,PLAYER_STATE> playersAvailability = new HashMap<Integer,PLAYER_STATE>();
+    private HashMap<Integer,PLAYER_STATE> playersAvailability = new HashMap<Integer,PLAYER_STATE>(); // secondo me si può togliere, controllando bene in giro
     private boolean isPenalized = false;
-   
+    private Player winnerPlayer = null;
 	/**
      * Starting game constructor
      * */
@@ -57,8 +57,10 @@ public class GameStatus implements Serializable {
     	return null;
     }
    
-    
-    public Player getWinner() {
+    /**
+     * @descr calculate tha winner over the players
+     */
+    public void findWinner() {
     	int maxScore = this.playersList.get(0).getScore();
     	Player winner = this.playersList.get(0);
     	for (Player p : playersList){
@@ -67,7 +69,14 @@ public class GameStatus implements Serializable {
     			winner = p;
     		}
 		}
-    	return winner;
+    	this.winnerPlayer = winner;
+    }
+    
+    /**
+     * @return Player winner player 
+     */
+    public Player getWinner() {
+    	return this.winnerPlayer;
     }
     
     
@@ -135,21 +144,7 @@ public class GameStatus implements Serializable {
 
 		return false;
 	}
-    
-    public int countPlayersActive() {
-    	int playersActive = 0;
-    	for(int i = 0; i < this.playersAvailability.size(); i++) {
-    		PLAYER_STATE value = this.playersAvailability.get(i);
-    		//System.out.println("[GameStatus]: player: " + i + " " + value);
-    		if ( value == PLAYER_STATE.ACTIVE)
-    			playersActive ++;
-    	}
-    	
-    	
-    	return playersActive;
-    }
-    
-    
+  
     /**
      * @desc setting the state of det player
      * @param int $id of the player, PLAYER_STATE $state of the player
@@ -255,18 +250,30 @@ public class GameStatus implements Serializable {
 		return currentPlayer;
 	}
 
+    /**
+     * @return id
+     */
 	public int getId() {
 		return id;
 	}
-
+	
+	/**
+	 * @param id
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 	
+	/**
+	 * @return true if in the game is in penalization phase
+	 */
     public boolean isPenalized() {
 		return isPenalized;
 	}
 
+    /**
+     * @param isPenalized
+     */
 	public void setPenalized(boolean isPenalized) {
 		this.isPenalized = isPenalized;
 	}

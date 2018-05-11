@@ -35,8 +35,29 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		System.out.println("[RMISImpl]: Message said that next player is: " + gameStatus.getCurrentPlayer().getId());
 	
 		gameController.setGameStatus(gameStatus); // setting the new updated gameStatus
+		
+		
+		if( gameStatus.getWinner() != null) {
+		
+			System.out.println("[RMISImpl] THE WINNER IS: " + gameStatus.getWinner().getId());
+            /** minimo ritardo prima di riniziare il turno*/
+			timer = new javax.swing.Timer(2000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                	
+                	gameController.updateBoardAfterMove(gameStatus.getMove());
+                    gameController.resetAndUpdateInfoView(gameStatus, gameController.getPlayerId());
+        			gameStatus.setPenalized(false);
+                    gameStatus.setMove(null);
+                	gameController.playGame();
+                    timer.stop();
+                }
+            });
 
-		if( gameStatus.isPenalized() ) { // procedura di penalizzazione attiva
+            timer.setRepeats(false);
+        	timer.start();
+		}
+		else if( gameStatus.isPenalized() ) { // procedura di penalizzazione attiva
 			
 			/** minimo ritardo prima di riniziare il turno*/
 			timer = new javax.swing.Timer(2000, new ActionListener() {

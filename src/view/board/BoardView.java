@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 
 public class BoardView extends Container implements GameGUIListener{
-    private GameStatus gameStatus;
+    
+	private GameStatus gameStatus;
     private ArrayList<CardView> cardViews;
     private CardView selectedCard1;
     private CardView selectedCard2;
@@ -28,11 +29,16 @@ public class BoardView extends Container implements GameGUIListener{
     private int id; // id player
     private JFrame frame;
     private JPanel gridPanelCards;
-
     private PlayerClient playerClient;
     private GameController gameController;
     private Timer timer;
-
+    
+    /**
+     * @descr constructor
+     * @param gameStatus
+     * @param id
+     * @param playerClient
+     */
     public BoardView(GameStatus gameStatus, int id, PlayerClient playerClient) {
         this.gameStatus = gameStatus;
         this.cardViews = new ArrayList<>();
@@ -46,7 +52,8 @@ public class BoardView extends Container implements GameGUIListener{
         this.gridPanelCards.setLayout(new GridLayout(4, 5));
         this.playerClient = playerClient;
     }
-
+    
+    
     public void init(){
 
         JPanel borderPanelBoard = new JPanel();
@@ -86,13 +93,17 @@ public class BoardView extends Container implements GameGUIListener{
         setCloseOperation();
     }
 
-    // set selectedcard to null
+    /**
+     * @descr set the 2 selectedcard to null
+     */
     public void clearSelectedCards(){
         selectedCard1 = null;
         selectedCard2 = null;
     }
 
-    // make carks unclickable
+    /**
+     * @descr make cards unclickable
+     */
     public void blockCards(){
         for (CardView cardView: cardViews) {
             cardView.setLogo();
@@ -102,7 +113,9 @@ public class BoardView extends Container implements GameGUIListener{
         showMatchedCards();
     }
 
-    // make cards clickable
+    /**
+     * @descr make cards clickable
+     */
     public void unblockCards(){
         // aggiornare da GameStatus
 
@@ -113,7 +126,9 @@ public class BoardView extends Container implements GameGUIListener{
         showMatchedCards();
     }
 
-    //show already matched cards
+    /**
+     * @descr show already matched cards
+     */
     public void showMatchedCards(){
         for (int i=0; i<gameStatus.getShowingCards().size(); i++) {
             for (CardView cardView: cardViews) {
@@ -128,7 +143,11 @@ public class BoardView extends Container implements GameGUIListener{
         }
     }
 
-
+    /**
+     * @descr update info view
+     * @param gameStatus
+     * @param currentId
+     */
     public void resetAndUpdateInfoView(GameStatus gameStatus, int currentId) {
         this.gameStatus = gameStatus;
         selectedCard1 = null;
@@ -138,7 +157,10 @@ public class BoardView extends Container implements GameGUIListener{
 
     }
 
-    // called by not current players in gamecontroller
+    /**
+     * @descr called by not current players in gamecontroller
+     * @param move
+     */
     public void updateBoardAfterMove(Move move) {
         for (CardView cardView: cardViews) {
             if(cardView.getCard().getIndex() == move.getCard1().getIndex() &&
@@ -161,6 +183,7 @@ public class BoardView extends Container implements GameGUIListener{
             }
         }
     }
+    
     /**
      * When a card is selected.
      * When it is the first card selected
@@ -220,8 +243,9 @@ public class BoardView extends Container implements GameGUIListener{
                                         gameStatus.getShowingCards().add(move.getCard2());
 
                                         if (gameStatus.getShowingCards().size() == 20) {
-                                            gameStatus.getPlayersList().get(0).setState(PLAYER_STATE.WINNER);
-                                            showGameWinnerMessage("Game Ended, wait for the winner");
+                                        
+                                        	gameStatus.findWinner();
+                                            broadcastMessageMove(gameStatus);
                                         }
                                     }
                                     System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
@@ -263,6 +287,9 @@ public class BoardView extends Container implements GameGUIListener{
         }
     }
 
+    /**
+     * @param msg
+     */
     public void showMessage(String msg) {
         JOptionPane.showMessageDialog(null, msg);
     }
@@ -307,11 +334,15 @@ public class BoardView extends Container implements GameGUIListener{
                 "Winner info \n\nDo you want to exit the game?",
                 JOptionPane.CLOSED_OPTION,
                 JOptionPane.INFORMATION_MESSAGE, null);
-        if (input == JOptionPane.YES_OPTION) {
-            System.exit(0);
-        }
+//        if (input == JOptionPane.YES_OPTION) {
+//            System.exit(0);
+//        }
     }
-
+    
+    /**
+     *  da togliere?
+     * @param winner
+     */
     public void showAnotherPlayerIsWinnerMessage(Player winner){
         int input = JOptionPane.showConfirmDialog(null,
                 "Player " + winner.getId() + " " + winner.getNickName() + " won :(" +
@@ -324,10 +355,13 @@ public class BoardView extends Container implements GameGUIListener{
         }
     }
 
+    /**
+     * @return InfoView
+     */
     public InfoView getInfoView() {
         return infoView;
     }
-
+   
     @Override
     public void setGameController(GameController gameController) {
         this.gameController = gameController;

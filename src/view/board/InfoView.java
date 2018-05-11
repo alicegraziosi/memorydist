@@ -15,6 +15,11 @@ public class InfoView extends JPanel {
     private int playerId;
     private CircularArrayList<JLabel> labels;
 
+    /**
+     * 
+     * @param gameStatus
+     * @param playerId
+     */
     public InfoView(GameStatus gameStatus, int playerId) {
         this.labels = new CircularArrayList<>();
         this.localGameStatus = gameStatus;
@@ -23,11 +28,18 @@ public class InfoView extends JPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
     }
-
+    
+    /**
+     * @param localGameStatus
+     */
     public void setLocalGameStatus(GameStatus localGameStatus) {
         this.localGameStatus = localGameStatus;
     }
 
+    /** 
+     * @param gameStatus
+     * @param currentPlayerId
+     */
     public void update(GameStatus gameStatus, int currentPlayerId){
 
         setLocalGameStatus(gameStatus);
@@ -43,12 +55,19 @@ public class InfoView extends JPanel {
                         " left the game :(");
                 labels.add(labelPlayerId);
             } else {
-                JLabel labelPlayerId = new JLabel("Player id: " + localGameStatus.getPlayersList().get(i).getId());
+            	JLabel labelPlayerId = new JLabel("Player id: " + localGameStatus.getPlayersList().get(i).getId());
                 labels.add(labelPlayerId);
                 JLabel labelPlayerNickname = new JLabel("Nickname: " + localGameStatus.getPlayersList().get(i).getNickName());
                 labels.add(labelPlayerNickname);
                 JLabel labelPlayerScore = new JLabel("Score: " + localGameStatus.getPlayersList().get(i).getScore());
                 labels.add(labelPlayerScore);
+                if ( localGameStatus.getWinner() != null) {
+	                if ( localGameStatus.getWinner().getId() == localGameStatus.getPlayersList().get(i).getId()) {
+	                	JLabel labelWinnerPlayer = new JLabel("WINNER");
+	                	labelWinnerPlayer.setForeground(Color.red);
+	                    labels.add(labelWinnerPlayer);
+	                }
+                }     
             }
         }
 
@@ -72,6 +91,13 @@ public class InfoView extends JPanel {
                 JLabel labelScore = new JLabel("Your score: " + localGameStatus.getPlayersList().get(playerIndex).getScore());
                 labelScore.setForeground(Color.red);
                 labels.add(labelScore);
+                if ( localGameStatus.getWinner() != null) {
+	                if ( localGameStatus.getWinner().getId() == localGameStatus.getPlayersList().get(playerIndex).getId()) {
+	                	JLabel labelWinnerPlayer = new JLabel("[ You Win ]");
+	                	labelWinnerPlayer.setForeground(Color.red);
+	                    labels.add(labelWinnerPlayer);
+	                }
+                }  
             }
         } else {
             Player playerToUpd = localGameStatus.findPlayerById(playerId);

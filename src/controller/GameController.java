@@ -21,7 +21,7 @@ import view.board.BoardView;
 public class GameController {
 
     public int playerId; // current player id
-    public CircularArrayList<Player> players;
+   	public CircularArrayList<Player> players;
     public GameStatus gameStatus; // global status of the game, with info of current player
     private int turnNumber;
     private BoardView boardView;
@@ -59,7 +59,7 @@ public class GameController {
         System.out.println("[I am player " + playerId +"]");
 
         // woz?
-        if (gameStatus.getShowingCards().size() < 4){
+        if (gameStatus.getShowingCards().size() < 20){
 
             if(gameStatus.getPlayersList().size() > 1) {
 
@@ -70,7 +70,7 @@ public class GameController {
                     /** setto prossimo giocatore e mittente, aggiorno view e sblocco carte */
                     gameStatus.setNextPlayer();
                     gameStatus.setIdSender(playerId);
-                    boardView.resetAndUpdateInfoView(gameStatus, playerId);
+                    resetAndUpdateInfoView(gameStatus, playerId);
                     boardView.unblockCards();
 
                 } else { // all other player
@@ -79,7 +79,7 @@ public class GameController {
                     int currentPlayerId = gameStatus.getCurrentPlayer().getId();
 
                     /** aggiorno view e blocco carte */
-                    boardView.resetAndUpdateInfoView(gameStatus, currentPlayerId);
+                    resetAndUpdateInfoView(gameStatus, currentPlayerId);
                     boardView.blockCards();
 
                     System.out.println("[GameCtrl.playGame] I'm listening for messages...");
@@ -91,18 +91,24 @@ public class GameController {
                 System.out.println("[GameCtrl.playGame] You are the last player in the game.");
 
                 boardView.showMessage("You are the last player in the game!");
-                boardView.resetAndUpdateInfoView(gameStatus, playerId);
+                resetAndUpdateInfoView(gameStatus, playerId);
                 boardView.unblockCards();
             }
         } else { // tutte le carte matchate, c'è un vincitore, quello con lo score più alto
 
             if (gameStatus.getWinner().getId() == playerId) {
+            	
+            	resetAndUpdateInfoView(gameStatus, playerId);
+                
                 // this is the winner
                 System.out.println("[GameCtrl.playGame] You are the winner!" +
                         "\n Score : " + gameStatus.getWinner().getScore());
                 boardView.showGameWinnerMessage("You are the winner! " +
                         "\n Score : " + gameStatus.getWinner().getScore());
             } else {
+            	
+            	resetAndUpdateInfoView(gameStatus, playerId);
+                   
                 // all other players need to know that the game ended
                 System.out.println("[GameCtrl.playGame] The winner is player " + gameStatus.getWinner().getId() +
                         "\n Score : " + gameStatus.getWinner().getScore());
@@ -202,6 +208,11 @@ public class GameController {
             gameStatus.setMove(null);
             playGame();
         }
+        else if ( gameStatus.getWinner() != null ) {
+        	gameStatus.setPenalized(false);
+            gameStatus.setMove(null);
+            playGame();
+        }
         
     }
 
@@ -260,6 +271,13 @@ public class GameController {
         timer.start();
     }
     
+    /**
+     * @param remoteHost
+     * @param remotePort
+     * @param playerId
+     * @throws RemoteException
+     * @throws NotBoundException
+     */
     public void	getRegistryAndSendMessage(String remoteHost, int remotePort, int playerId) throws RemoteException, NotBoundException {
     	
     	//***************************************************************
@@ -276,11 +294,24 @@ public class GameController {
         gameStatus.setId(gameStatus.getId());
         int response = stub.sendMessage(gameStatus);
     }
-   
+    
+    
+    /**
+     * @descr calling the board to update infos
+     * @param GameStatus $gameStatus, int $playerId
+     * */
+    public void resetAndUpdateInfoView(GameStatus gameStatus,int playerId) {
+    	boardView.resetAndUpdateInfoView(gameStatus, playerId);
+    }
+    
+    /**
+     * @descr given a player in the list of players, checks if i am not me 
+     * @param int $index
+     * @return boolean true if i am not me, false otw
+   	*/
     public boolean isNotMe(int index) {
     	return gameStatus.getPlayersList().get(index).getId() != playerId;
     }
-    
     
     /**
      * @descr checking if it is my turn
@@ -298,7 +329,7 @@ public class GameController {
     public void updateBoardAfterMove(Move move){
         boardView.updateBoardAfterMove(move);
     }
-
+    
     /**
      * getting the game status
      * @return GameStatus $gameStatus
@@ -314,4 +345,22 @@ public class GameController {
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
     }
+    
+    /**
+     * @descr get player id
+     * @return int $id of the player
+     */
+    public int getPlayerId() {
+		return playerId;
+	}
+    
+    /**
+     * @descr set player id
+     * @param int $id of the player
+     */
+	public void setPlayerId(int playerId) {
+		this.playerId = playerId;
+	}
+
+
 }
