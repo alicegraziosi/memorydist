@@ -17,6 +17,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 
 	private GameController gameController;
 	private Timer timer;
+	private int wait = 2000;
 
 	/**
 	 * @descr constructor
@@ -41,7 +42,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		
 			System.out.println("[RMISImpl] THE WINNER IS: " + gameStatus.getWinner().getId());
             /** minimo ritardo prima di riniziare il turno*/
-			timer = new javax.swing.Timer(2000, new ActionListener() {
+			timer = new javax.swing.Timer(wait, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                 	
@@ -59,10 +60,9 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		}
 		else if( gameStatus.isPenalized() ) { // procedura di penalizzazione attiva
 			
-			gameController.resetAndUpdatePlayerScores(gameStatus);
 			
 			/** minimo ritardo prima di riniziare il turno*/
-			timer = new javax.swing.Timer(2000, new ActionListener() {
+			timer = new javax.swing.Timer(wait, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                 	
@@ -85,13 +85,11 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 			System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " contains a move");
 			gameController.updateBoardAfterMove(gameStatus.getMove());
 			
-			gameController.resetAndUpdatePlayerScores(gameStatus);
-			
 //			gameController.handleLazyCurrentPlayer();
 			
 			 if(gameStatus.getMove().getCard2() != null) { // seconda mossa eseguita
 				/** minimo ritardo prima di riniziare il turno*/
-				timer = new javax.swing.Timer(2000, new ActionListener() {
+				timer = new javax.swing.Timer(wait, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                     	gameController.playGame();

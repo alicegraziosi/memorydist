@@ -103,9 +103,13 @@ public class InfoView extends JPanel {
                 labels.add(labelPlayerId);
         	}
         	else {
+
         		Player playerToUpd = localGameStatus.findPlayerById(entry.getKey());
         		int index = localGameStatus.getPlayersList().indexOf(playerToUpd);
         		JLabel labelPlayerId = new JLabel("Player id: " + entry.getKey() + " \n Score: " + localGameStatus.getPlayersList().get(index).getScore());
+        		ImageIcon image = new ImageIcon("./images/user.jpg");
+        		labelPlayerId.setIcon(image);
+        		
                 labels.add(labelPlayerId);
         	}
          }

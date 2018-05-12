@@ -53,7 +53,6 @@ public class GameController {
         gameStatus.setPenalized(false);
         gameStatus.setMove(null);
         
-        resetAndUpdatePlayerScores(gameStatus);
 
         System.out.println("[GameCtrl] giocatori rimanenti: " + gameStatus.getPlayersList().toString());
         turnNumber++;
