@@ -62,6 +62,8 @@ public class InfoView extends JPanel {
         	}
         	else {
         		JLabel labelPlayerId = new JLabel("Player id: " + entry.getKey());
+        		ImageIcon image = new ImageIcon("./images/user.jpg");
+        		labelPlayerId.setIcon(image);
                 labels.add(labelPlayerId);
         	}
             }
