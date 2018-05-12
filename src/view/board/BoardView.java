@@ -53,7 +53,6 @@ public class BoardView extends Container implements GameGUIListener{
         this.playerClient = playerClient;
     }
     
-    
     public void init(){
 
         JPanel borderPanelBoard = new JPanel();
@@ -76,7 +75,6 @@ public class BoardView extends Container implements GameGUIListener{
 
         // when click a card
         setCardClickActionListener();
-
 
         //gridPanelCards.setBackground(Color.getHSBColor(120, 100, 50));
         borderPanelBoard.add(gridPanelCards,BorderLayout.EAST);
@@ -191,8 +189,11 @@ public class BoardView extends Container implements GameGUIListener{
      * When it is the second card selected
      * */
     public void setCardClickActionListener(){
+    	
         for (final CardView cardView: cardViews) {
+        	
             cardView.addActionListener(new ActionListener() {
+            	
                 @Override
                 public void actionPerformed(ActionEvent e) {
 
@@ -249,6 +250,7 @@ public class BoardView extends Container implements GameGUIListener{
                                             broadcastMessageMove(gameStatus);
                                         }
                                     }
+                                    
                                     System.out.println("[BoardView]: Second selected card: " + move.getCard2().getValue());
                                     System.out.println("[BoardView]: Match: " + move.isMatch());
 
@@ -301,8 +303,7 @@ public class BoardView extends Container implements GameGUIListener{
      * @return void
      * */
     public void broadcastMessageMove(GameStatus gameStatus){
-
-        gameController.broadcastMessage(gameStatus);
+    	gameController.broadcastMessage(gameStatus);
     }
 
     /**

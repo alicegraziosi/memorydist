@@ -17,10 +17,9 @@ public class InfoView extends JPanel {
     private int playerId;
     private CircularArrayList<JLabel> labels;
     private ArrayList<JLabel> labelsTurn;
-    
 
     /**
-     * 
+     * constructor
      * @param gameStatus
      * @param playerId
      */
@@ -31,7 +30,6 @@ public class InfoView extends JPanel {
         this.playerId = playerId;
 
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-
     }
     
     /**
@@ -41,28 +39,27 @@ public class InfoView extends JPanel {
         this.localGameStatus = localGameStatus;
     }
 
-
     /** 
+     * updating infoview
      * @param gameStatus
      * @param currentPlayerId
      */
     public void update(GameStatus gameStatus, int currentPlayerId){
-        setLocalGameStatus(gameStatus);
 
-        removeAll();
+    	setLocalGameStatus(gameStatus);
+    	removeAll();
 
         labels = new CircularArrayList<>();
         labelsTurn = new ArrayList<>();
 
         //iterare su hashmap playersAvailibility
-
         HashMap<Integer,PLAYER_STATE> playersAvailability = localGameStatus.getPlayersAvailability();
         for (Entry<Integer, PLAYER_STATE>  entry : playersAvailability.entrySet())
         {
-        	System.out.println("OOOOOOO playersA: " + entry.getKey() + " - " + entry.getValue());
+        	System.out.println("*O*O*O* Players: " + entry.getKey() + " - " + entry.getValue());
         	if (entry.getValue().equals(PLAYER_STATE.CRASH)) {
-        		JLabel labelPlayerId = new JLabel("Player id: " + entry.getKey() + " quit ");
         		
+        		JLabel labelPlayerId = new JLabel("Player id: " + entry.getKey() + " quit ");
         		ImageIcon image = new ImageIcon("./images/crash.jpg");
         		labelPlayerId.setIcon(image);
         		labelPlayerId.setOpaque(true);
@@ -79,11 +76,9 @@ public class InfoView extends JPanel {
                 JLabel labelPlayerId = new JLabel("Player id: " + entry.getKey() + " \n Score: " + localGameStatus.getPlayersList().get(index).getScore());
                 ImageIcon image = new ImageIcon("./images/user.jpg");
                 labelPlayerId.setIcon(image);
-
                 labels.add(labelPlayerId);
             }
         }
-
 
         for (int i = 0; i < labels.size(); i++) {
             add(labels.get(i));
@@ -94,20 +89,25 @@ public class InfoView extends JPanel {
         add(new JSeparator(SwingConstants.HORIZONTAL));
 
         if (playerId == currentPlayerId) {
-            JLabel labelTurnOf = new JLabel("It's your turn!");
+
+        	JLabel labelTurnOf = new JLabel("It's your turn!");
             labelTurnOf.setForeground(Color.red);
             labelsTurn.add(labelTurnOf);
             Player playerToUpd = localGameStatus.findPlayerById(playerId);
             int playerIndex = -1;
             if (playerToUpd != null) {
-                playerIndex = localGameStatus.getPlayersList().indexOf(playerToUpd);
+            
+            	playerIndex = localGameStatus.getPlayersList().indexOf(playerToUpd);
                 System.out.println("playerId: " + playerId + " player index: " + playerIndex);
                 JLabel labelScore = new JLabel("Your score: " + localGameStatus.getPlayersList().get(playerIndex).getScore());
                 labelScore.setForeground(Color.red);
                 labelsTurn.add(labelScore);
+                
                 if (localGameStatus.getWinner() != null) {
-                    if (localGameStatus.getWinner().getId() == localGameStatus.getPlayersList().get(playerIndex).getId()) {
-                        JLabel labelWinnerPlayer = new JLabel("[ You Win ]");
+                
+                	if (localGameStatus.getWinner().getId() == localGameStatus.getPlayersList().get(playerIndex).getId()) {
+                    
+                		JLabel labelWinnerPlayer = new JLabel("[ You Win ]");
                         labelWinnerPlayer.setForeground(Color.red);
                         labelsTurn.add(labelWinnerPlayer);
                     }
@@ -117,8 +117,7 @@ public class InfoView extends JPanel {
             Player playerToUpd = localGameStatus.findPlayerById(playerId);
             int myPlayerIndex = localGameStatus.getPlayersList().indexOf(playerToUpd);
             JLabel labelTurnOf = new JLabel("It's turn of: " + currentPlayerId);
-//            		+ " " +
-//        	localGameStatus.getPlayersList().get(currentPlayerIndex).getNickName());
+
             labelTurnOf.setForeground(Color.red);
             labelsTurn.add(labelTurnOf);
             JLabel labelScore = new JLabel("Your score: " + localGameStatus.getPlayersList().get(myPlayerIndex).getScore());

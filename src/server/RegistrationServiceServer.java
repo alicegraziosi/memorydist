@@ -24,6 +24,9 @@ import javax.swing.*;
 
 public class RegistrationServiceServer {
 
+	/**
+	 * @param args
+	 */
     public static void main(String[] args) {
 
         String host = "localhost";

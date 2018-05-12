@@ -12,8 +12,6 @@ public class CircularArrayList<E> extends ArrayList<E>
 
     /**
      * @descr get che permette il wrap around quando si chiede l'ultimo indice
-     * esempio.
-     * 
      * @param int $index
      * */
     public E get(int index)

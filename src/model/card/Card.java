@@ -7,9 +7,9 @@ import java.io.Serializable;
  */
 public class Card implements Serializable{
 
-	private int index; /** index of a card */
-	private int value; /** value of a card */
-    
+	private int index; 
+	private int value; 
+	
     /**
      * @desc card constructor
      * @paramint int $index, int $value

@@ -25,17 +25,21 @@ public class PlayerClient {
     private static int id; // player id
     private static String host; // player host
     private static int port; // player port
-
     private static CircularArrayList<Player> players; // array list of player
     private static GameStatus gameStatus; // global status of the game
-
     private static BoardView board;
     private static GameController gameController;
 
+    /**
+     * constructor
+     */
     public PlayerClient() {
-
     }
-
+    
+    /**
+     * main
+     * @param args
+     */
     public static void main(final String[] args) {
         try {
             // the registration server host ip is read from serverHost.txt
@@ -61,7 +65,9 @@ public class PlayerClient {
                 //e.printStackTrace();
             }
 
+            //*******************************************************/
             // in lab funziona con la riga seguente non commentata
+            //*******************************************************/
             System.setProperty("java.rmi.server.hostname", regServerHost);
 
             System.setProperty("java.security.policy", "file:./security.policy");

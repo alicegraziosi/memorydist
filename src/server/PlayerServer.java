@@ -13,11 +13,18 @@ import rmi.RemoteMessageServiceInt;
  * */
 public class PlayerServer{
 
+	/**
+	 * @param host
+	 * @param port
+	 * @param gameController
+	 */
     public static void setupRMIregistryAndServer(String host, int port,
                                                  GameController gameController){
-
+    	
+        //************************************************************************/
         // in lab funziona con la riga seguente non commentata (non modificare!!!)
-        System.setProperty("java.rmi.server.hostname", host);
+        //************************************************************************/
+    	System.setProperty("java.rmi.server.hostname", host);
 
         System.setProperty("java.security.policy", "file:./security.policy");
 

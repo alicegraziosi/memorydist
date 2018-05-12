@@ -12,9 +12,12 @@ import java.io.IOException;
 public class CardView extends JButton {
 
     private Card card;
-
     private boolean matched;
 
+    /**
+     * constructor
+     * @param card
+     */
     public CardView(Card card) {
         this.card = card;
         this.matched = false;
@@ -26,7 +29,9 @@ public class CardView extends JButton {
         this.setImage();
     }
 
-    // value is 1, 2, 3, ...
+    /**
+     * value is 1, 2, 3, ...
+     */
     public void setImage(){
         BufferedImage img = null;
         try {
@@ -38,7 +43,9 @@ public class CardView extends JButton {
         }
     }
 
-    // retro della carta
+    /**
+     * retro della carta
+     */
     public void setLogo(){
         BufferedImage img = null;
         try {
@@ -69,7 +76,10 @@ public class CardView extends JButton {
             e.printStackTrace();
         }
     }
-
+    
+    /**
+     * @return Card
+     */
     public Card getCard() {
         return card;
     }

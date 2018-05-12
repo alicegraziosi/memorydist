@@ -23,6 +23,7 @@ public class GameStatus implements Serializable {
     private HashMap<Integer,PLAYER_STATE> playersAvailability = new HashMap<Integer,PLAYER_STATE>(); // secondo me si può togliere, controllando bene in giro
   	private boolean isPenalized = false;
     private Player winnerPlayer = null;
+    
 	/**
      * Starting game constructor
      * */
@@ -48,6 +49,10 @@ public class GameStatus implements Serializable {
 		this.move = move;
 	}
     
+    /**
+     * @param id
+     * @return
+     */
     public Player findPlayerById(int id) {
     	for (Player p : playersList){
     		if (p.getId() == id ) {
@@ -59,6 +64,7 @@ public class GameStatus implements Serializable {
    
     /**
      * @descr calculate tha winner over the players
+     * the first which has the maximum score is the winner
      */
     public void findWinner() {
     	int maxScore = this.playersList.get(0).getScore();
@@ -79,10 +85,10 @@ public class GameStatus implements Serializable {
     	return this.winnerPlayer;
     }
     
-    
     /**
      * @descr setting the next turn managing players array list in gameStatus
-     * get the position of the curr player in the circular array list $this.playersList and add 1 to get the NEW curr player 
+     * get the position of the curr player in the circular array list $this.playersList 
+     * and add 1 to get the NEW curr player 
      * */
     public void setNextPlayer(){
 
@@ -97,8 +103,6 @@ public class GameStatus implements Serializable {
         		currentPlayerIndex = i;
         	}
         }
-        
-    	//int currentPlayerIndex = this.playersList.indexOf(this.currentPlayer);
     	
         System.out.println("[GameStatus.setNextPlayer] pos giocatore corrente:" + currentPlayerIndex);
 
@@ -108,6 +112,7 @@ public class GameStatus implements Serializable {
     
     /**
      * getting the next turn managing players array list in gameStatus
+     * NOT SETTING next player
      * */
     public Player getNextPlayer(){
     	
@@ -122,8 +127,6 @@ public class GameStatus implements Serializable {
         		currentPlayerIndex = i;
         	}
         }
-        
-    	//int currentPlayerIndex = this.playersList.indexOf(this.currentPlayer);
     	
         System.out.println("[GameStatus.getNextPlayer] pos giocatore corrente:" + currentPlayerIndex);
 
@@ -278,10 +281,16 @@ public class GameStatus implements Serializable {
 		this.isPenalized = isPenalized;
 	}
 
+	/**
+	 * @return HashMap<Integer, PLAYER_STATE>
+	 */
 	public HashMap<Integer, PLAYER_STATE> getPlayersAvailability() {
 		return playersAvailability;
 	}
-
+	
+	/**
+	 * @param playersAvailability
+	 */
 	public void setPlayersAvailability(HashMap<Integer, PLAYER_STATE> playersAvailability) {
 		this.playersAvailability = playersAvailability;
 	}

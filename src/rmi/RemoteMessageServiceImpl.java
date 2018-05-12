@@ -2,12 +2,10 @@ package rmi;
 
 import controller.GameController;
 import model.gameStatus.GameStatus;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-
 import javax.swing.Timer;
 
 /**
@@ -37,7 +35,6 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 	
 		gameController.setGameStatus(gameStatus); // setting the new updated gameStatus
 		
-		
 		if( gameStatus.getWinner() != null) {
 		
 			System.out.println("[RMISImpl] THE WINNER IS: " + gameStatus.getWinner().getId());
@@ -60,7 +57,6 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		}
 		else if( gameStatus.isPenalized() ) { // procedura di penalizzazione attiva
 			
-			
 			/** minimo ritardo prima di riniziare il turno*/
 			timer = new javax.swing.Timer(wait, new ActionListener() {
                 @Override
@@ -76,16 +72,11 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 
             timer.setRepeats(false);
          	timer.start();
-		
-			return 2;
-
 		}
 		else if(gameStatus.getMove() != null){ // qualche mossa eseguita ( prima o seconda)
 
 			System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " contains a move");
 			gameController.updateBoardAfterMove(gameStatus.getMove());
-			
-//			gameController.handleLazyCurrentPlayer();
 			
 			 if(gameStatus.getMove().getCard2() != null) { // seconda mossa eseguita
 				/** minimo ritardo prima di riniziare il turno*/
@@ -99,9 +90,7 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 
                 timer.setRepeats(false);
             	timer.start();
-
-//            	return 2;
-			}
+			 }
 		} else { // gamestatus appena ricevuto senza mossa, cioè inizio nuovo turno
 			System.out.println("[RMISImpl]: gameStatus " + gameStatus.toString());
 		}

@@ -51,7 +51,6 @@ public class GameController {
         gameStatus.setPenalized(false);
         gameStatus.setMove(null);
         
-
         System.out.println("[GameCtrl] giocatori rimanenti: " + gameStatus.getPlayersList().toString());
         turnNumber++;
         System.out.println("\n\n******** Turn number " + turnNumber + " * Turn of player " + gameStatus.getCurrentPlayer().getId() + " ********");
@@ -66,6 +65,7 @@ public class GameController {
                 if (isMyTurn()) {
 
                     System.out.println("[GameCtrl.playGame] ******* My turn ********");
+                   
                     /** setto prossimo giocatore e mittente, aggiorno view e sblocco carte */
                     gameStatus.setNextPlayer();
                     gameStatus.setIdSender(playerId);
@@ -149,7 +149,7 @@ public class GameController {
                 	
                 } catch (RemoteException  | NotBoundException e) {
                 	/**b)*/
-                	// Se c'è eccezione nella chiamata RMI allora la macchina è un crash
+                	// Se c'è eccezione nella chiamata RMI allora la macchina è in crash
                     //e.printStackTrace();
                     System.out.println("[GameCtrl.broadcastMessage]: Player " + playerId + " crashed.");
                     
@@ -180,10 +180,9 @@ public class GameController {
                             int playerId2 = gameStatus.getPlayersList().get(j).getId();
                       
                         	try {
-	                        	  
-	                            getRegistryAndSendMessage(remoteHost2, remotePort2, playerId2);
+	                           getRegistryAndSendMessage(remoteHost2, remotePort2, playerId2);
                             
-							} catch (RemoteException | NotBoundException e3) {
+                        	} catch (RemoteException | NotBoundException e3) {
 								// TODO Auto-generated catch block
 								System.out.println("[GameCtrl.broadcastMessage]: MULTIPLE CRASHES EXCEPTION HERE" +
                                         "while sending a message to " + playerId2);
@@ -224,25 +223,27 @@ public class GameController {
     public void handleLazyCurrentPlayer() {
         /** 1) */
     	System.out.println("[GameCtrl.handleLazyCurrentPlayer]: ***** START TIMER PENALIZZAZIONE *****");
+    	
     	timer = new javax.swing.Timer(20*1000, new ActionListener() {
-            @Override
+    	    @Override
             public void actionPerformed(ActionEvent e) {
             	int nextPlayerId = -1;
             	
             	if(gameStatus.getMove() == null) { 
+        
             		//significa che non è ancora stato inviato gameStatus che dice chi è il prossimo
                     System.out.println("***** [GameCtrl.handleLazyCurrentPlayer]: non è ancora stato inviato gameStatus che dice chi è il prossimo");
 
                     nextPlayerId = gameStatus.getNextPlayer().getId();
                     System.out.println("***** [GameCtrl.handleLazyCurrentPlayer]: nextPlayerId: " + nextPlayerId);
-
-            	}else {
+            	}
+            	else {
+            		
             		//significa che è già stato inviato gameStatus che dice chi è il prossimo
                     System.out.println("***** [GameCtrl.handleLazyCurrentPlayer]: significa che è già stato inviato gameStatus che dice chi è il prossimo");
 
                     nextPlayerId = gameStatus.getCurrentPlayer().getId();
                     System.out.println("***** [GameCtrl.handleLazyCurrentPlayer]: nextPlayerId: " + nextPlayerId);
-
                 }
             	
             	/** 2)*/
