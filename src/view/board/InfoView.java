@@ -53,10 +53,9 @@ public class InfoView extends JPanel {
         	System.out.println("OOOOOOO playersA: " + entry.getKey() + " - " + entry.getValue());
         	if (entry.getValue().equals(PLAYER_STATE.CRASH)) {
         		JLabel labelPlayerId = new JLabel("Player id: " + entry.getKey() );
-        		
         		ImageIcon image = new ImageIcon("./images/crash.jpg");
         		labelPlayerId.setIcon(image);
-                labels.add(labelPlayerId);
+        		labels.add(labelPlayerId);
         	}
         	else {
         		Player playerToUpd = gameStatus.findPlayerById(entry.getKey());
@@ -100,6 +99,8 @@ public class InfoView extends JPanel {
         		
         		ImageIcon image = new ImageIcon("./images/crash.jpg");
         		labelPlayerId.setIcon(image);
+        		labelPlayerId.setOpaque(true);
+        		labelPlayerId.setBackground(Color.gray);
                 labels.add(labelPlayerId);
         	}
         	else {
