@@ -111,10 +111,10 @@ public class GameStatus implements Serializable {
      * */
     public Player getNextPlayer(){
     	
-    	System.out.println("[GameStatus.setNextPlayer] giocatori rimanenti: " + this.playersList.toString());
-    	System.out.println("[GameStatus.setNextPlayer] giocatori rimanenti size: " + this.playersList.size());
-    	System.out.println("[GameStatus.setNextPlayer] giocatore corrente: " + this.currentPlayer.toString());
-        System.out.println("[GameStatus.setNextPlayer] id giocatore corrente: " + this.currentPlayer.getId());
+    	System.out.println("[GameStatus.getNextPlayer] giocatori rimanenti: " + this.playersList.toString());
+    	System.out.println("[GameStatus.getNextPlayer] giocatori rimanenti size: " + this.playersList.size());
+    	System.out.println("[GameStatus.getNextPlayer] giocatore corrente: " + this.currentPlayer.toString());
+        System.out.println("[GameStatus.getNextPlayer] id giocatore corrente: " + this.currentPlayer.getId());
     	
         int currentPlayerIndex = -1;
         for(int i=0; i < this.playersList.size(); i++) {
@@ -125,9 +125,9 @@ public class GameStatus implements Serializable {
         
     	//int currentPlayerIndex = this.playersList.indexOf(this.currentPlayer);
     	
-        System.out.println("[GameStatus.setNextPlayer] pos giocatore corrente:" + currentPlayerIndex);
+        System.out.println("[GameStatus.getNextPlayer] pos giocatore corrente:" + currentPlayerIndex);
 
-        System.out.println("[GameStatus.setNextPlayer] giocatore successivo: " + this.currentPlayer.getId());
+        System.out.println("[GameStatus.getNextPlayer] giocatore successivo: " + this.currentPlayer.getId());
         return this.playersList.get(currentPlayerIndex+1);
     }
     

@@ -52,6 +52,8 @@ public class GameController {
 
         gameStatus.setPenalized(false);
         gameStatus.setMove(null);
+        
+        resetAndUpdatePlayerScores(gameStatus);
 
         System.out.println("[GameCtrl] giocatori rimanenti: " + gameStatus.getPlayersList().toString());
         turnNumber++;
@@ -90,7 +92,6 @@ public class GameController {
 
                 System.out.println("[GameCtrl.playGame] You are the last player in the game.");
 
-                boardView.showMessage("You are the last player in the game!");
                 resetAndUpdateInfoView(gameStatus, playerId);
                 boardView.unblockCards();
             }
@@ -328,6 +329,10 @@ public class GameController {
      * */
     public void updateBoardAfterMove(Move move){
         boardView.updateBoardAfterMove(move);
+    }
+    
+    public void resetAndUpdatePlayerScores(GameStatus gameStatus){
+        boardView.getInfoView().resetAndUpdatePlayerScores(gameStatus);
     }
     
     /**

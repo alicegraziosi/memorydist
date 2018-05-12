@@ -62,7 +62,7 @@ public class BoardView extends Container implements GameGUIListener{
         // pannello laterale con infoView di gioco
         JPanel panelInfoView = new JPanel();
         panelInfoView.setLayout(new BorderLayout());
-        panelInfoView.setSize(200, 500);
+        panelInfoView.setSize(300, 500);
         panelInfoView.add(infoView, BorderLayout.NORTH);
         //panelInfoView.setBackground(Color.getHSBColor(120, 100, 50));
         borderPanelBoard.add(panelInfoView, BorderLayout.WEST);
@@ -82,7 +82,7 @@ public class BoardView extends Container implements GameGUIListener{
         borderPanelBoard.add(gridPanelCards,BorderLayout.EAST);
         //borderPanelBoard.setBackground(Color.getHSBColor(120, 100, 50));
         frame.add(borderPanelBoard);
-        frame.setSize(675, 550);
+        frame.setSize(775, 550);
         //frame.pack(); // o setSize o pack
 
         ImageIcon img = new ImageIcon("./images/frameIcon.jpg");
@@ -182,6 +182,7 @@ public class BoardView extends Container implements GameGUIListener{
                 }
             }
         }
+        
     }
     
     /**

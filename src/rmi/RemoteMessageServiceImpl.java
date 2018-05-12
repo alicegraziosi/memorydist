@@ -59,6 +59,8 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 		}
 		else if( gameStatus.isPenalized() ) { // procedura di penalizzazione attiva
 			
+			gameController.resetAndUpdatePlayerScores(gameStatus);
+			
 			/** minimo ritardo prima di riniziare il turno*/
 			timer = new javax.swing.Timer(2000, new ActionListener() {
                 @Override
@@ -82,6 +84,9 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 
 			System.out.println("[RMISImpl]: Message " + gameStatus.getId() + " contains a move");
 			gameController.updateBoardAfterMove(gameStatus.getMove());
+			
+			gameController.resetAndUpdatePlayerScores(gameStatus);
+			
 //			gameController.handleLazyCurrentPlayer();
 			
 			 if(gameStatus.getMove().getCard2() != null) { // seconda mossa eseguita
@@ -89,7 +94,6 @@ public class RemoteMessageServiceImpl extends UnicastRemoteObject implements Rem
 				timer = new javax.swing.Timer(2000, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                    	
                     	gameController.playGame();
                         timer.stop();
                     }
