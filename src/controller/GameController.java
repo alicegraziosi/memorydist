@@ -128,7 +128,7 @@ public class GameController {
      * c) detentore del token aggiorna l'oggetto
      * d) detentore del token rinvia l'oggetto a tutti i nodi attivi
      * */
-    public void broadcastMessage(GameStatus gamestatus) {
+    public void broadcastMessage(GameStatus gameStatus) {
 
         System.setProperty("java.security.policy", "file:./security.policy");
 
@@ -189,7 +189,9 @@ public class GameController {
                             
 							} catch (RemoteException | NotBoundException e3) {
 								// TODO Auto-generated catch block
-								System.out.println("[GameCtrl.broadcastMessage]: MULTIPLE CRASHES EXCEPTION HERE");
+								System.out.println("[GameCtrl.broadcastMessage]: MULTIPLE CRASHES EXCEPTION HERE" +
+                                        "while sending a message to " + playerId2);
+
 								e.printStackTrace();
 							}
                         }
@@ -329,18 +331,6 @@ public class GameController {
     public void updateBoardAfterMove(Move move){
         boardView.updateBoardAfterMove(move);
     }
-    
-    public void resetAndUpdatePlayerScores(GameStatus gameStatus){
-        boardView.getInfoView().resetAndUpdatePlayerScores(gameStatus);
-    }
-    
-    /**
-     * getting the game status
-     * @return GameStatus $gameStatus
-     * */
-    public GameStatus getGameStatus() {
-        return gameStatus;
-    }
 
     /**
      * setting the game status
@@ -357,14 +347,5 @@ public class GameController {
     public int getPlayerId() {
 		return playerId;
 	}
-    
-    /**
-     * @descr set player id
-     * @param int $id of the player
-     */
-	public void setPlayerId(int playerId) {
-		this.playerId = playerId;
-	}
-
 
 }
