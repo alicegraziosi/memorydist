@@ -21,7 +21,6 @@ import view.board.BoardView;
 public class GameController {
 
     public int playerId; // current player id
-   	public CircularArrayList<Player> players;
     public GameStatus gameStatus; // global status of the game, with info of current player
     private int turnNumber;
     private BoardView boardView;
@@ -36,7 +35,6 @@ public class GameController {
                           BoardView boardView) {
         this.playerId = id;
         this.gameStatus = gameStatus;
-        this.players = players;
         this.turnNumber = 0;
         this.boardView = boardView;
         boardView.init(); // viene inizializzato e mostrato il tavolo di gioco
@@ -167,12 +165,10 @@ public class GameController {
                     	gameStatus.setNextPlayer();
                     }
                     
-                	System.out.println("[GameCtrl.broadcastMessage]: rimuovo giocatore con id " + i );
-                    players.remove(i); // rimuovo il giocatore crashato dalla lista (in questo modo più semplice la gestione del successivo)
-                    gameStatus.setPlayersList(players);
-          
+                	gameStatus.getPlayersList().remove(i); // rimuovo il giocatore crashato dalla lista (in questo modo più semplice la gestione del successivo)
+               
                     System.out.println("[GameCtrl.broadcastMessage]: giocatore successivo: " + gameStatus.getCurrentPlayer().getId());
-                    System.out.println("[GameCtrl.broadcastMessage]: Nuova lista giocatori " + gameStatus.getPlayersList());
+                    System.out.println("[GameCtrl.broadcastMessage]: -DOPO- Nuova lista giocatori " + gameStatus.getPlayersList());
 
                     /**d) reinvio gamestatus a tutti i giocatori */
                     for (int j = 0; j < gameStatus.getPlayersList().size(); j++) {

@@ -41,6 +41,7 @@ public class InfoView extends JPanel {
         this.localGameStatus = localGameStatus;
     }
 
+
     /** 
      * @param gameStatus
      * @param currentPlayerId
@@ -54,15 +55,18 @@ public class InfoView extends JPanel {
         labelsTurn = new ArrayList<>();
 
         //iterare su hashmap playersAvailibility
-        HashMap<Integer, PLAYER_STATE> playersAvailability = localGameStatus.getPlayersAvailability();
-        for (Entry<Integer, PLAYER_STATE> entry : playersAvailability.entrySet()) {
-            if (entry.getValue().equals(PLAYER_STATE.CRASH)) {
-                System.out.println("[Infoview.update]: player: " + entry.getKey() + " - "
-                        + entry.getValue() + " quit ");
 
-                JLabel labelPlayerId = new JLabel("Player " + entry.getKey() + " quit");
-                ImageIcon image = new ImageIcon("./images/crash.jpg");
-                labelPlayerId.setIcon(image);
+        HashMap<Integer,PLAYER_STATE> playersAvailability = localGameStatus.getPlayersAvailability();
+        for (Entry<Integer, PLAYER_STATE>  entry : playersAvailability.entrySet())
+        {
+        	System.out.println("OOOOOOO playersA: " + entry.getKey() + " - " + entry.getValue());
+        	if (entry.getValue().equals(PLAYER_STATE.CRASH)) {
+        		JLabel labelPlayerId = new JLabel("Player id: " + entry.getKey() + " quit ");
+        		
+        		ImageIcon image = new ImageIcon("./images/crash.jpg");
+        		labelPlayerId.setIcon(image);
+        		labelPlayerId.setOpaque(true);
+        		labelPlayerId.setBackground(Color.gray);
                 labels.add(labelPlayerId);
             } else {
 

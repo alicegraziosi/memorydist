@@ -2,34 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8b85b1ff-a92d-4b85-aceb-da4beb877268" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.externalToolBuilders/org.eclipse.wst.common.project.facet.core.builder.launch" afterPath="" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/out/production/memory/client/PlayerClient.class" afterPath="$PROJECT_DIR$/out/production/memory/client/PlayerClient.class" />
       <change beforePath="$PROJECT_DIR$/out/production/memory/controller/GameController$1.class" afterPath="$PROJECT_DIR$/out/production/memory/controller/GameController$1.class" />
       <change beforePath="$PROJECT_DIR$/out/production/memory/controller/GameController.class" afterPath="$PROJECT_DIR$/out/production/memory/controller/GameController.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/model/card/Card.class" afterPath="$PROJECT_DIR$/out/production/memory/model/card/Card.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/model/gameStatus/GameStatus.class" afterPath="$PROJECT_DIR$/out/production/memory/model/gameStatus/GameStatus.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/model/move/Move.class" afterPath="$PROJECT_DIR$/out/production/memory/model/move/Move.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/model/player/Node.class" afterPath="$PROJECT_DIR$/out/production/memory/model/player/Node.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/model/player/PLAYER_STATE.class" afterPath="$PROJECT_DIR$/out/production/memory/model/player/PLAYER_STATE.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/model/player/Player.class" afterPath="$PROJECT_DIR$/out/production/memory/model/player/Player.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/rmi/RemoteMessageServiceImpl$1.class" afterPath="$PROJECT_DIR$/out/production/memory/rmi/RemoteMessageServiceImpl$1.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/rmi/RemoteMessageServiceImpl$2.class" afterPath="$PROJECT_DIR$/out/production/memory/rmi/RemoteMessageServiceImpl$2.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/rmi/RemoteMessageServiceImpl$3.class" afterPath="$PROJECT_DIR$/out/production/memory/rmi/RemoteMessageServiceImpl$3.class" />
       <change beforePath="$PROJECT_DIR$/out/production/memory/rmi/RemoteMessageServiceImpl.class" afterPath="$PROJECT_DIR$/out/production/memory/rmi/RemoteMessageServiceImpl.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/rmi/RemoteMessageServiceInt.class" afterPath="$PROJECT_DIR$/out/production/memory/rmi/RemoteMessageServiceInt.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/rmi/RemoteRegistrationServerImpl.class" afterPath="$PROJECT_DIR$/out/production/memory/rmi/RemoteRegistrationServerImpl.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/rmi/RemoteRegistrationServerInt.class" afterPath="$PROJECT_DIR$/out/production/memory/rmi/RemoteRegistrationServerInt.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/server/PlayerServer.class" afterPath="$PROJECT_DIR$/out/production/memory/server/PlayerServer.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/server/RegistrationServiceServer$1.class" afterPath="$PROJECT_DIR$/out/production/memory/server/RegistrationServiceServer$1.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/server/RegistrationServiceServer.class" afterPath="$PROJECT_DIR$/out/production/memory/server/RegistrationServiceServer.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/utils/CircularArrayList.class" afterPath="$PROJECT_DIR$/out/production/memory/utils/CircularArrayList.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/view/board/BoardView$1$1.class" afterPath="$PROJECT_DIR$/out/production/memory/view/board/BoardView$1$1.class" />
       <change beforePath="$PROJECT_DIR$/out/production/memory/view/board/BoardView$1.class" afterPath="$PROJECT_DIR$/out/production/memory/view/board/BoardView$1.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/view/board/BoardView$2.class" afterPath="$PROJECT_DIR$/out/production/memory/view/board/BoardView$2.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/view/board/BoardView.class" afterPath="$PROJECT_DIR$/out/production/memory/view/board/BoardView.class" />
       <change beforePath="$PROJECT_DIR$/out/production/memory/view/board/InfoView.class" afterPath="$PROJECT_DIR$/out/production/memory/view/board/InfoView.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/view/card/CardView.class" afterPath="$PROJECT_DIR$/out/production/memory/view/card/CardView.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/memory/view/listener/GameGUIListener.class" afterPath="$PROJECT_DIR$/out/production/memory/view/listener/GameGUIListener.class" />
       <change beforePath="$PROJECT_DIR$/serverHost.txt" afterPath="$PROJECT_DIR$/serverHost.txt" />
       <change beforePath="$PROJECT_DIR$/src/controller/GameController.java" afterPath="$PROJECT_DIR$/src/controller/GameController.java" />
       <change beforePath="$PROJECT_DIR$/src/view/board/InfoView.java" afterPath="$PROJECT_DIR$/src/view/board/InfoView.java" />
@@ -44,11 +24,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
-      <file leaf-file-name="RemoteMessageServiceImpl.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="RemoteMessageServiceImpl.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/rmi/RemoteMessageServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="250">
-              <caret line="86" column="12" lean-forward="true" selection-start-line="86" selection-start-column="12" selection-end-line="86" selection-end-column="12" />
+              <caret line="86" column="12" lean-forward="false" selection-start-line="86" selection-start-column="12" selection-end-line="86" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -58,7 +38,7 @@
         <entry file="file://$PROJECT_DIR$/src/controller/GameController.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1382">
-              <caret line="333" column="0" lean-forward="true" selection-start-line="333" selection-start-column="0" selection-end-line="333" selection-end-column="0" />
+              <caret line="329" column="0" lean-forward="false" selection-start-line="329" selection-start-column="0" selection-end-line="329" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -84,14 +64,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="InfoView.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="InfoView.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/view/board/InfoView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="41" column="5" lean-forward="false" selection-start-line="41" selection-start-column="5" selection-end-line="41" selection-end-column="5" />
+            <state relative-caret-position="386">
+              <caret line="63" column="90" lean-forward="false" selection-start-line="63" selection-start-column="90" selection-end-line="63" selection-end-column="90" />
               <folding>
-                <element signature="e#5025#5026#0" expanded="true" />
-                <element signature="e#5059#5060#0" expanded="true" />
+                <element signature="e#5070#5071#0" expanded="true" />
+                <element signature="e#5104#5105#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -255,9 +235,9 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="696" />
-    <option name="y" value="411" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="775" />
+    <option name="y" value="158" />
     <option name="width" value="980" />
     <option name="height" value="1044" />
   </component>
@@ -615,7 +595,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="696" y="411" width="980" height="1044" extended-state="1" />
+    <frame x="775" y="158" width="980" height="1044" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -879,17 +859,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/view/board/InfoView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="41" column="5" lean-forward="false" selection-start-line="41" selection-start-column="5" selection-end-line="41" selection-end-column="5" />
-          <folding>
-            <element signature="e#5025#5026#0" expanded="true" />
-            <element signature="e#5059#5060#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/view/board/BoardView.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="25">
@@ -901,7 +870,7 @@
     <entry file="file://$PROJECT_DIR$/src/controller/GameController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1382">
-          <caret line="333" column="0" lean-forward="true" selection-start-line="333" selection-start-column="0" selection-end-line="333" selection-end-column="0" />
+          <caret line="329" column="0" lean-forward="false" selection-start-line="329" selection-start-column="0" selection-end-line="329" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -917,8 +886,19 @@
     <entry file="file://$PROJECT_DIR$/src/rmi/RemoteMessageServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="250">
-          <caret line="86" column="12" lean-forward="true" selection-start-line="86" selection-start-column="12" selection-end-line="86" selection-end-column="12" />
+          <caret line="86" column="12" lean-forward="false" selection-start-line="86" selection-start-column="12" selection-end-line="86" selection-end-column="12" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/view/board/InfoView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="386">
+          <caret line="63" column="90" lean-forward="false" selection-start-line="63" selection-start-column="90" selection-end-line="63" selection-end-column="90" />
+          <folding>
+            <element signature="e#5070#5071#0" expanded="true" />
+            <element signature="e#5104#5105#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
