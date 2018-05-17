@@ -48,7 +48,7 @@ public class InfoView extends JPanel {
 
     	setLocalGameStatus(gameStatus);
     	removeAll();
-
+    	repaint();
         labels = new CircularArrayList<>();
         labelsTurn = new ArrayList<>();
 
@@ -59,6 +59,7 @@ public class InfoView extends JPanel {
         	System.out.println("*O*O*O* Players: " + entry.getKey() + " - " + entry.getValue());
         	if (entry.getValue().equals(PLAYER_STATE.CRASH)) {
         		
+        		System.out.println("[InfoView]: aggiorno infoView Crash");
         		JLabel labelPlayerId = new JLabel("Player id: " + entry.getKey() + " quit ");
         		ImageIcon image = new ImageIcon("./images/crash.jpg");
         		labelPlayerId.setIcon(image);
