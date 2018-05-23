@@ -116,6 +116,15 @@ public class InfoView extends JPanel {
                         labelWinnerPlayer.setForeground(Color.red);
                         labelsTurn.add(labelWinnerPlayer);
                     }
+                	else {
+                		labelTurnOf.setVisible(false);
+                		labelScore.setVisible(false);
+                		JLabel labelLoserPlayer = new JLabel("You Lose!");
+                		ImageIcon image = new ImageIcon("./images/loser.jpg");
+                		labelLoserPlayer.setIcon(image);
+                		labelLoserPlayer.setForeground(Color.red);
+                        labelsTurn.add(labelLoserPlayer);
+                	}
                 }
             }
         } else {

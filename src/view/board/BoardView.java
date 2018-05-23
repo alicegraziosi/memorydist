@@ -333,7 +333,7 @@ public class BoardView extends Container implements GameGUIListener{
     public void showGameWinnerMessage(String msg){
         int input = JOptionPane.showConfirmDialog(null,
                 msg,
-                "Winner info \n\nDo you want to exit the game?",
+                "Winner info",
                 JOptionPane.CLOSED_OPTION,
                 JOptionPane.INFORMATION_MESSAGE, null);
 //        if (input == JOptionPane.YES_OPTION) {
