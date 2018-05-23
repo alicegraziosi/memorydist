@@ -91,7 +91,8 @@ public class InfoView extends JPanel {
 
         if (playerId == currentPlayerId) {
 
-        	JLabel labelTurnOf = new JLabel("It's your turn!");
+        	JLabel labelTurnOf = new JLabel();
+        
             labelTurnOf.setForeground(Color.red);
             labelsTurn.add(labelTurnOf);
             Player playerToUpd = localGameStatus.findPlayerById(playerId);
@@ -101,6 +102,8 @@ public class InfoView extends JPanel {
             	playerIndex = localGameStatus.getPlayersList().indexOf(playerToUpd);
                 System.out.println("playerId: " + playerId + " player index: " + playerIndex);
                 JLabel labelScore = new JLabel("Your score: " + localGameStatus.getPlayersList().get(playerIndex).getScore());
+            	ImageIcon imagePlay = new ImageIcon("./images/play.png");
+            	labelScore.setIcon(imagePlay);
                 labelScore.setForeground(Color.red);
                 labelsTurn.add(labelScore);
                 
