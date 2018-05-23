@@ -108,7 +108,11 @@ public class InfoView extends JPanel {
                 
                 	if (localGameStatus.getWinner().getId() == localGameStatus.getPlayersList().get(playerIndex).getId()) {
                     
-                		JLabel labelWinnerPlayer = new JLabel("[ You Win ]");
+                		labelTurnOf.setVisible(false);
+                		labelScore.setVisible(false);
+                		JLabel labelWinnerPlayer = new JLabel("You Win!");
+                		ImageIcon image = new ImageIcon("./images/win.jpg");
+                		labelWinnerPlayer.setIcon(image);
                         labelWinnerPlayer.setForeground(Color.red);
                         labelsTurn.add(labelWinnerPlayer);
                     }
